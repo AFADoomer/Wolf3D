@@ -1,0 +1,4 @@
+IWAD = "Wolf3D_Common.pk7"
+LOAD = "Wolf3D_Resources.pk3"
+STARTUPTITLE = "Consolidated Wolfenstein 3D TC (High Resolution)"
+STARTUPCOLORS = "FC F4 00", "00 00 CC"
