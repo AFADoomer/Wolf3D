@@ -1,0 +1,30 @@
+gameinfo
+{
+	playerclasses = "SoDPlayer"
+	quitmessages = "$QUITMSG10", "$QUITMSG11", "$QUITMSG12", "$QUITMSG13", "$QUITMSG14", "$QUITMSG15", "$QUITMSG16", "$QUITMSG17", "$QUITMSG18"
+	endoom = "EndSpear"
+	dimcolor = "00 00 00"
+	dimamount = 0.7
+	menufontcolor_title = "TrueWhite"
+	menufontcolor_label = "WolfMenuGray"
+	menufontcolor_value = "WolfMenuLightGray"
+	menufontcolor_action = "WolfMenuGray"
+	menufontcolor_header = "TrueWhite"
+	menufontcolor_highlight = "TrueWhite"
+	menufontcolor_selection = "TrueWhite"
+	infopage = "BOSS"
+}
+
+clearepisodes
+
+episode SOD01
+{
+	name = "$EP_SOD"
+}
+
+//Title Screen
+
+map TITLEMAP "Wolfenstein 3D: Spear of Destiny"
+{
+	levelnum = 998
+}

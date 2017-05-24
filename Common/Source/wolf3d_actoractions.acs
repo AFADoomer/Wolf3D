@@ -1,0 +1,239 @@
+////////////////////////////////////////////////////////////////////////////////
+// Wolf3D TC - Actor Action Scripts
+////////////////////////////////////////////////////////////////////////////////
+// 
+// This file contains the following scripts:
+//
+//   A_AlertActors		Alert (wake) actors with a give TID
+//   A_CheckFastFireballs	Check the g_fastfireballs cvar
+//   A_DeathScream		Handle secret level fart death sound
+//   A_Drop			Drop appropriate item
+//   A_GetSkill			Return Game Skill Level
+//   A_GiveLife			Handle giving life powerup
+//   A_MarkPushwall		Fill array of pushwall points
+//   A_NoTarget			Set or Toggle notarget
+//   A_PatrolTurn		Hendle patrol point turning
+//   A_Random			Get random number from Wolf random table
+//   A_CheckMapCheat		Returns the value of the 'am_cheats' cvar
+//
+////////////////////////////////////////////////////////////////////////////////
+
+Script "A_AlertActors" (int WakeTID) //13
+{
+	If (WakeTID)
+	{
+		Thing_Hate(WakeTID, 1001, 4);
+		GiveActorInventory(WakeTID, "Active", 1);
+
+		If (WakeTID > 500)
+			WakeTID -= 500;
+		Else
+			WakeTID += 500;
+
+		Thing_Hate(WakeTID, 1001, 4);
+	}
+
+	GiveActorInventory(WakeTID, "Active", 1);
+}
+
+Script "A_CheckFastFireballs" (void)
+{
+	If (PlayerCount() > 1)
+		SetResultValue (True);
+	Else
+		SetResultValue (GetCVar ("g_fastfireballs"));
+}
+
+Script "A_DeathScream" (void)	// Death scream - Script from Gez's mod
+{
+	bool secretlevel = false;
+	if (Level == 19 || Level == 20 || (Level == 10 && !GAME_SOD))
+		secretlevel = true;
+
+	if (secretlevel && (rnd_table[Random(0,255)] == 0))
+	{
+		SetResultValue(true);
+		// FormGen didn't have enough humor to have deathfarts.
+		// So this could check for a level above 200 and then
+		// use GUARDSCREAM6 instead. Which is the gunbat's death.
+		ActivatorSound("fart", 127);
+	} else SetResultValue(false);
+}
+
+#define DropClassCount 12
+
+str DropClasses[DropClassCount] = {
+	"WolfClipDrop", 
+	"WolfMachineGun", 
+	"YellowKey", 
+	"Hitler2",
+	"WolfPistol",
+	"WolfFlameThrower",
+	"WolfRocketLauncher",
+	"SilverKey",
+	"BrownNazi",
+	"BlueNazi",
+	"WhiteNazi",
+	"Mutant"
+};
+
+Script "A_Drop" (int DropIndex, int Angle, int bLost)
+{
+	str strDropItem = "WolfClipDrop";
+
+	If (Angle) Angle = Angle * 256 / 360;
+
+	Switch (DropIndex)
+	{
+		Case 0:
+			//If dropping a clip, and the player has no pistol,
+			// then spawn the luger for pickup
+			If (PlayerCount() == 1)
+			{
+				If (CheckWolfWeapon(0, WEAP_LUGER))
+					DropIndex = 0;
+				Else
+					DropIndex = 4;
+			}
+			Else
+				DropIndex = 0;
+		break;
+		Case 1:
+			//Should SS spawn Machine Gun or Clip?
+			If (PlayerCount() == 1)
+			{
+				If (CheckWolfWeapon(0, WEAP_MGUN))
+					DropIndex = 0;
+				Else
+					DropIndex = 1;
+			}
+			Else
+				DropIndex = 1;
+		break;
+	}		
+
+	strDropItem = strParam(s:DropClasses[DropIndex]);
+
+	If (bLost)
+	{
+		//If Lost Episodes actor, try to spawn the actor with the same name 
+		// with "Lost" on the end (e.g., 'YellowKeyLost' for 'YellowKey')
+		// If spawn fails, script will fall through to the normal spawn below.
+		If (Spawn (strParam(s:strDropItem, s:"Lost"), GetActorX(0)+1, GetActorY(0)+1, GetActorZ(0), 0, Angle)) Terminate;
+	}
+
+	Spawn (strDropItem, GetActorX(0)+1, GetActorY(0)+1, GetActorZ(0), 0, Angle);
+
+/*
+	if (droptype == 1)
+	{
+		//Should SS spawn Machine Gun or Clip?
+		if (Shotgun[0] && (PlayerCount() == 1))
+			Spawn ("WolfClipDrop", GetActorX(0)+1, GetActorY(0)+1, GetActorZ(0));
+		else
+			Spawn ("WolfMachineGun", GetActorX(0)+1, GetActorY(0)+1, GetActorZ(0));
+	}
+	else if (droptype == 2)
+		Spawn ("YellowKey", GetActorX(0)+1, GetActorY(0)+1, GetActorZ(0));
+	else if (droptype == 3)
+	{
+		if (Shotgun[0] && (PlayerCount() == 1))
+			Spawn ("WolfClipDropLost", GetActorX(0)+1, GetActorY(0)+1, GetActorZ(0));
+		else
+			Spawn ("WolfMachineGunLost", GetActorX(0)+1, GetActorY(0)+1, GetActorZ(0));
+	}
+	else if (droptype == 4)
+		Spawn ("YellowKeyLost", GetActorX(0)+1, GetActorY(0)+1, GetActorZ(0));
+	else if (droptype == 5)
+		Spawn ("WolfClipDropLost", GetActorX(0)+1, GetActorY(0)+1, GetActorZ(0));
+	else
+		Spawn ("WolfClipDrop", GetActorX(0)+1, GetActorY(0)+1, GetActorZ(0));
+*/
+}
+
+Script "A_GetSkill" (void)
+{
+	SetResultValue(GameSkill());
+	If (GetCvar("g_debug"))
+		Print(d:GameSkill());
+}
+
+//Life
+Script "A_GiveLife" (void)
+{
+	GiveInventory("Health", 100);
+	GiveInventory("WolfClipBox", 25);
+
+	If (GameType() == GAME_NET_DEATHMATCH)
+	{
+		GiveInventory("WolfRocketPickup", 2);
+		GiveInventory("WolfGas", 5);
+	}
+
+	If ((CheckInventory("Life") < 10) || (GameType() == GAME_NET_DEATHMATCH))
+	{
+		GiveInventory("Life", 1);
+		LifeCount[PlayerNumber()]++;
+	}
+}
+
+Script "A_MarkPushwall" (int intValue) //16
+{
+	int intSecretMarkerTID = WolfCoord(GetActorX(0)) * 64 + WolfCoord(GetActorY(0));
+	SecretMarkers[intSecretMarkerTID] = intValue;
+}
+
+//Toggle notarget...  Used for the Nazi Uniform powerup
+int bNoTarget;
+Script "A_NoTarget" (int bEnable)
+{
+	Switch (bEnable)
+	{
+		Case 0:
+		Case 1:
+			bNoTarget = bEnable;
+			SetPlayerProperty(0, bEnable, PROP_NOTARGET);	
+		break;
+		Case 3:
+			If (bNoTarget > 0)
+			{
+				SetPlayerProperty(0, 0, PROP_NOTARGET);
+				delay(35);
+				SetPlayerProperty(0, 1, PROP_NOTARGET);
+			}
+		break;
+	}
+}
+
+//Patrol point logic
+Script "A_PatrolTurn" (int angle, int TurnX, int TurnY)
+{
+	SetActivatorToTarget(0);
+
+	If (ActivatorTID() < 500 && !CheckInventory("Active"))
+	{
+		If (GetActorProperty (0, APROP_Health) > 0)
+		{
+			SetActorState(0, "Spawn.Stand");
+			Thing_Stop(0);
+
+			SetActorPosition(0, TurnX * 1.0, TurnY * 1.0, 0, 0);
+			SetActorAngle (0, (angle * 256 / 360 ) << 8);
+			SetActorState(0, "Spawn.Patrol");
+		}
+	}
+}
+
+Script "A_Random" (int bitshift) //800
+{
+	int intResults = rnd_table[Random(0,255)];
+	intResults = (intResults >> bitshift);
+	SetResultValue(intResults);
+}
+
+Script "A_CheckMapCheat" (void)
+{
+	int intResult = GetCVar("am_cheat");
+
+	SetResultValue(intResult);
+}

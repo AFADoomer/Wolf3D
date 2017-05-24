@@ -1,0 +1,69 @@
+DEFAULTLISTMENU
+{
+	Font "WOLFFNTL", "WolfMenuGray", "WolfMenuLightGray"
+	Selector "M_SSEL1", -26, -3
+	Linespacing 14
+}
+
+LISTMENU "MainMenu"
+{
+	StaticPatch 0, 0, "M_SMENU"
+
+	Position 100, 64
+	StaticPatch 70, 60, "M_SBORTL"
+	StaticPatch 72, 60, "M_SBORTR"
+	StaticPatch 70, 90, "M_SBORBL"
+	StaticPatch 72, 90, "M_SBORBR"
+	TextItem "New Game", "n", "PlayerclassMenu"
+	TextItem "Sound", "s", "SoundOptions"
+	TextItem "Control", "c", "OptionsMenu" //CustomizeControls"
+	TextItem "Load Game", "l", "LoadGameMenu"
+	TextItem "Save Game", "s", "SaveGameMenu"
+	TextItem "Change View", "w", "VideoModeMenu"
+	TextItem "End Game", "e", "EndGameMenu"
+	//No idea if this will ever be able to work right...
+	Font "BigFont", "WolfMenuYellow", "WolfMenuYellowBright"
+	TextItem "Back to Game", "b", "CloseMenu"
+	Font "BigFont", "WolfMenuGray", "WolfMenuLightGray"
+//	TextItem "Back to Demo", "b", "CloseMenu"
+	TextItem "Quit", "q", "QuitMenu"
+}
+
+ListMenu "SkillMenu"
+{
+	StaticPatch 0, 0, "MENUBACS"
+
+	Font "BigFont", "WolfMenuYellowBright"
+
+	StaticPatch 68, 30, "M_SSKILL"
+
+	StaticPatch 46, 50, "M_SBORTL"
+	StaticPatch 96, 50, "M_SBORTR"
+	StaticPatch 46, 58, "M_SBORBL"
+	StaticPatch 96, 58, "M_SBORBR"
+
+	StaticPatch 82, 60, "M_SBABY"
+	StaticPatch 126, 60, "M_SEASY"
+	StaticPatch 170, 60, "M_SNORMA"
+	StaticPatch 214, 60, "M_SHARD"
+
+	//Common to both...
+	Font "BigFont", "WolfMenuGray", "WolfMenuLightGray"
+
+	Position 75, 102
+}
+
+ListMenu "LoadGameMenu"
+{
+	NetgameMessage "$LOADNET"
+	StaticPatchCentered 480, -1, "M_SLOADG"
+	Position 80,54
+	Class "LoadMenu"	// uses its own implementation
+}
+
+ListMenu "SaveGameMenu"
+{
+	StaticPatchCentered 480, -1, "M_SSAVEG"
+	Position 80,54
+	Class "SaveMenu"	// uses its own implementation
+}

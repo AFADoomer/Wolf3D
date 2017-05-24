@@ -1,0 +1,238 @@
+//Wolfenstein 3D, Spear of Destiny, and Lost Episodes Sounds
+NULL				DSEMPTY
+
+/* Pickup Sounds */
+//Ammo
+pickups/ammo			P_AMMO
+pickups/ammobox			P_AMMOB
+
+//Weapons
+pickups/mgun			P_MGUN
+pickups/cgun			P_CGUN
+pickups/cgunsod			SSND0038
+pickups/cgunlost		LSND0038
+
+$singular pickups\mgun
+$singular pickups\cgun
+$singular pickups\cgunsod
+$singular pickups\cgunlost
+
+//Health
+pickups/food			P_FOOD
+pickups/medkit			P_MEDKIT
+pickups/life			P_LIFE
+
+//Keys
+pickups/key			P_KEY
+
+$singular pickups\key
+
+//Score Items
+pickups/chest			T_CHEST
+pickups/cross			T_CROSS
+pickups/crown			T_CROWN
+pickups/cup			T_CUP
+
+$alias pickups/bomb		pickups/chest
+$alias pickups/ctrlpanel	pickups/crown
+$alias pickups/plutonium	pickups/cup
+$alias pickups/radio		pickups/cross
+
+//Spear of Destiny
+spear/pickup			SSND0039
+spear/pickup2			LSND0039
+
+/* Map Sounds */
+//BJ Endgame 'Yeah!'
+bj/yell				WSND0032
+
+//Doors
+door/open			WSND0003
+door/close			WSND0002
+door/secret			WSND0015
+
+door/open2			LSND0003
+door/close2			LSND0002
+door/secret2			LSND0013
+
+//Switches
+switches/elevator		WSND0030
+switches/elevator2		LSND0022
+
+/* Menu Sounds */
+menu/activate			m_select
+menu/backup			m_back
+menu/change			m_move
+menu/choose			m_select
+menu/clear			m_back
+menu/cursor			m_move
+menu/dismiss			m_back
+menu/invalid			NULL
+menu/prompt			m_move
+$alias menu/quit1		NULL
+$alias menu/quit2		NULL
+
+/* Stat Screen Sounds */
+stats/bonus100			S_100
+stats/bonuscount		S_BONUSD
+stats/total			S_BONUSC
+
+$limit stats/bonuscount		1
+
+/* Weapon Sounds */
+//Player weapons
+weapons/wknife			DSWKNIF
+weapons/wpistol			WSND0005
+weapons/wmachinegun		WSND0004
+weapons/wchaingun		WSND0006
+
+weapons/wpistol2		LSND0005
+weapons/wmachinegun2		LSND0004
+weapons/wchaingun2		LSND0006
+
+missile/fire			DSMISSF
+missile/hit			DSMISSX
+missile/sodfire			DSMISSFS
+
+flame/fire			DSFLAME
+
+//Enemy weapons
+shots/burst			WSND0011
+shots/single			WSND0021
+
+shots/burst2			LSND0009
+shots/single2			LSND0017
+
+syringe/throw			DSBO3ATK
+
+boss/attack			WSND0010
+boss/attack2			LSND0008
+
+/* Player Sounds */
+player/takedamage		WSND0014
+player/death			DSDEATH
+$alias player/male/pain100_1	NULL
+$alias player/male/pain100_2	NULL
+$alias player/male/pain25_1	NULL
+$alias player/male/pain25_2	NULL
+$alias player/male/pain50_1	NULL
+$alias player/male/pain50_2	NULL
+$alias player/male/pain75_1	NULL
+$alias player/male/pain75_2	NULL
+
+/* Miscellaneous */
+$alias misc/secret		NULL
+truck/idle			DSTRUCK
+slurpie				WSND0022
+slurpie2			LSND0018
+goobers				S_GOOB
+
+/* Enemy Sounds */
+dog/sight			WSND0001
+dog/attack			WSND0029
+dog/death			WSND0016
+
+doberman/sight			LSND0001
+doberman/attack			LSND0021
+doberman/death			LSND0014
+
+brown/die1			WSND0012
+brown/die2			WSND0013
+brown/die4			WSND0034
+brown/die5			WSND0035
+brown/die6			WSND0039
+brown/die7			WSND0040
+brown/die8			WSND0041
+brown/die9			WSND0042
+$random brown/die3 		{ brown/die2 brown/die4 }
+
+brown/sight			WSND0000
+$random brown/death		{ brown/die1 brown/die2 brown/die3 brown/die4 brown/die5 brown/die7 brown/die8 brown/die9 }
+
+green/die1			LSND0010
+green/die2			LSND0011
+green/die3			LSND0023
+green/die4			LSND0023
+green/die5			LSND0024
+green/die6			LSND0015
+green/die7			LSND0026
+green/die8			LSND0027
+green/die9			LSND0028
+
+green/sight			LSND0000
+$random green/death		{ green/die1 green/die2 green/die3 green/die4 green/die5 green/die7 green/die7 green/die8 }
+
+blue/sight			WSND0007
+blue/death			WSND0020
+
+black/sight			LSND0007
+black/death			LSND0016
+
+white/sight			WSND0027
+white/death			WSND0028
+
+white2/sight			LSND0019
+white2/death			LSND0020
+
+$alias mutant/sight		NULL
+mutant/death			WSND0017
+
+gunbat/death			LSND0015
+
+hgst/sight			WSND0023
+hgst/death			WSND0026
+
+hans/sight			WSND0008
+hans/death			WSND0009
+
+schabbs/sight			WSND0025
+schabbs/death			WSND0024
+
+hitler1/sight			WSND0018
+hitler1/death			WSND0031
+
+hitler2/sight			WSND0033
+hitler2/death			WSND0019
+
+gift/sight			WSND0037
+gift/death			WSND0036
+
+gretel/sight			WSND0043
+gretel/death			WSND0044
+
+fatface/sight			WSND0038
+fatface/death			WSND0045
+
+trans/sight			SSND0029
+trans/death			SSND0030
+
+willy/sight			LSND0029
+willy/death			LSND0030
+
+$alias uber/sight		NULL 
+uber/death			SSND0033
+
+$alias theaxe/sight		NULL
+theaxe/death			LSND0033
+
+dk/sight			SSND0034
+dk/death			SSND0035
+
+robot/sight			LSND0034
+robot/death			LSND0035
+
+spectre/sight			DSGHOSIT
+
+aod/sight			SSND0036
+aod/death			SSND0037
+aod/fire			DSAODFIR
+
+devil/sight			LSND0036
+devil/death			LSND0037
+$alias devil/fire		aod/fire
+
+wilhelm/sight			SSND0031
+wilhelm/death			SSND0032
+
+quarkblitz/sight		LSND0031
+quarkblitz/death		LSND0032

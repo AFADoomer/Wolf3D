@@ -1,0 +1,140 @@
+////////////////////////////////////////////////////////////////////////////////
+// Wolf3D TC - Debug/Cheat Scripts
+////////////////////////////////////////////////////////////////////////////////
+// 
+// This file contains the following scripts:
+//
+//   904		Display TID of curent target when use button pressed
+//   W_DebugGod		Tab-G Cheat (God Mode)
+//   W_Hurt		Tab-H Cheat (Hurt)
+//   W_DebugItems	Tab-I Cheat (Give Items)
+//   W_ILM		ILM Cheat
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//Target TID Identification script
+Script 904 (void)
+{
+	int buttons = GetPlayerInput(0, INPUT_BUTTONS);
+
+	If (buttons & BT_USE)
+	{
+		SetActivatorToTarget(0);
+		If (ActivatorTID() != 1001 + PlayerNumber())
+			log(s:"Current Target Info - TID: ",d:ActivatorTID());
+	}
+	delay(2);
+	restart;
+}
+
+//TAB-G Cheat
+Script "W_DebugGod" (void) //605
+{
+	If ((GetCvar ("sv_cheats") || (!GameType() && Goobers)) && !intermission)
+	{
+		if (godmode[PlayerNumber()])
+		{
+			SetActorProperty(1001+PlayerNumber(), APROP_Invulnerable, 0);
+			godmode[PlayerNumber()] = 0;
+
+			PrintMessage (	StrParam(l:"CHEAT_GOD_OFF"),
+					"WOLFFNTS", "TrueBlack",
+					BORDER_BLUE,
+					112, 32);
+			Delay(1);
+			While(!KeyPressed()) Delay(1);
+			ClearMessage(True);
+		}
+		else
+		{
+			SetActorProperty(1001+PlayerNumber(), APROP_Invulnerable, 1);
+			godmode[PlayerNumber()] = 1;
+
+			PrintMessage (	StrParam(l:"CHEAT_GOD_ON"),
+					"WOLFFNTS", "TrueBlack",
+					BORDER_BLUE,
+					112, 32);
+			Delay(1);
+			While(!KeyPressed()) Delay(1);
+			ClearMessage(True);
+		}
+	}
+}
+
+//TAB-H Cheat
+Script "W_Hurt" (int damage) //606
+{
+	If (!intermission)
+	{
+		If (!damage)
+			damage = 10;
+		DamageThing(damage);
+	}
+}
+
+//TAB-I Cheat
+Script "W_DebugItems" (void) //602
+{
+	If ((GetCvar ("sv_cheats") || (!GameType() && Goobers)) && !intermission)
+	{
+		ACS_NamedExecute ("W_AddPoints", 0, 100000);
+		GiveInventory("Health", 100);
+		if (!CheckInventory("WolfMachineGun") && !CheckInventory("WolfMachineGunLost"))
+		{
+			If (!GAME_LOST)
+			{
+				GiveInventory("WolfMachineGun", 1);
+				SetWeapon("WolfMachineGun");
+			}
+			Else
+			{
+				GiveInventory("WolfMachineGunLost", 1);
+				SetWeapon("WolfMachineGunLost");
+			}
+		}
+		else if (!CheckInventory("WolfChaingun") && !CheckInventory("WolfChaingunLost"))
+		{
+			If (!GAME_LOST)
+			{
+				GiveInventory("WolfChaingun", 1);
+				SetWeapon("WolfChaingun");
+			}
+			Else
+			{
+				GiveInventory("WolfChaingunLost", 1);
+				SetWeapon("WolfChaingunLost");
+			}
+		}
+
+		GiveInventory("WolfClip", 50);
+
+		PrintMessage (	StrParam(l:"CHEAT_ITEMS"),
+				"WOLFFNTS", "TrueBlack",
+				BORDER_BLUE,
+				112, 40);
+		Delay(1);
+		While(!KeyPressed()) Delay(1);
+		ClearMessage(True);
+	}
+}
+
+//ILM Cheat
+Script "W_ILM" (void) //603
+{
+	If ((GetCvar ("sv_cheats") || (!GameType() && Goobers)) && !intermission)
+	{
+		GiveInventory("Health", 100);
+		GiveInventory("WolfClip", 99);
+		GiveInventory("YellowKey", 1);
+		GiveInventory("BlueKey", 1);
+		SetActorProperty(0, APROP_Score, 0);
+
+		PrintMessage (	StrParam(l:"CHEAT_ILM"), 
+				"WOLFFNTL", "TrueBlack",
+				BORDER_GRAY,
+				267, 89);
+		Delay(1);
+		While(!KeyPressed()) Delay(1);
+		ClearMessage(True);
+	}
+}

@@ -1,0 +1,33 @@
+gameinfo
+{
+	playerclasses = "LostPlayer"
+	weaponslot = 1, "WolfKnifeLost"
+	weaponslot = 2, "WolfPistolLost"
+	weaponslot = 3, "WolfMachineGunLost"
+	weaponslot = 4, "WolfChaingunLost"
+	weaponslot = 5, "WolfFlamethrower"
+	weaponslot = 6, "WolfRocketLauncher"
+	quitmessages = "$QUITMSG10", "$QUITMSG11", "$QUITMSG12", "$QUITMSG13", "$QUITMSG14", "$QUITMSG15", "$QUITMSG16", "$QUITMSG17", "$QUITMSG18"
+	endoom = "EndSpear"
+	dimcolor = "00 00 00"
+	dimamount = 0.7
+	cursorpic = "CURSOR"
+	borderflat = "GREEN"
+	border = DoomBorder
+	menufontcolor_title = "TrueWhite"
+	menufontcolor_label = "WolfMenuGray"
+	menufontcolor_value = "WolfMenuGray"
+	menufontcolor_action = "WolfMenuGray"
+	menufontcolor_header = "TrueWhite"
+	menufontcolor_highlight = "TrueWhite"
+	menufontcolor_selection = "TrueWhite"
+	menubackbutton = "M_BACK_W"
+	menumusic = "WONDERIN"
+}
+
+clearepisodes
+
+episode SD201
+{
+	name = "$EP_SD2"
+}

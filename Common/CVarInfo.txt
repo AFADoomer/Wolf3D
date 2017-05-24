@@ -1,0 +1,56 @@
+server int goobers;
+
+server int cl_noinstantswitch;
+server int g_nointro;
+server int g_momentum;
+server int g_maxpushwallmove = 2;
+server int g_fastfireballs = 1;
+server int g_mapmarkers;
+
+user int g_timer;
+user float g_mapmarkerscale = 2.0;
+
+server noarchive float g_version = 2.0;
+
+user string wolf3d_highscore1_name = "id Software-'92";
+user string wolf3d_highscore1_level = "E1/L1";
+user int wolf3d_highscore1 = 10000;
+user string wolf3d_highscore2_name = "Adrian Carmack";
+user string wolf3d_highscore2_level = "E1/L1";
+user int wolf3d_highscore2 = 10000;
+user string wolf3d_highscore3_name = "John Carmack";
+user string wolf3d_highscore3_level = "E1/L1";
+user int wolf3d_highscore3 = 10000;
+user string wolf3d_highscore4_name = "Kevin Cloud";
+user string wolf3d_highscore4_level = "E1/L1";
+user int wolf3d_highscore4 = 10000;
+user string wolf3d_highscore5_name = "Tom Hall";
+user string wolf3d_highscore5_level = "E1/L1";
+user int wolf3d_highscore5 = 10000;
+user string wolf3d_highscore6_name = "John Romero";
+user string wolf3d_highscore6_level = "E1/L1";
+user int wolf3d_highscore6 = 10000;
+user string wolf3d_highscore7_name = "Jay Wilbur";
+user string wolf3d_highscore7_level = "E1/L1";
+user int wolf3d_highscore7 = 10000;
+user string sod_highscore1_name = "id Software-'92";
+user string sod_highscore1_level = "1";
+user int sod_highscore1 = 10000;
+user string sod_highscore2_name = "Adrian Carmack";
+user string sod_highscore2_level = "1";
+user int sod_highscore2 = 10000;
+user string sod_highscore3_name = "John Carmack";
+user string sod_highscore3_level = "1";
+user int sod_highscore3 = 10000;
+user string sod_highscore4_name = "Kevin Cloud";
+user string sod_highscore4_level = "1";
+user int sod_highscore4 = 10000;
+user string sod_highscore5_name = "Tom Hall";
+user string sod_highscore5_level = "1";
+user int sod_highscore5 = 10000;
+user string sod_highscore6_name = "John Romero";
+user string sod_highscore6_level = "1";
+user int sod_highscore6 = 10000;
+user string sod_highscore7_name = "Jay Wilbur";
+user string sod_highscore7_level = "1";
+user int sod_highscore7 = 10000;

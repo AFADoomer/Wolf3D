@@ -1,0 +1,425 @@
+//Doom replacement items so that you can play with Doom PWADS (e.g., WolfenDoom maps)
+
+ACTOR DoomWolfClip : WolfClip replaces Clip {Translation "112:127=96:111", "192:199=152:159"}
+ACTOR DoomWolfClipDrop : WolfClipDrop {Translation "112:127=96:111", "192:199=152:159"}
+ACTOR DoomWolfClipBox : WolfClipBox replaces ClipBox {}
+ACTOR DoomWolfRocketPickup : WolfRocketPickup replaces RocketAmmo {}
+ACTOR DoomWolfRocketCrate : WolfRocketCrate replaces RocketBox {}
+ACTOR DoomWolfGas : WolfGasCan replaces Cell {}
+ACTOR DoomWolfGasCan : WolfGasCan replaces CellPack {}
+
+ACTOR AmmoReplace1 : RandomSpawner replaces Shell
+{
+	DropItem "DoomWolfGas"
+	DropItem "DoomWolfClip"
+}
+
+ACTOR AmmoReplace2 : RandomSpawner replaces ShellBox
+{
+	DropItem "DoomWolfGasCan"
+	DropItem "DoomWolfClipBox"
+}
+
+ACTOR DoomWolfMachineGun : WeaponGiver replaces Shotgun
+{
+	Translation "112:127=96:111", "192:199=152:159"
+	DropItem "WolfMachineGun"
+	States
+	{
+	Spawn:
+		MGUN P -1
+		Loop
+	}
+}
+ACTOR DoomWolfChaingun : WeaponGiver replaces Chaingun
+{
+	Translation "112:127=96:111", "192:199=152:159"
+	DropItem "WolfChaingun"
+	States
+	{
+	Spawn:
+		CGUN P -1
+		Loop
+	}
+}
+ACTOR DoomWolfDualChaingun : WeaponGiver
+{
+	Translation "112:127=96:111", "192:199=152:159"
+	DropItem "WolfDualChaingun"
+	States
+	{
+	Spawn:
+		CGUN P -1
+		Loop
+	}
+}
+ACTOR DoomWolfFlamethrower : WeaponGiver replaces PlasmaRifle
+{
+	DropItem "WolfFlamethrower"
+	Scale 0.2
+	States
+	{
+	Spawn:
+		FLAM P -1
+		Loop
+	}
+}
+ACTOR DoomWolfFlamethrower2 : WeaponGiver replaces SuperShotgun
+{
+	DropItem "WolfFlamethrower"
+	Scale 0.2
+	States
+	{
+	Spawn:
+		FLAM P -1
+		Loop
+	}
+}
+ACTOR DoomWolfRocketLauncher : WolfRocketLauncher replaces RocketLauncher
+{
+	DropItem "WolfRocketLauncher"
+	Scale 0.2
+	States
+	{
+	Spawn:
+		WROC P -1
+		Loop
+	}
+}
+
+ACTOR DoomYellowKey : CustomInventory replaces YellowCard
+{
+	+INVENTORY.AUTOACTIVATE
+	Inventory.PickupMessage "$PU_YKEY"
+	States
+	{
+	Spawn:
+		KEYS A -1
+		Stop
+	Use:
+		TNT1 A 0 A_GiveInventory("YellowKey")
+		Stop
+	}
+}
+ACTOR DoomBlueKey : CustomInventory replaces BlueCard
+{
+	+INVENTORY.AUTOACTIVATE
+	Translation "112:127=96:111", "192:199=152:159"
+	Inventory.PickupMessage "$PU_BKEY"
+	States
+	{
+	Spawn:
+		KEYS B -1
+		Stop
+	Use:
+		TNT1 A 0 A_GiveInventory("BlueKey")
+		Stop
+	}
+}
+
+ACTOR DoomDogFood : DogFood replaces HealthBonus {}
+ACTOR DoomPlateofFood : PlateofFood replaces StimPack {Translation "112:127=80:95", "192:199=48:55"}
+ACTOR DoomFirstAidKit : FirstAidKit replaces Medikit {}
+ACTOR DoomLifePickup2 : LifePickup replaces Chainsaw {}
+ACTOR DoomLifePickup : LifePickup replaces SoulSphere {}
+
+ACTOR DoomWolfAmmoBelt : WolfAmmoBelt replaces Backpack {}
+ACTOR DoomNaziUniform : NaziUniform replaces BlurSphere {}
+ACTOR DoomBulletProofVest : BulletProofVest replaces GreenArmor {}
+ACTOR DoomBulletProofVest2 : BulletProofVest replaces BlueArmor {}
+ACTOR DoomRandomTreasure : RandomTreasure replaces ArmorBonus {}
+ACTOR DoomWolfBerserk : WolfBerserk replaces Berserk {}
+ACTOR DoomArmedPrisoner2 : ArmedPrisoner replaces BFG9000
+{
+	States
+	{
+	Relocate:
+		TNT1 A 0 A_ClearTarget
+		TNT1 A 0 A_ChangeFlag("FRIGHTENED", 0)
+		Goto See
+	}
+}
+
+/* - Get rid of these? - */
+ACTOR DoomGretelGrosse : GretelGrosseEasy replaces Arachnotron
+{
+	Health 250
+	Translation "112:127=96:111", "192:199=152:159"
+	DropItem DoomWolfChaingun
+	DropItem DoomWolfDualChaingun
+	States
+	{
+	Death:
+		WBO4 H 2 ACS_ExecuteAlways (25, 0, 2)
+		WBO4 H 4 A_GiveToTarget("Points", 5000)
+		WBO4 I 6 A_Scream
+		WB04 J 6 A_NoBlocking
+		WB04 K 6 A_BossDeath
+		WBO4 K -1
+		Stop
+	}
+}
+/*
+ACTOR DoomArmedPrisoner : ArmedPrisoner replaces Archvile
+{
+	States
+	{
+	Relocate:
+		TNT1 A 0 A_ClearTarget
+		TNT1 A 0 A_ChangeFlag("FRIGHTENED", 0)
+		Goto See
+	}
+}
+*/
+ACTOR DoomHitler2 : Hitler2Easy replaces BaronofHell
+{
+	Translation "112:127=96:111", "192:199=152:159"
+	DropItem DoomWolfChaingun
+	DropItem DoomWolfDualChaingun
+	States
+	{
+	Death:
+		WHR2 A 60 A_Scream
+		WHR2 J 5 A_Playsound("slurpie")
+		WHR2 K 5 A_GiveToTarget("Points", 5000)
+		WHR2 LMNO 5
+		WHR2 P 5 A_NoBlocking
+		WHR2 Q -1 A_BossDeath
+		Stop
+	}
+}
+ACTOR DoomHitlerGhost : HitlerGhostEasy replaces Cacodemon
+{
+	DropItem DoomWolfFlamethrower2
+	States
+	{
+	Death:
+		WHGT F 5
+		WHGT G 5 A_Scream
+		WHGT HI 5
+		WHGT J 5 A_NoBlocking
+		WHGT K -1 A_GiveToTarget("Points", 2000)
+		Stop
+	}
+
+}
+ACTOR DoomWhiteNazi : WhiteNazi replaces ChaingunGuy
+{
+	DropItem DoomWolfClipDrop
+	States
+	{
+		Death:
+		WWHT L 5
+		WWHT I 5 A_Scream
+		WWHT J 5
+		WWHT K 5 A_GiveToTarget("Points", 400)
+		WWHT M 5
+		WWHT N -1 A_NoBlocking
+		Stop
+	}
+
+}
+ACTOR DoomHansGrosse : HansGrosseEasy replaces HellKnight
+{
+	Translation "112:127=96:111", "192:199=152:159"
+	DropItem DoomWolfChaingun
+	DropItem DoomWolfDualChaingun
+	States
+	{
+	Death:
+		WBOS H 2 ACS_ExecuteAlways (25, 0, 2)
+		WBOS H 4 A_GiveToTarget("Points", 5000)
+		WBOS I 6 A_Scream
+		WBOS J 6 A_BossDeath
+		WBOS K -1 A_NoBlocking
+		Stop
+	}
+}
+ACTOR DoomDog : Dog replaces Demon
+{
+	States
+	{
+		Spawn:
+			WDOG A 0
+			Goto "Super::Wander"
+	}
+}
+ACTOR DoomMutant : MutantEasy replaces DoomImp
+{
+	DropItem DoomWolfClipDrop
+	States
+	{
+		Death:
+		WMUT J 2
+		WMUT J 1 A_Scream
+		WMUT K 4
+		WMUT L 4 A_GiveToTarget("Points", 700)
+		WMUT MN 4
+		WMUT O -1 A_NoBlocking
+		Stop
+	}
+}
+ACTOR DoomDrSchabbs : DrSchabbsEasy replaces Revenant
+{
+	Health 600
+	DropItem WolfBerserk
+	States
+	{
+	Death:
+		WBO3 A 60 A_Scream
+		WBO3 H 5
+		WBO3 I 5 A_GiveToTarget("Points", 5000)
+		WBO3 J 5
+		WB03 K 5 A_NoBlocking
+		WBO3 K -1 A_BossDeath
+		Stop
+	}
+
+}
+/*
+ACTOR DoomHitler : HitlerEasy replaces Cyberdemon
+{
+	Health 200
+	Translation "112:127=96:111", "192:199=152:159"
+	DropItem DoomWolfChaingun
+	DropItem DoomWolfDualChaingun
+	States
+	{
+		Death:
+		WHR1 H 5 A_PlaySound ("hitler2/sight")
+		WHR1 IJ 5 A_Scream
+		WHR1 K 1 A_CustomMissile ("DoomHitler2", 0, 0, 0)
+		WHR1 K -1 A_GiveToTarget("Points", 5000)
+		Stop
+	}
+}
+*/
+/*
+ACTOR DoomGiftmacher : GiftmacherEasy replaces Fatso
+{
+	Health 300
+	Translation "112:127=96:111", "192:199=152:159"
+	DropItem DoomWolfRocketLauncher
+	States
+	{
+	Death:
+		WBO8 A 60 A_Scream
+		WBO8 GH 5
+		WBO8 I 5 A_GiveToTarget("Points", 5000)
+		WB08 J 1 A_NoBlocking
+		WBO8 J -1 A_BossDeath
+		Stop
+	}
+}
+*/
+ACTOR DoomBlueNazi : BlueNazi replaces ShotgunGuy
+{
+	Radius 20
+	DropItem DoomWolfMachineGun
+	DropItem DoomWolfDropClip 192
+	States
+	{
+		Death:
+		WBLU J 5
+		WBLU K 5 A_Scream
+		WBLU L 5
+		WBLU M 5 A_GiveToTarget("Points", 500)
+		WBLU N -1 A_NoBlocking
+		Stop
+	}
+
+}
+ACTOR DoomDog2 : DoomDog replaces Spectre {}
+ACTOR DoomFatFace : FatFaceEasy replaces SpiderMastermind
+{
+	Translation "112:127=96:111", "192:199=152:159"
+	DropItem DoomWolfRocketLauncher
+	DropItem DoomWolfChaingun
+	States
+	{
+	Death:
+		WBO5 A 60 A_Scream
+		WBO5 JK 5
+		WBO5 L 1 A_GiveToTarget("Points", 5000)
+		WB05 L 4 A_NoBlocking
+		WBO5 M -1 A_BossDeath
+		Stop
+	}
+}
+
+ACTOR DoomBrownNazi : BrownNazi replaces ZombieMan
+{
+	Radius 20
+	DropItem DoomWolfClipDrop
+	States
+	{
+		Death:
+		WBRN J 5
+		WBRN K 5 A_Scream
+		WBRN L 5 
+		WBRN M 5 A_GiveToTarget("Points", 100)
+		WBRN N -1 A_NoBlocking
+		Stop
+	}
+}
+
+/*
+ACTOR DoomRandomNazi replaces WolfensteinSS
+{
+	-SOLID
+	+NOSECTOR
+	RenderStyle None
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_Jump(192, "SpawnBrown")
+		TNT1 A 0 A_Jump(192, "SpawnBlue")
+	SpawnWhite:
+		TNT1 A 1 A_SpawnItemEx("DoomWhiteNazi")
+		Stop
+	SpawnBlue:
+		TNT1 A 1 A_SpawnItemEx("DoomBlueNazi")
+		Stop
+	SpawnBrown:
+		TNT1 A 1 A_SpawnItemEx("DoomBrownNazi")
+		Stop
+	}
+}
+ACTOR DoomRandomNazi2 : DoomRandomNazi replaces LostSoul {}
+ACTOR DoomMovingRandomNaziSpawner : MovingRandomNaziSpawner replaces PainElemental
+{
+	States
+	{
+	SpawnRandom:
+		TNT1 A 1 A_SpawnItemEx("DoomRandomNazi", 0, 0, 0)
+		Goto See
+	}
+}
+*/
+
+ACTOR Nothing replaces PainElemental {}
+
+/*
+ACTOR DoomTransGrosse : TransGrosseEasy replaces HellKnight {}
+ACTOR DoomUberMutant : UberMutantEasy replaces BaronOfHell {}
+ACTOR DoomDeathKnight : DeathKnightEasy replaces Fatso {}
+ACTOR DoomAngelofDeath : AngelofDeathEasy replaces CyberDemon {}
+ACTOR DoomBarnacleWilhelm : BarnacleWilhelmEasy replaces Revenant {}
+ACTOR DoomWolfSpectre : WolfSpectre replaces LostSoul
+{
+	States
+	{
+	Death:
+		"####" E 5
+		"####" FG 5 A_GiveToTarget("Points", 200)
+	Dead:
+		TNT1 H 5
+		Stop
+	}
+}
+
+ACTOR DoomSpearofDestiny : SpearofDestiny replaces Infrared {}
+*/
+
+ACTOR DoomBarrel : ExplodingOilDrum replaces ExplosiveBarrel {}

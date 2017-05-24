@@ -1,0 +1,53 @@
+//MAPINFO for Wolfenstein 3D TC
+
+gameinfo
+{
+	playerclasses = "WolfPlayer"
+	quitmessages = "$QUITMSG1", "$QUITMSG2", "$QUITMSG3", "$QUITMSG4", "$QUITMSG5", "$QUITMSG6", "$QUITMSG7", "$QUITMSG8", "$QUITMSG9"
+	endoom = "EndSpear"
+	dimcolor = "88 00 00"
+	dimamount = 1.0
+}
+
+clearepisodes
+
+episode E1L1
+{
+	name = "$EP_1"
+	Key = "e"
+}
+
+episode E2L1
+{
+	name = "$EP_2"
+	Key = "o"
+}
+
+episode E3L1
+{
+	name = "$EP_3"
+	Key = "d"
+}
+
+episode E4L1
+{
+	name = "$EP_4"
+	Key = "a"
+}
+
+episode E5L1
+{
+	name = "$EP_5"
+	Key = "t"
+}
+
+episode E6L1
+{
+	name = "$EP_6"
+	Key = "c"
+}
+
+//Title Screen
+
+map TITLEMAP "Wolfenstein 3D Total Conversion"
+{}

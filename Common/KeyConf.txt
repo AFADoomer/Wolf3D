@@ -1,0 +1,15 @@
+//Key bindings for Wolfenstein 3D
+
+addkeysection "Wolfenstein 3D" Wolf3D
+
+addmenukey "MLI Cheat" wolf3dmli
+addmenukey "Tab-I Cheat" wolf3dtabi
+addmenukey "Tab-G Cheat" wolf3dtabg
+
+alias wolf3dmli "pukename W_ILM always"
+alias wolf3dtabi "pukename W_DebugItems always"
+alias wolf3dtabg "pukename W_DebugGod always"
+
+defaultbind \ wolf3dmli
+defaultbind i wolf3dtabi
+defaultbind g wolf3dtabg

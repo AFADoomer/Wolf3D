@@ -1,0 +1,291 @@
+////////////////////////////////////////////////////////////////////////////////
+// Wolf3D TC - Message Window Functions
+////////////////////////////////////////////////////////////////////////////////
+//
+// This file contains the following functions:
+//
+//   CheckMovement		Check for Movement keys being pressed
+//   CheckKeys			Check for Attack/Use keys being pressed
+//   KeyPressed			Check for any key being pressed
+//   DrawBox			Draw window frame and fill (centered on screen with specified x/y dimensions)
+//   DrawText			Draw text in proscribed font (centered on screen)
+//   PrintMessage		Draws box and prints message
+//   ClearMessage		Clears message
+// 
+////////////////////////////////////////////////////////////////////////////////
+
+#define BORDER_BLUE 		0
+#define BORDER_GRAY 		1
+#define BORDER_GRAYINVERT 	2
+#define BORDER_ROTT 		3
+#define BORDER_GREEN 		4
+
+int M_STARTID = -10000;
+int M_SCREENW = 320;
+int M_SCREENH = 200 - 32;
+
+//Control Allocation
+int ControlID;
+
+//Frames
+int arrFrames[4][11] =	{
+				//Array of frame images...  Last two entries are Width and Height Padding, respectively
+				{"B_F", "B_UL", "B_BL", "B_U", "B_B", "B_UR", "B_BR", "B_L", "B_R", 16, 16}, 
+				{"BG_F", "BG_UL", "BG_BL", "BG_U", "BG_B", "BG_UR", "BG_BR", "BG_L", "BG_R", 0, 0},
+				{"BG2_F", "BG2_UL", "BG2_BL", "BG2_U", "BG2_B", "BG2_UR", "BG2_BR", "BG2_L", "BG2_R", 0, 0},
+				{"WINDOW5", "WINDOW1", "WINDOW7", "WINDOW2", "WINDOW8", "WINDOW3", "WINDOW9", "WINDOW4", "WINDOW6", 20, 20}	//ROTT Frame
+			};
+
+int FontCount = 5; 
+int ArrFonts[5][3] = 	{
+				//Array of fonts...  Last two entries are average Width and Height, respectively
+				{"WOLFFNTS", 7, 10},
+				{"WOLFFNTL", 9, 13},
+				{"STATFNT", 11, 18},	//Looks bad, but if you want to use it...
+				{"CONFONT", 8, 8}
+			};
+
+Function int FontIndex(str Font)
+{
+	int Index = -1;
+
+	For (int f = 0; f < FontCount; f++)	
+	{
+//		If (ArrFonts[f][0] == Font)
+		If (strCmp(Font, ArrFonts[f][0]) == 0)
+			Index = f;
+	}
+	
+	return Index;
+}
+
+function int CheckMovement(void)
+{
+	int Keys = GetPlayerInput(-1, INPUT_BUTTONS);
+
+	If (Keys & BT_FORWARD)
+		return 1;
+	Else If (Keys & BT_BACK)
+		return -1;
+	Else If  (Keys & BT_LEFT || Keys & BT_MOVELEFT)
+		return -2;
+	Else If  (Keys & BT_RIGHT || Keys & BT_MOVERIGHT)
+		return 2;
+	return 0;
+}
+
+function int CheckKeys(void)
+{
+	int Keys = GetPlayerInput(-1, INPUT_BUTTONS);
+
+	If (keys & BT_ATTACK)
+		return 1;
+	Else If (keys & BT_USE)
+		return 2;
+
+	return 0;
+}
+
+Function int KeyPressed(void)
+{
+	int Inputs = GetPlayerInput(-1, INPUT_BUTTONS);
+	int Pitch = GetPlayerInput(-1, INPUT_PITCH);
+	int Yaw = GetPlayerInput(-1, INPUT_YAW);
+
+	int ReturnVal = False;
+
+	If ((Inputs != GetPlayerInput(-1, INPUT_OLDBUTTONS)) || (Pitch != 0) || (Yaw != 0))
+		ReturnVal = True;
+
+	return ReturnVal;
+}
+
+function int DrawBox(int boxW, int boxH, int Frame)
+{
+	int msgID = ControlID--;
+
+	int modW = boxW % 8;
+	int modH = boxH % 8;
+
+	int boxX = (M_SCREENW - boxW) / 2;
+	int boxY = (M_SCREENH - boxH) / 2;
+
+	boxW = (boxW / 8) * 8;
+	boxH = (boxH / 8) * 8;
+
+	SetFont(arrFrames[Frame][0]);
+	For (int fx = modW; fx <= boxW - 8 + modW; fx+=7)
+	{
+		For (int fy = modH; fy <= boxH - 8 + modH; fy+=7)
+		{
+			HudMessage(s:"A"; HUDMSG_PLAIN, ControlID--, CR_UNTRANSLATED, (boxX + fx) * 1.0 + 0.1, (boxY + fy) * 1.0 + 0.1, 0);
+		}
+	}
+
+	For (int w = modW; w <= boxW - 8 + modW; w+=7)
+	{
+		SetFont(arrFrames[Frame][3]);
+		HudMessage(s:"A"; HUDMSG_PLAIN, ControlID--, CR_UNTRANSLATED, (boxX + w) * 1.0 + 0.1, boxY * 1.0 + 0.1, 0);
+		SetFont(arrFrames[Frame][4]);
+		HudMessage(s:"A"; HUDMSG_PLAIN, ControlID--, CR_UNTRANSLATED, (boxX + w) * 1.0 + 0.1, (boxY + boxH + modH - 8) * 1.0 + 0.1, 0);
+	}
+
+	For (int h = modH; h <= boxH - 8 + modH; h+=7)
+	{
+		SetFont(arrFrames[Frame][7]);
+		HudMessage(s:"A"; HUDMSG_PLAIN, ControlID--, CR_UNTRANSLATED, boxX * 1.0 + 0.1, (boxY + h) * 1.0 + 0.1, 0);
+		SetFont(arrFrames[Frame][8]);
+		HudMessage(s:"A"; HUDMSG_PLAIN, ControlID--, CR_UNTRANSLATED, (boxX + boxW + modW - 8) * 1.0 + 0.1, (boxY + h) * 1.0 + 0.1, 0);
+	}
+
+	SetFont(arrFrames[Frame][1]);
+	HudMessage(s:"A"; HUDMSG_PLAIN, ControlID--, CR_UNTRANSLATED, boxX * 1.0 + 0.1, boxY * 1.0 + 0.1, 0);
+	SetFont(arrFrames[Frame][2]);
+	HudMessage(s:"A"; HUDMSG_PLAIN, ControlID--, CR_UNTRANSLATED, boxX * 1.0 + 0.1, (boxY + boxH + modH - 8) * 1.0 + 0.1, 0);
+
+	SetFont(arrFrames[Frame][5]);
+	HudMessage(s:"A"; HUDMSG_PLAIN, ControlID--, CR_UNTRANSLATED, (boxX + boxW + modW - 8) * 1.0 + 0.1, boxY * 1.0 + 0.1, 0);
+	SetFont(arrFrames[Frame][6]);
+	HudMessage(s:"A"; HUDMSG_PLAIN, ControlID--, CR_UNTRANSLATED, (boxX + boxW + modW - 8) * 1.0 + 0.1, (boxY + boxH + modH - 8) * 1.0 + 0.1, 0);
+
+	return msgID;
+}
+
+Function int DrawText(int textX, int textY, str Text, str Font, str Color)
+{
+	SetFont(Font);
+
+	If (!Color) Color = "TrueBlack";
+
+	HudMessage(s:Text; HUDMSG_COLORSTRING, ControlID--, Color, textX - 1.0, textY - 1.0, 0);
+
+	return ControlID;
+}
+
+global int 50:Message[];
+
+Function int PrintMessage (str Text, str Font, str Color, int Frame, int MsgWidth, int MsgHeight)
+{
+	ClearMessage(False);
+
+	SetHudSize(M_SCREENW, M_SCREENH, 0);
+
+	If (!ControlID) ControlID = M_STARTID;
+
+	ACS_NamedExecute("Freeze", 0, True);
+	SetPlayerProperty(0, 0, PROP_TOTALLYFROZEN);
+
+	If (MsgWidth==0 || MsgHeight==0)
+	{
+		int DefinedHeight = MsgHeight;
+		int DefinedWidth = MsgWidth;
+
+		int LineWidth = 0;
+
+		int CharWidth = ArrFonts[FontIndex(Font)][1];
+		int CharHeight = ArrFonts[FontIndex(Font)][2];
+
+		MsgHeight = CharHeight;
+
+		StrCpy(a:Message, Text);
+
+		For (int t = 0; t <= StrLen(Text); t++)
+		{
+			If (Message[t]=='\n')
+			{
+				If (LineWidth > MsgWidth)
+				{
+					MsgWidth = LineWidth;
+				}
+				LineWidth = 0;
+				MsgHeight += CharHeight;
+			}
+			Else
+			{
+				LineWidth += CharWidth;
+			}
+		}
+
+		MsgHeight = MsgHeight + 10;
+
+		If (LineWidth + 10 > MsgWidth)
+			MsgWidth = LineWidth + 10;
+
+		MsgWidth += arrFrames[Frame][9];
+		MsgHeight += arrFrames[Frame][10];
+
+		If(DefinedHeight > 0 && DefinedHeight > MsgHeight) MsgHeight = DefinedHeight;
+		If(DefinedWidth > 0 && DefinedWidth > MsgWidth) MsgWidth = DefinedWidth;
+	}
+
+	DrawBox(MsgWidth, MsgHeight, Frame);
+	DrawText(M_SCREENW / 2 * 1.0, M_SCREENH / 2 * 1.0, Text, Font, Color);
+
+	return true;
+}
+
+function void ClearMessage(bool Freeze)
+{
+	For (int b = M_STARTID; b >= ControlID; b--)
+		HudMessage(s:""; HUDMSG_PLAIN, b, 0, 0, 0, 0);
+	ControlID = M_STARTID;
+	If (Freeze)
+	{
+		ACS_NamedExecute("Freeze", 0, False);
+		SetPlayerProperty(0, 0, PROP_TOTALLYFROZEN);
+	}
+}
+
+Script "TestMessage" (void)
+{
+	PrintMessage (	"Please stay tuned at\nboa.realm667.com to find\nout when this episode will\nbe released by Realm667!",
+			"WOLFFNTL", "TrueBlack",
+			BORDER_GRAY,
+			251, 63);
+/*
+	PrintMessage (	"This is a test message!\n\nIsn't it awesome?\n\nWoohoo!!!!!", 
+			"WOLFFNTS", "Gray",
+			BORDER_ROTT,
+			0, 0); //Leave as 0, 0 to try to approximate correct window size
+*/
+	Delay(1);
+	While(!KeyPressed()) Delay(1);
+	ClearMessage(True);
+}
+
+/*
+	PrintMessage (	"Debugging keys are\nnow available!",
+			"WOLFFNTL", "TrueBlack",
+			BORDER_GRAY,
+			182, 37);
+
+	PrintMessage (	"You now have 100% Health,\n99 Ammo and both Keys!\n\nNote that you have basically\neliminated your chances of\ngetting a high score!", 
+			"WOLFFNTL", "TrueBlack",
+			BORDER_GRAY,
+			267, 89);
+
+	PrintMessage (	"Please select \"Read This!\"\nfrom the Options menu to\nfind out how to order this\nepisode from Apogee.",
+			"WOLFFNTL", "TrueBlack",
+			BORDER_GRAY,
+			251, 63);
+
+	PrintMessage (	"God mode ON", 
+			"WOLFFNTS", "TrueBlack",
+			BORDER_BLUE,
+			112, 32);
+
+	PrintMessage (	"God mode OFF", 
+			"WOLFFNTS", "TrueBlack",
+			BORDER_BLUE,
+			112, 32);
+
+	PrintMessage (	"Free items!", 
+			"WOLFFNTS", "TrueBlack",
+			BORDER_BLUE,
+			112, 40);
+
+	PrintMessage (	"This is a test message!\n\nIsn't it awesome?\n\nWoohoo!!!!!", 
+			"WOLFFNTL", "TrueBlack",
+			BORDER_GRAY,
+			0, 0);
+*/

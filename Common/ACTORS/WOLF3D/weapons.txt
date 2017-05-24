@@ -1,0 +1,560 @@
+//Weapons used in Wolfenstein 3D
+
+/* - Don't use this.  Causes problems with Ammo drop pickups
+ACTOR WolfAmmo : Ammo
+{
+	States
+	{
+		Spawn:
+			TNT1 A 1
+			"####" # 0 ACS_NamedExecuteAlways ("SetMapMarker", 0, 2)
+			"####" # 0 A_Jump (256, "Static")
+		Static:
+			UNKN A -1
+			Stop
+	}
+}
+*/
+
+ACTOR WolfWeapon : Weapon
+{
+	States
+	{
+		Spawn:
+			TNT1 A 1
+			"####" # 0 ACS_NamedExecuteAlways ("SetMapMarker", 0, 3)
+			"####" # 0 A_Jump (256, "Static")
+		Static:
+			UNKN A -1
+			Stop
+		Deselect:
+			"####" A 1 A_Lower
+			Loop
+		Select:
+			"####" # 0 A_ZoomFactor(1.125)
+			"####" A 1 A_Raise
+			Loop
+		Ready:
+			"####" A 1
+			"####" # 0 A_WeaponReady(WRF_NOBOB)
+			Loop
+		Fire:
+			"####" A 1
+			Goto Ready
+		Refire:
+			"####" # 0  A_Refire
+			"####" # 0 A_Jump (256, "Ready") //Used instead of 'Goto Ready' to allow proper inheritance
+		Hold:
+			"####" A 1
+			"####" # 0 A_JumpIfInventory ("BotPlayer", 1, "Hold.Bot")
+			"####" # 0 A_JumpIfInventory ("PowerStrength", 1, "Hold.Automatic")
+			"####" # 0 A_Jump (256, "Refire")
+		Hold.Bot:
+			"####" A Random (0, 35) //Force delay, but allow refire, otherwise bots are stupid
+		Hold.Automatic:
+			"####" # 0 A_Jump (256, "Fire")
+	}
+}
+
+ACTOR WolfClip : Ammo 21049
+{
+	Inventory.PickupSound "pickups/ammo"
+	Inventory.PickupMessage "$PU_CLIP"
+	Inventory.Amount 8
+	Inventory.MaxAmount 99
+	Inventory.Icon "I_WCLI"
+	Ammo.BackpackAmount 20
+	Ammo.BackpackMaxAmount 99
+	Mass 10000
+	States
+	{
+		Spawn:
+			TNT1 A 1
+			"####" # 0 ACS_NamedExecuteAlways ("SetMapMarker", 0, 2)
+			"####" # 0 A_Jump (256, "Static")
+		Static:
+			WCLI A -1
+			Loop
+	}
+}
+
+ACTOR WolfClipLost : WolfClip 21249
+{
+	Inventory.Icon "I_WCLI_L"
+	States
+	{
+	Static:
+		WCLI B -1
+		Loop
+	}
+}
+
+ACTOR WolfClipDrop : WolfClip
+{
+	Inventory.Amount 4
+}
+
+ACTOR WolfClipDropLost : WolfClipLost
+{
+	Inventory.Amount 4
+}
+
+ACTOR WolfClipBox : WolfClip 21072
+{
+	Inventory.PickupMessage "$PU_BULLETBOX"
+	Inventory.Amount 25
+	Inventory.Pickupsound "pickups/ammobox"
+	Ammo.BackpackAmount 25
+	States
+	{
+	Static:
+		WAMM A -1
+		Loop
+	}
+}
+
+ACTOR WolfClipBoxSoD : WolfClipBox 21172
+{}
+
+ACTOR WolfClipBoxLost : WolfClipBox 21272
+{
+	States
+	{
+	Static:
+		WAMM B -1
+		Loop
+	}
+}
+
+ACTOR WolfRocketPickup : Ammo 21075
+{
+	Inventory.PickupSound "pickups/ammo"
+	Inventory.PickupMessage "$PU_ROCKET"
+	Inventory.Amount 1
+	Inventory.MaxAmount 99
+	Inventory.Icon "I_WRKT"
+	Ammo.BackpackAmount 5
+	Ammo.BackpackMaxAmount 99
+	Mass 10000
+	States
+	{
+		Spawn:
+			TNT1 A 1
+			"####" # 0 ACS_NamedExecuteAlways ("SetMapMarker", 0, 2)
+			"####" # 0 A_Jump (256, "Static")
+		Static:
+			WRKT A -1
+			Loop
+	}
+}
+
+ACTOR WolfRocketCrate : WolfRocketPickup 21076
+{
+	Inventory.PickupMessage "$PU_ROCKETS"
+	Inventory.Amount 5
+	Ammo.BackpackAmount 5
+	Scale 0.2
+	States
+	{
+		Static:
+			WROK A -1
+			Loop
+	}
+}
+
+ACTOR WolfGas : Ammo 21078
+{
+	Inventory.PickupSound "pickups/ammo"
+	Inventory.PickupMessage "$PU_GAS"
+	Inventory.Amount 7
+	Inventory.MaxAmount 99
+	Inventory.Icon "I_WGAS"
+	Ammo.BackpackAmount 2
+	Ammo.BackpackMaxAmount 99
+	Mass 10000
+	Scale 0.2
+	States
+	{
+		Spawn:
+			TNT1 A 1
+			"####" # 0 ACS_NamedExecuteAlways ("SetMapMarker", 0, 2)
+			"####" # 0 A_Jump (256, "Static")
+		Static:
+			WGAS A -1
+			Loop
+	}
+}
+
+ACTOR WolfGasCan : WolfGas 21079
+{
+	Inventory.PickupMessage "$PU_GASCAN"
+	Inventory.Amount 14
+}
+
+ACTOR WolfKnife : WolfWeapon 21081
+{
+	Inventory.Icon "KNIFE"
+	Weapon.SelectionOrder 4
+	Inventory.PickupMessage "$PU_KNIF"
+	Weapon.AmmoUse 0
+	Weapon.YAdjust 8
+	Weapon.SlotNumber 1
+	+Weapon.Wimpy_Weapon
+	+Weapon.MeleeWeapon
+	+Weapon.NoAlert
+	AttackSound ""
+	Obituary ""
+	Tag "$TAG_KNIF"
+	States
+	{
+		Static:
+			KNIF P -1
+			Loop
+		Ready:
+			KNIF A 1
+			"####" # 0 A_WeaponReady(WRF_NOBOB)
+			Loop
+		Fire:
+			"####" B 3
+			"####" # 0 A_JumpIfInventory ("PowerStrength", 1, "Fire.Adrenaline")
+			"####" C 3 A_CustomPunch (ACS_NamedExecuteWithResult("A_Random", 4), 1, 0, "BulletPuff")
+			"####" # 0 A_Jump(256, "Fire.Resume")
+		Fire.Adrenaline:
+			"####" C 3 A_CustomPunch (ACS_NamedExecuteWithResult("A_Random", 1), 1, 0, "BulletPuff")
+			"####" # 0 A_Jump(256, "Fire.Resume")
+		Fire.Resume:
+			"####" # 0 A_PlayWeaponSound ("weapons/wknife")
+			"####" DE 3
+			"####" # 0 A_Jump(256, "Refire")
+	}
+} 
+
+
+ACTOR WolfPistol : WolfWeapon 21082
+{
+	Weapon.SelectionOrder 3
+	Inventory.Icon "LUGER"
+	Inventory.PickupSound "pickups/ammo"
+	Inventory.PickupMessage "$PU_LUGR"
+	Weapon.AmmoType "WolfClip"
+	Weapon.AmmoGive 8
+	Weapon.AmmoUse 1
+	Weapon.YAdjust 8
+	Weapon.SlotNumber 2
+	+Weapon.Wimpy_Weapon
+	AttackSound "weapons/wpistol"
+	Obituary ""
+	Tag "$TAG_LUGR"
+	States
+	{
+		Static:
+			LUGR P -1
+			Loop
+		Ready:
+			LUGR A 1
+			"####" # 0 A_WeaponReady(WRF_NOBOB)
+			Loop
+		Fire:
+			"####" B 2
+			"####" # 0 ACS_NamedExecuteAlways("A_NoTarget", 0, 3)
+			"####" # 0 A_JumpIfCloser (128, "Fire.Close")
+			"####" # 0 A_JumpIfCloser (256, "Fire.Medium")
+			"####" # 0 A_JumpIfCloser (ACS_NamedExecuteWithResult("A_Random", 0) / 12, "Fire.Missed")
+		Fire.Medium:
+			"####" C 3 BRIGHT A_FireBullets (2.0, 2.0, 1, ACS_NamedExecuteWithResult("A_Random", 0) / 4, "BulletPuff", FBF_NORANDOM + FBF_USEAMMO)
+			"####" # 0 A_Jump(256, "Fire.Resume")
+		Fire.Close:
+			"####" C 3 BRIGHT A_FireBullets (2.0, 2.0, 1, ACS_NamedExecuteWithResult("A_Random", 0) / 2, "BulletPuff", FBF_NORANDOM + FBF_USEAMMO)
+			"####" # 0 A_Jump(256, "Fire.Resume")
+		Fire.Missed:
+			"####" C 3 BRIGHT A_FireBullets (2.0, 2.0, 1, 0, "BulletPuff", FBF_NORANDOM + FBF_USEAMMO)
+			"####" # 0 A_Jump(256, "Fire.Resume")
+		Fire.Resume:
+			"####" DE 3
+			"####" # 0 A_Jump(256, "Refire")
+	}
+}
+ 
+ACTOR WolfMachineGun : WolfWeapon 21050
+{
+	Weapon.SelectionOrder 2
+	Inventory.Icon "MGUN"
+	Inventory.PickupSound "pickups/mgun"
+	Inventory.PickupMessage "$PU_MGUN"
+	Weapon.AmmoType "WolfClip"
+	Weapon.AmmoGive 6
+	Weapon.AmmoUse 1
+	Weapon.YAdjust 8
+	Weapon.SlotNumber 3
+	AttackSound "weapons/wmachinegun"
+	Obituary ""
+	Tag "$TAG_MGUN"
+	States
+	{
+		Static:
+			MGUN P -1
+			Loop
+		Ready:
+			MGUN W 1
+			"####" # 0 A_WeaponReady(WRF_NOBOB)
+			Loop
+		Fire:
+			"####" W 2 //A_JumpIfInventory("PowerDisguise", 1, "SSFire")
+			"####" B 2
+		Hold:
+			"####" W 0 //A_JumpIfInventory("PowerDisguise", 1, "SSHold")
+			"####" # 0 ACS_NamedExecuteAlways("A_NoTarget", 0, 3)
+			"####" # 0 A_JumpIfCloser (128, "Fire.Close")
+			"####" # 0 A_JumpIfCloser (256, "Fire.Medium")
+			"####" # 0 A_JumpIfCloser (ACS_NamedExecuteWithResult("A_Random", 0) / 12, "Fire.Missed")
+		Fire.Medium:
+			"####" C 3 BRIGHT A_FireBullets (3.0, 3.0, 1, ACS_NamedExecuteWithResult("A_Random", 0) / 6, "BulletPuff", FBF_NORANDOM + FBF_USEAMMO)
+			Goto Fire.Resume
+		Fire.Close:
+			"####" C 3 BRIGHT A_FireBullets (3.0, 3.0, 1, ACS_NamedExecuteWithResult("A_Random", 0) / 4, "BulletPuff", FBF_NORANDOM + FBF_USEAMMO)
+			Goto Fire.Resume
+		Fire.Missed:
+			"####" C 3 BRIGHT A_FireBullets (3.0, 3.0, 1, 0, "BulletPuff", FBF_NORANDOM + FBF_USEAMMO)
+		Fire.Resume:
+			"####" D 3
+			"####" D 0 A_ReFire
+			"####" E 3
+			"####" # 0 A_Jump(256, "Ready")
+	}
+} 
+
+ACTOR WolfChaingun : WolfWeapon 21051
+{
+	Weapon.SelectionOrder 1
+	Inventory.Icon "CGUN"
+	Inventory.PickupSound "pickups/cgun"
+	Inventory.PickupMessage "$PU_CGUN"
+	Weapon.AmmoType "WolfClip"
+	Weapon.AmmoGive 6
+	Weapon.AmmoUse 1
+	Weapon.YAdjust 8
+	Weapon.SlotNumber 4
+	+Weapon.BFG
+	AttackSound "weapons/wchaingun"
+	Obituary ""
+	Tag "$TAG_CGUN"
+	States
+	{
+		Static:
+			CGUN P -1
+			Loop
+		Ready:
+			CGUN A 1
+			"####" # 0 A_WeaponReady(WRF_NOBOB)
+			Loop
+		Select:
+			"####" # 0 A_JumpIfInventory("WolfDualChaingunMarker", 1, "Select.CleanupDualPickup")
+			Goto Select.Normal
+		Select.CleanupDualPickup:
+			"####" # 0 A_TakeInventory("WolfDualChaingunMarker", 1)
+			"####" # 0 A_TakeInventory("WolfDualChaingun", 1)
+		Select.Normal:
+			"####" # 0 A_ZoomFactor(1.125)
+			"####" A 1 A_Raise
+			Loop
+		Fire:
+			"####" AB 2
+			"####" # 0 A_Jump(256, "Hold")
+		Hold:
+			"####" # 0 ACS_NamedExecuteAlways("A_NoTarget", 0, 3)
+			"####" # 0 A_JumpIfCloser (128, "Fire.Close")
+			"####" # 0 A_JumpIfCloser (256, "Fire.Medium")
+			"####" # 0 A_JumpIfCloser (ACS_NamedExecuteWithResult("A_Random", 0) / 12, "Fire.Missed")
+			"####" # 0 A_Jump(256, "Fire.Medium")
+		Fire.Medium:
+			"####" CD 3 BRIGHT A_FireBullets (4.0, 4.0, 1, ACS_NamedExecuteWithResult("A_Random", 0) / 6, "BulletPuff", FBF_NORANDOM + FBF_USEAMMO)
+			"####" # 0 A_Jump(256, "Fire.Resume")
+		Fire.Close:
+			"####" CD 3 BRIGHT A_FireBullets (4.0, 4.0, 1, ACS_NamedExecuteWithResult("A_Random", 0) / 4, "BulletPuff", FBF_NORANDOM + FBF_USEAMMO)
+			"####" # 0 A_Jump(256, "Fire.Resume")
+		Fire.Missed:
+			"####" CD 3 BRIGHT A_FireBullets (4.0, 4.0, 1, 0, "BulletPuff", FBF_NORANDOM + FBF_USEAMMO)
+			"####" # 0 A_Jump(256, "Fire.Resume")
+		Fire.Resume:
+			"####" # 0 A_ReFire
+			"####" E 2
+			"####" # 0 A_Jump(256, "Ready")
+	}
+}
+
+ACTOR WolfFlamethrower : WolfWeapon 21080
+{
+	Weapon.SelectionOrder 1
+	Inventory.Icon "FTHR"
+	Inventory.PickupSound "pickups/ammo"
+	Inventory.PickupMessage "$PU_FLAME"
+	Weapon.AmmoType "WolfGas"
+	Weapon.AmmoGive 6
+	Weapon.AmmoUse 1
+	Weapon.YAdjust 17
+	Weapon.SlotNumber 5
+	AttackSound "flame/fire"
+	Obituary ""
+	Scale 0.2
+	Tag "$TAG_FLAME"
+	States
+	{
+		Static:
+			FLAM P -1
+			Loop
+		Ready:
+			WFLM A 1
+			"####" # 0 A_WeaponReady(WRF_NOBOB)
+			Loop
+		Fire:
+			WFLM B 2
+		Hold:
+			"####" # 0 ACS_NamedExecuteAlways("A_NoTarget", 0, 3)
+			WFLM CD 3 BRIGHT A_FireCustomMissile ("WolfFlame", 0, 1, 0, -8)
+			"####" # 0 A_ReFire
+			"####" # 0 A_Jump(256, "Ready")
+	}
+} 
+
+ACTOR WolfRocketLauncher : WolfWeapon 21077
+{
+	Weapon.SelectionOrder 5
+	Inventory.Icon "ROCK"
+	Inventory.PickupSound "pickups/ammo"
+	Inventory.PickupMessage "$PU_RL"
+	Weapon.AmmoType "WolfRocketPickup"
+	Weapon.AmmoGive 6
+	Weapon.AmmoUse 1
+	Weapon.YAdjust 17
+	Weapon.SlotNumber 6
+	+WEAPON.EXPLOSIVE
+	AttackSound "flame/fire"
+	Obituary ""
+	Scale 0.2
+	Tag "$TAG_RL"
+	States
+	{
+		Static:
+			WROC P -1
+			Loop
+		Ready:
+			WROC A 1
+				"####" # 0 A_WeaponReady(WRF_NOBOB)
+			Loop
+		Fire:
+			WROC B 3
+		Hold:
+			"####" # 0 ACS_NamedExecuteAlways("A_NoTarget", 0, 3)
+			WROC B 2 BRIGHT A_FireCustomMissile ("WolfRocketPlayer", 0, 1, 0, -8)
+			WROC C 10
+			WROC D 25
+			WROC D 5 A_ReFire
+			"####" # 0 A_Jump(256, "Ready")
+	}
+}
+
+ACTOR WolfDualChaingunMarker : Inventory
+{}
+
+ACTOR WolfDualChaingun : WolfChaingun 21089
+{
+	Weapon.SelectionOrder 1
+	Inventory.Icon "CGUN"
+	Inventory.PickupSound "pickups/cgun"
+	Inventory.PickupMessage "$PU_CGUN"
+	Weapon.AmmoType "WolfClip"
+	Weapon.AmmoGive 6
+	Weapon.AmmoUse 2
+	Weapon.YAdjust 8
+	Weapon.SlotNumber 4
+	Weapon.SlotPriority 2
+	+Weapon.CheatNotWeapon
+	+Weapon.BFG
+	AttackSound "boss/attack"
+	Obituary ""
+	States
+	{
+		Ready:
+			DGUN A 1
+			"####" # 0 A_WeaponReady(WRF_NOBOB)
+			Loop
+		Select:
+			"####" # 0 A_JumpIfInventory("WolfChaingun", 1, "Select.Normal")
+			"####" # 0 A_GiveInventory("WolfChaingun")
+			"####" # 0 A_GiveInventory("WolfDualChaingunMarker")
+			"####" # 0 A_SelectWeapon("WolfChaingun")
+			"####" # 0 A_Jump(256, "Select.Normal")
+		Fire.Medium:
+			"####" CD 3 BRIGHT A_FireBullets (16.0, 8.0, 1, ACS_NamedExecuteWithResult("A_Random", 0) / 2, "BulletPuff", FBF_NORANDOM + FBF_USEAMMO)
+			"####" # 0 A_Jump(256, "Fire.Resume")
+		Fire.Close:
+			"####" CD 3 BRIGHT A_FireBullets (16.0, 8.0, 1, ACS_NamedExecuteWithResult("A_Random", 0), "BulletPuff", FBF_NORANDOM + FBF_USEAMMO)
+			"####" # 0 A_Jump(256, "Fire.Resume")
+		Fire.Missed:
+			"####" CD 3 BRIGHT A_FireBullets (16.0, 8.0, 1, 0, "BulletPuff", FBF_NORANDOM + FBF_USEAMMO)
+	}
+}
+
+ACTOR WolfKnifeLost : WolfKnife
+{
+	Weapon.SlotPriority 2
+	States
+	{
+		Ready:
+			KNIL A 1
+			"####" # 0 A_WeaponReady(WRF_NOBOB)
+			Loop
+	}
+}
+
+ACTOR WolfPistolLost : WolfPistol
+{
+	AttackSound "weapons/wpistol2"
+	Weapon.SlotPriority 2
+	States
+	{
+		Ready:
+			LUGL A 1
+			"####" # 0 A_WeaponReady(WRF_NOBOB)
+			Loop
+	}
+}
+
+ACTOR WolfMachineGunLost : WolfMachineGun 21250
+{
+	AttackSound "weapons/wmachinegun2"
+	Weapon.SlotPriority 2
+	States
+	{
+		Static:
+			MGUN U -1
+			Loop
+		Ready:
+			MGUL W 1
+			"####" # 0 A_WeaponReady(WRF_NOBOB)
+			Loop
+	}
+}
+
+ACTOR WolfChaingunSoD : WolfChaingun 21151
+{
+	Inventory.PickupSound "pickups/cgunsod"
+	Weapon.SlotPriority 3
+}
+
+ACTOR WolfChaingunLost : WolfChaingun 21251
+{
+	Inventory.PickupSound "pickups/cgunlost"
+	AttackSound "weapons/wchaingun2"
+	Weapon.SlotPriority 4
+	States
+	{
+		Static:
+			CGUN U -1
+			Loop
+		Ready:
+			CGUL A 1
+			"####" # 0 A_WeaponReady(WRF_NOBOB)
+			Loop
+	}
+}

@@ -1,0 +1,1396 @@
+//Common MAPINFO for Wolfenstein 3D TC
+
+gameinfo
+{
+	playerclasses = "WolfPlayer"
+	weaponslot = 1, "WolfKnife"
+	weaponslot = 2, "WolfPistol"
+	weaponslot = 3, "WolfMachineGun"
+	weaponslot = 4, "WolfChaingun"
+	weaponslot = 5, "WolfFlamethrower"
+	weaponslot = 6, "WolfRocketLauncher"
+	quitmessages = "$QUITMSG1", "$QUITMSG2", "$QUITMSG3", "$QUITMSG4", "$QUITMSG5", "$QUITMSG6", "$QUITMSG7", "$QUITMSG8", "$QUITMSG9", "$QUITMSG10", "$QUITMSG11", "$QUITMSG12", "$QUITMSG13", "$QUITMSG14", "$QUITMSG15", "$QUITMSG16", "$QUITMSG17", "$QUITMSG18"
+	endoom = "EndWolf"
+	dimcolor = "00 00 00"
+	dimamount = 0.7
+	cursorpic = "CURSOR"
+	borderflat = "GREEN"
+	border = 8, 8, "WBRD_TR", "WBRD_T", "WBRD_TL", "WBRD_R", "WBRD_L", "WBRD_BR", "WBRD_B", "WBRD_BL"
+	menufontcolor_title = "WolfMenuYellowBright"
+	menufontcolor_label = "WolfMenuGray"
+	menufontcolor_value = "WolfMenuLightGray"
+	menufontcolor_action = "WolfMenuGray"
+	menufontcolor_header = "WolfMenuYellow"
+	menufontcolor_highlight = "TrueWhite"
+	menufontcolor_selection = "WolfMenuYellowBright"
+	menubackbutton = "M_BACK_W"
+//	menumusic = "WONDERIN"
+	pausesign = "W_PAUSE"
+	infopage = "HELP"
+	maparrow = "maparrows/knife.txt"
+}
+
+map TITLEMAP "Consolidated Wolfenstein 3D Total Conversion"
+{
+	levelnum = 999
+}
+
+clearepisodes
+
+episode E1L1
+{
+	name = "Escape from Wolfenstein"
+	Key = "e"
+}
+
+episode E2L1
+{
+	name = "Operation: Eisenfaust"
+	Key = "o"
+}
+
+episode E3L1
+{
+	name = "Die, Fuhrer, Die!"
+	Key = "d"
+}
+
+episode E4L1
+{
+	name = "A Dark Secret"
+	Key = "a"
+}
+
+episode E5L1
+{
+	name = "Trail of the Madman"
+	Key = "t"
+}
+
+episode E6L1
+{
+	name = "Confrontation"
+	Key = "c"
+}
+
+episode SOD01
+{
+	name = "Spear of Destiny"
+	Key = "s"
+}
+
+episode SD201
+{
+	name = "Return to Danger"
+	Key = "r"
+}
+
+episode SD301
+{
+	name = "Ultimate Challenge"
+	Key = "u"
+}
+
+gamedefaults
+{
+	nointermission
+	bordertexture = "GREEN"
+	sky1 = "CEILING"
+	allowrespawn
+	nocrouch
+	nojump
+	no_grinding_polyobj
+	titlepatch = "STATBKG"
+	exitpic = "STATBKG"
+	enterpic = "STATBKG"
+	cluster = 1
+}
+
+// Episode 1
+
+map E1L1 "Floor 1" //Secret Exit
+{
+	music = GETTHEM
+	secretnext = E1L0
+	next = E1L2
+	par = 90
+	levelnum = 1
+}
+
+map E1L2 "Floor 2"
+{
+	music = SEARCHN
+	next = E1L3
+	par = 120
+	levelnum = 2
+}
+
+map E1L3 "Floor 3"
+{
+	music = POW
+	next = E1L4
+	par = 120
+	levelnum = 3
+}
+
+map E1L4 "Floor 4"
+{
+	music = SUSPENSE
+	next = E1L5
+	levelnum = 4
+	par = 210
+}
+
+map E1L5 "Floor 5"
+{
+	music = GETTHEM
+	next = E1L6
+	par = 180
+	levelnum = 5
+}
+
+map E1L6 "Floor 6"
+{
+	music = SEARCHN
+	next = E1L7
+	par = 180
+	levelnum = 6
+}
+
+map E1L7 "Floor 7"
+{
+	music = POW
+	next = E1L8
+	par = 150
+	levelnum = 7
+}
+
+map E1L8 "Floor 8"
+{
+	music = SUSPENSE
+	next = E1L9
+	par = 150
+	levelnum = 8
+}
+
+map E1L9 "Floor 9"
+{
+	music = WARMARCH
+	par = 0
+	levelnum = 9
+}
+
+map E1L0 "Secret Floor"
+{
+	music = CORNER
+	next = E1L2
+	par = 0
+	levelnum = 10
+}
+
+// Episode 2
+
+map E2L1 "Floor 1" //Secret Exit
+{
+	music = NAZI_OMI
+	next = E2L2
+	secretnext = E2L0
+	par = 90
+	levelnum = 11
+}
+
+map E2L2 "Floor 2"
+{
+	music = PREGNANT
+	next = E2L3
+	par = 210
+	levelnum = 12
+}
+
+map E2L3 "Floor 3"
+{
+	music = GOINGAFT
+	next = E2L4
+	par = 180
+	levelnum = 13
+}
+
+map E2L4 "Floor 4"
+{
+	music = HEADACHE
+	next = E2L5
+	par = 120
+	levelnum = 14
+}
+
+map E2L5 "Floor 5"
+{
+	music = NAZI_OMI
+	next = E2L6
+	par = 240
+	levelnum = 15
+}
+
+map E2L6 "Floor 6"
+{
+	music = PREGNANT
+	next = E2L7
+	par = 360
+	levelnum = 16
+}
+
+map E2L7 "Floor 7"
+{
+	music = HEADACHE
+	next = E2L8
+	par = 60
+	levelnum = 17
+}
+
+map E2L8 "Floor 8"
+{
+	music = GOINGAFT
+	next = E2L9
+	par = 180
+	levelnum = 18
+}
+
+map E2L9 "Floor 9"
+{
+	music = WARMARCH
+	par = 0
+	levelnum = 19
+	specialaction = "DrSchabbs", "ACS_ExecuteAlways", 27, 0
+}
+
+map E2L0 "Secret Floor"
+{
+	music = DUNGEON
+	next = E2L2
+	par = 0
+	levelnum = 20
+}
+
+// Episode 3: Die, Fuhrer, Die!
+
+map E3L1 "Floor 1"
+{
+	music = INTROCW3
+	next = E3L2
+	par = 90
+	levelnum = 21
+}
+
+map E3L2 "Floor 2"
+{
+	music = NAZI_RAP
+	next = E3L3
+	par = 90
+	levelnum = 22
+}
+
+map E3L3 "Floor 3"
+{
+	music = TWELFTH
+	next = E3L4
+	par = 150
+	levelnum = 23
+}
+
+map E3L4 "Floor 4"
+{
+	music = ZEROHOUR
+	next = E3L5
+	par = 150
+	levelnum = 24
+}
+
+map E3L5 "Floor 5"
+{
+	music = INTROCW3
+	next = E3L6
+	par = 210
+	levelnum = 25
+}
+
+map E3L6 "Floor 6"
+{
+	music = NAZI_RAP
+	next = E3L7
+	par = 150
+	levelnum = 26
+}
+
+map E3L7 "Floor 7" //Secret Exit
+{
+	music = TWELFTH
+	next = E3L8
+	secretnext = E3L0
+	par = 120
+	levelnum = 27
+}
+
+map E3L8 "Floor 8"
+{
+	music = ZEROHOUR
+	next = E3L9
+	par = 360
+	levelnum = 28
+}
+
+map E3L9 "Floor 9"
+{
+	music = ULTIMATE
+	par = 0
+	levelnum = 29
+	specialaction = "Hitler2", "ACS_ExecuteAlways", 27, 0
+}
+
+map E3L0 "Secret Floor"
+{
+	music = PACMAN
+	next = E3L8
+	par = 0
+	levelnum = 30
+}
+
+//Episode 4
+
+map E4L1 "Floor 1"
+{
+	music = GETTHEM
+	next = E4L2
+	par = 120
+	levelnum = 31
+}
+
+map E4L2 "Floor 2"
+{
+	music = SEARCHN
+	next = E4L3
+	par = 120
+	levelnum = 32
+}
+
+map E4L3 "Floor 3" //Secret Exit
+{
+	music = POW
+	next = E4L4
+	secretnext = E4L0
+	par = 90
+	levelnum = 33
+}
+
+map E4L4 "Floor 4"
+{
+	music = SUSPENSE
+	next = E4L5
+	par = 60
+	levelnum = 34
+}
+
+map E4L5 "Floor 5"
+{
+	music = GETTHEM
+	next = E4L6
+	par = 270
+	levelnum = 35
+}
+
+map E4L6 "Floor 6"
+{
+	music = SEARCHN
+	next = E4L7
+	par = 210
+	levelnum = 36
+}
+
+map E4L7 "Floor 7"
+{
+	music = POW
+	next = E4L8
+	par = 120
+	levelnum = 37
+}
+
+map E4L8 "Floor 8"
+{
+	music = SUSPENSE
+	next = E4L9
+	par = 270
+	levelnum = 38
+}
+
+map E4L9 "Floor 9"
+{
+	music = WARMARCH
+	par = 0
+	levelnum = 39
+	specialaction = "GiftMacher", "ACS_ExecuteAlways", 27, 0
+}
+
+map E4L0 "Secret Floor"
+{
+	music = CORNER
+	next = E4L4
+	par = 0
+	levelnum = 40
+}
+
+//Episode 5
+
+map E5L1 "Floor 1"
+{
+	music = NAZI_OMI
+	next = E5L2
+	par = 150
+	levelnum = 41
+}
+
+map E5L2 "Floor 2"
+{
+	music = PREGNANT
+	next = E5L3
+	par = 90
+	levelnum = 42
+}
+
+map E5L3 "Floor 3"
+{
+	music = GOINGAFT
+	next = E5L4
+	par = 150
+	levelnum = 43
+}
+
+map E5L4 "Floor 4"
+{
+	music = HEADACHE
+	next = E5L5
+	par = 150
+	levelnum = 44
+}
+
+map E5L5 "Floor 5" //Secret Exit
+{
+	music = NAZI_OMI
+	next = E5L6
+	secretnext = E5L0
+	par = 240
+	levelnum = 45
+}
+
+map E5L6 "Floor 6"
+{
+	music = PREGNANT
+	next = E5L7
+	par = 180
+	levelnum = 46
+}
+
+map E5L7 "Floor 7"
+{
+	music = GOINGAFT
+	next = E5L8
+	par = 270
+	levelnum = 47
+}
+
+map E5L8 "Floor 8"
+{
+	music = HEADACHE
+	next = E5L9
+	par = 210
+	levelnum = 48
+}
+
+map E5L9 "Floor 9"
+{
+	music = WARMARCH
+	par = 0
+	levelnum = 49
+}
+
+map E5L0 "Secret Floor"
+{
+	music = DUNGEON
+	next = E5L6
+	par = 0
+	levelnum = 50
+}
+
+//Episode 6
+
+map E6L1 "Floor 1"
+{
+	music = INTROCW3
+	next = E6L2
+	par = 390
+	levelnum = 51
+}
+
+map E6L2 "Floor 2"
+{
+	music = NAZI_RAP
+	next = E6L3
+	par = 240
+	levelnum = 52
+}
+
+map E6L3 "Floor 3" //Secret Exit
+{
+	music = TWELFTH
+	next = E6L4
+	secretnext = E6L0
+	par = 270
+	levelnum = 53
+}
+
+map E6L4 "Floor 4"
+{
+	music = ZEROHOUR
+	next = E6L5
+	par = 360
+	levelnum = 54
+}
+
+map E6L5 "Floor 5"
+{
+	music = INTROCW3
+	next = E6L6
+	par = 300
+	levelnum = 55
+}
+
+map E6L6 "Floor 6"
+{
+	music = NAZI_RAP
+	next = E6L7
+	par = 330
+	levelnum = 56
+}
+
+map E6L7 "Floor 7"
+{
+	music = TWELFTH
+	next = E6L8
+	par = 330
+	levelnum = 57
+}
+
+map E6L8 "Floor 8"
+{
+	music = ZEROHOUR
+	next = E6L9
+	par = 510
+	levelnum = 58
+}
+
+map E6L9 "Floor 9"
+{
+	music = ULTIMATE
+	par = 0
+	levelnum = 59
+	specialaction = "FatFace", "ACS_ExecuteAlways", 27, 0
+}
+
+map E6L0 "Secret Floor"
+{
+	music = FUNKYOU
+	next = E6L4
+	par = 0
+	levelnum = 60
+}
+
+//Spear of Destiny
+
+map SOD01 "Tunnels: Floor 1"
+{
+	music = XTIPTOE
+	par = 90
+	next = SOD02
+	levelnum = 101
+}
+
+map SOD02 "Tunnels: Floor 2"
+{
+	music = XFUNKIE
+	par = 210
+	next = SOD03
+	levelnum = 102
+}
+
+map SOD03 "Tunnels: Floor 3"
+{
+	music = XDEATH
+	par = 165
+	next = SOD04
+	levelnum = 103
+}
+
+map SOD04 "Tunnels: Floor 4"
+{
+	music = XGETYOU
+	par = 210
+	next = SOD05
+	secretnext = SOD19
+	levelnum = 104
+}
+
+map SOD05 "Tunnel Boss: Floor 5"
+{
+	music = ULTIMATE
+	par = 0
+	next = SOD06
+	levelnum = 105
+}
+
+map SOD06 "Dungeons: Floor 6"
+{
+	music = DUNGEON
+	par = 270
+	next = SOD07
+	levelnum = 106
+}
+
+map SOD07 "Dungeons: Floor 7"
+{
+	music = GOINGAFT
+	par = 195
+	next = SOD08
+	levelnum = 107
+}
+
+map SOD08 "Dungeons: Floor 8"
+{
+	music = POW
+	par = 165
+	next = SOD09
+	levelnum = 108
+}
+
+map SOD09 "Dungeons: Floor 9"
+{
+	music = TWELFTH
+	par = 285
+	next = SOD10
+	levelnum = 109
+}
+
+map SOD10 "Dungeon Boss: Floor 10"
+{
+	music = ULTIMATE
+	par = 0
+	next = SOD11
+	levelnum = 110
+}
+
+map SOD11 "Castle: Floor 11"
+{
+	music = NAZI_OMI
+	par = 390
+	next = SOD12
+	levelnum = 111
+}
+
+map SOD12 "Castle: Floor 12"
+{
+	music = GETTHEM
+	par = 270
+	next = SOD13
+	levelnum = 112
+	secretnext = SOD20
+}
+
+map SOD13 "Castle: Floor 13"
+{
+	music = SUSPENSE
+	par = 165
+	next = SOD14
+	levelnum = 113
+}
+
+map SOD14 "Castle: Floor 14"
+{
+	music = SEARCHN
+	par = 270
+	next = SOD15
+	levelnum = 114
+}
+
+map SOD15 "Castle: Floor 15"
+{
+	music = ZEROHOUR
+	par = 360
+	next = SOD16
+	levelnum = 115
+}
+
+map SOD16 "Castle Boss: Floor 16"
+{
+	music = ULTIMATE
+	par = 0
+	next = SOD17
+	levelnum = 116
+}
+
+map SOD17 "Ramparts: Floor 17"
+{
+	music = XPUTIT
+	par = 360
+	next = SOD18
+	levelnum = 117
+}
+
+map SOD18 "Death Knight: Floor 18"
+{
+	music = ULTIMATE
+	par = 0
+	next = SOD21
+	levelnum = 118
+}
+
+map SOD19 "Secret 1: Floor 19"
+{
+	music = XJAZNAZI
+	par = 0
+	next = SOD05
+	levelnum = 119
+}
+
+map SOD20 "Secret 2: Floor 20"
+{
+	music = XFUNKIE
+	par = 0
+	next = SOD13
+	levelnum = 120
+}
+
+map SOD21 "Angel of Death: Floor 18"
+{
+	music = XEVIL
+	par = 0
+	levelnum = 121
+	specialaction = "AngelofDeath", "ACS_ExecuteAlways", 4, 0, 2
+}
+
+//Lost Episodes
+map SD201 "The Submarine Pens: Floor 1"
+{
+	music = XTIPTOE
+	par = 90
+	next = SD202
+	levelnum = 201
+}
+
+map SD202 "The Submarine Pens: Floor 2"
+{
+	music = XFUNKIE
+	par = 210
+	next = SD203
+	levelnum = 202
+}
+
+map SD203 "The Submarine Pens: Floor 3"
+{
+	music = XDEATH
+	par = 165
+	next = SD204
+	levelnum = 203
+}
+
+map SD204 "The Submarine Pens: Floor 4"
+{
+	music = XGETYOU
+	par = 210
+	next = SD205
+	secretnext = SD219
+	levelnum = 204
+}
+
+map SD205 "Submarine Pen Boss: Floor 5"
+{
+	music = ULTIMATE
+	par = 0
+	next = SD206
+	levelnum = 205
+}
+
+map SD206 "Secret Weapons Research: Floor 6"
+{
+	music = DUNGEON
+	par = 270
+	next = SD207
+	levelnum = 206
+}
+
+map SD207 "Secret Weapons Research: Floor 7"
+{
+	music = GOINGAFT
+	par = 195
+	next = SD208
+	levelnum = 207
+}
+
+map SD208 "Secret Weapons Research: Floor 8"
+{
+	music = POW
+	par = 165
+	next = SD209
+	levelnum = 208
+}
+
+map SD209 "Secret Weapons Research: Floor 9"
+{
+	music = TWELFTH
+	par = 285
+	next = SD210
+	levelnum = 209
+}
+
+map SD210 "Secret Weapons Research Boss: Floor 10"
+{
+	music = ULTIMATE
+	par = 0
+	next = SD211
+	levelnum = 210
+}
+
+map SD211 "Atomic Research: Floor 11"
+{
+	music = NAZI_OMI
+	par = 390
+	next = SD212
+	levelnum = 211
+}
+
+map SD212 "Atomic Research: Floor 12"
+{
+	music = GETTHEM
+	par = 270
+	next = SD213
+	levelnum = 212
+	secretnext = SD220
+}
+
+map SD213 "Atomic Research: Floor 13"
+{
+	music = SUSPENSE
+	par = 165
+	next = SD214
+	levelnum = 213
+}
+
+map SD214 "Atomic Research: Floor 14"
+{
+	music = SEARCHN
+	par = 270
+	next = SD215
+	levelnum = 214
+}
+
+map SD215 "Atomic Research: Floor 15"
+{
+	music = ZEROHOUR
+	par = 360
+	next = SD216
+	levelnum = 215
+}
+
+map SD216 "Atomic Research Boss: Floor 16"
+{
+	music = ULTIMATE
+	par = 0
+	next = SD217
+	levelnum = 216
+}
+
+map SD217 "The Command Bunker: Floor 17"
+{
+	music = XPUTIT
+	par = 360
+	next = SD218
+	levelnum = 217
+}
+
+map SD218 "The Robot: Floor 18"
+{
+	music = ULTIMATE
+	par = 0
+	next = SD221
+	levelnum = 218
+}
+
+map SD219 "Secret 1: Floor 19"
+{
+	music = XJAZNAZI
+	par = 0
+	next = SD205
+	secretnext = SD205
+	levelnum = 219
+}
+
+map SD220 "Secret 2: Floor 20"
+{
+	music = XFUNKIE
+	par = 0
+	next = SD213
+	levelnum = 220
+}
+
+map SD221 "The Final Retreat: Floor 18"
+{
+	music = XEVIL
+	par = 0
+	levelnum = 221
+	specialaction = "DevilIncarnate", "ACS_ExecuteAlways", 4, 0, 2
+}
+
+// The Ultimate Challenge
+map SD301 "Computer Technology Labs: Floor 1"
+{
+	music = XTIPTOE
+	par = 90
+	next = SD302
+	levelnum = 301
+}
+
+map SD302 "Computer Technology Labs: Floor 2"
+{
+	music = XFUNKIE
+	par = 210
+	next = SD303
+	levelnum = 302
+}
+
+map SD303 "Computer Technology Labs: Floor 3"
+{
+	music = XDEATH
+	par = 165
+	next = SD304
+	levelnum = 303
+}
+
+map SD304 "Computer Technology Labs: Floor 4"
+{
+	music = XGETYOU
+	par = 210
+	next = SD305
+	secretnext = SD319
+	levelnum = 304
+}
+
+map SD305 "Computer Technology Lab Boss: Floor 5"
+{
+	music = ULTIMATE
+	par = 0
+	next = SD306
+	levelnum = 305
+}
+
+map SD306 "Laser Guidance Systems: Floor 6"
+{
+	music = DUNGEON
+	par = 270
+	next = SD307
+	levelnum = 306
+}
+
+map SD307 "Laser Guidance Systems: Floor 7"
+{
+	music = GOINGAFT
+	par = 195
+	next = SD308
+	levelnum = 307
+}
+
+map SD308 "Laser Guidance Systems: Floor 8"
+{
+	music = POW
+	par = 165
+	next = SD309
+	levelnum = 308
+}
+
+map SD309 "Laser Guidance Systems: Floor 9"
+{
+	music = TWELFTH
+	par = 285
+	next = SD310
+	levelnum = 309
+}
+
+map SD310 "Laser Guidance System Boss: Floor 10"
+{
+	music = ULTIMATE
+	par = 0
+	next = SD311
+	levelnum = 310
+}
+
+map SD311 "Satellite Systems: Floor 11"
+{
+	music = NAZI_OMI
+	par = 390
+	next = SD312
+	levelnum = 311
+}
+
+map SD312 "Satellite Systems: Floor 12"
+{
+	music = GETTHEM
+	par = 270
+	next = SD313
+	levelnum = 312
+	secretnext = RTD20
+}
+
+map SD313 "Satellite Systems: Floor 13"
+{
+	music = SUSPENSE
+	par = 165
+	next = SD314
+	levelnum = 313
+}
+
+map SD314 "Satellite Systems: Floor 14"
+{
+	music = SEARCHN
+	par = 270
+	next = SD315
+	levelnum = 314
+}
+
+map SD315 "Satellite Systems: Floor 15"
+{
+	music = ZEROHOUR
+	par = 360
+	next = SD316
+	levelnum = 315
+}
+
+map SD316 "Satellite System Boss: Floor 16"
+{
+	music = ULTIMATE
+	par = 0
+	next = SD317
+	levelnum = 316
+}
+
+map SD317 "The Fuhrerbunker: Floor 17"
+{
+	music = XPUTIT
+	par = 360
+	next = SD318
+	levelnum = 317
+}
+
+map SD318 "The Robot: Floor 18"
+{
+	music = ULTIMATE
+	par = 0
+	next = SD321
+	levelnum = 318
+}
+
+map SD319 "Secret 1: Floor 19"
+{
+	music = XJAZNAZI
+	par = 0
+	next = RTD05
+	secretnext = RTD05
+	levelnum = 319
+}
+
+map SD320 "Secret 2: Floor 20"
+{
+	music = XFUNKIE
+	par = 0
+	next = SD313
+	levelnum = 320
+}
+
+map SD321 "The Future Threat: Floor 18"
+{
+	music = XEVIL
+	par = 0
+	levelnum = 321
+	specialaction = "DevilIncarnate", "ACS_ExecuteAlways", 4, 0, 2
+}
+
+// End/Error Text
+
+clusterdef 1
+{
+	flat = "ERROR"
+	music = "ENDLEVEL"
+	exittext = " "
+}
+
+// Skill Definitions
+
+clearskills
+skill baby
+{
+	DamageFactor = 0.5
+	SpawnFilter = "Easy"
+	Name = "$SK_1"
+	TextColor = "WolfMenuGrey"
+	Key = "C"
+	ReplaceActor = "HansGrosse", "HansGrosseEasy"
+	ReplaceActor = "Mutant", "MutantEasy"
+	ReplaceActor = "MMutant", "MMutantEasy"
+	ReplaceActor = "DrSchabbs", "DrSchabbsEasy"
+	ReplaceActor = "Hitler", "HitlerEasy"
+	ReplaceActor = "Hitler2", "Hitler2Easy"
+	ReplaceActor = "HitlerGhost", "HitlerGhostEasy"
+	ReplaceActor = "Giftmacher", "GiftMacherEasy"
+	ReplaceActor = "GretelGrosse", "GretelGrosseEasy"
+	ReplaceActor = "FatFace", "FatFaceEasy"
+	ReplaceActor = "TransGrosse", "TransGrosseEasy"
+	ReplaceActor = "UberMutant", "UberMutantEasy"
+	ReplaceActor = "BarnacleWilhelm", "BarnacleWilhelmEasy"
+	ReplaceActor = "DeathKnight", "DeathKnightEasy"
+	ReplaceActor = "AngelofDeath", "AngelofDeathEasy"
+	ReplaceActor = "TransGrosse", "TransGrosseEasy"
+	ReplaceActor = "TheAxe", "TheAxeEasy"
+	ReplaceActor = "ProfessorQuarkblitz", "ProfessorQuarkblitzEasy"
+	ReplaceActor = "RobotDroid", "RobotDroidEasy"
+	ReplaceActor = "DevilIncarnate", "DevilIncarnateEasy"
+}
+
+skill easy
+{
+	SpawnFilter = "Easy"
+	Name = "$SK_2"
+	TextColor = "WolfMenuGrey"
+	Key = "D"
+	ReplaceActor = "HansGrosse", "HansGrosseNormal"
+	ReplaceActor = "Mutant", "MutantNormal"
+	ReplaceActor = "MMutant", "MMutantNormal"
+	ReplaceActor = "DrSchabbs", "DrSchabbsNormal"
+	ReplaceActor = "Hitler", "HitlerNormal"
+	ReplaceActor = "Hitler2", "Hitler2Normal"
+	ReplaceActor = "HitlerGhost", "HitlerGhostNormal"
+	ReplaceActor = "Giftmacher", "GiftMacherNormal"
+	ReplaceActor = "GretelGrosse", "GretelGrosseNormal"
+	ReplaceActor = "FatFace", "FatFaceNormal"
+	ReplaceActor = "TransGrosse", "TransGrosseNormal"
+	ReplaceActor = "UberMutant", "UberMutantNormal"
+	ReplaceActor = "BarnacleWilhelm", "BarnacleWilhelmNormal"
+	ReplaceActor = "DeathKnight", "DeathKnightNormal"
+	ReplaceActor = "AngelofDeath", "AngelofDeathNormal"
+	ReplaceActor = "TheAxe", "TheAxeNormal"
+	ReplaceActor = "ProfessorQuarkblitz", "ProfessorQuarkblitzNormal"
+	ReplaceActor = "RobotDroid", "RobotDroidNormal"
+	ReplaceActor = "DevilIncarnate", "DevilIncarnateNormal"
+}
+
+skill normal
+{
+	SpawnFilter = "Normal"
+	Name = "$SK_3"
+	TextColor = "WolfMenuGrey"
+	Key = "B"
+	defaultskill
+	ReplaceActor = "HansGrosse", "HansGrosseMedium"
+	ReplaceActor = "Mutant", "MutantMedium"
+	ReplaceActor = "MMutant", "MMutantMedium"
+	ReplaceActor = "DrSchabbs", "DrSchabbsMedium"
+	ReplaceActor = "Hitler", "HitlerMedium"
+	ReplaceActor = "Hitler2", "Hitler2Medium"
+	ReplaceActor = "HitlerGhost", "HitlerGhostMedium"
+	ReplaceActor = "Giftmacher", "GiftMacherMedium"
+	ReplaceActor = "GretelGrosse", "GretelGrosseMedium"
+	ReplaceActor = "FatFace", "FatFaceMedium"
+	ReplaceActor = "TransGrosse", "TransGrosseMedium"
+	ReplaceActor = "UberMutant", "UberMutantMedium"
+	ReplaceActor = "BarnacleWilhelm", "BarnacleWilhelmMedium"
+	ReplaceActor = "DeathKnight", "DeathKnightMedium"
+	ReplaceActor = "AngelofDeath", "AngelofDeathMedium"
+	ReplaceActor = "TheAxe", "TheAxeMedium"
+	ReplaceActor = "ProfessorQuarkblitz", "ProfessorQuarkblitzMedium"
+	ReplaceActor = "RobotDroid", "RobotDroidMedium"
+	ReplaceActor = "DevilIncarnate", "DevilIncarnateMedium"
+}
+
+skill hard
+{
+	SpawnFilter = "Hard"
+	Name = "$SK_4"
+	TextColor = "WolfMenuGrey"
+	Key = "I"
+	ReplaceActor = "HansGrosse", "HansGrosseHard"
+	ReplaceActor = "Mutant", "MutantHard"
+	ReplaceActor = "MMutant", "MMutantHard"
+	ReplaceActor = "DrSchabbs", "DrSchabbsHard"
+	ReplaceActor = "Hitler", "HitlerHard"
+	ReplaceActor = "Hitler2", "Hitler2Hard"
+	ReplaceActor = "HitlerGhost", "HitlerGhostHard"
+	ReplaceActor = "Giftmacher", "GiftMacherHard"
+	ReplaceActor = "GretelGrosse", "GretelGrosseHard"
+	ReplaceActor = "FatFace", "FatFaceHard"
+	ReplaceActor = "TransGrosse", "TransGrosseHard"
+	ReplaceActor = "UberMutant", "UberMutantHard"
+	ReplaceActor = "BarnacleWilhelm", "BarnacleWilhelmHard"
+	ReplaceActor = "DeathKnight", "DeathKnightHard"
+	ReplaceActor = "AngelofDeath", "AngelofDeathHard"
+	ReplaceActor = "TheAxe", "TheAxeHard"
+	ReplaceActor = "ProfessorQuarkblitz", "ProfessorQuarkblitzHard"
+	ReplaceActor = "RobotDroid", "RobotDroidHard"
+	ReplaceActor = "DevilIncarnate", "DevilIncarnateHard"
+}
+
+Intermission Inter_Cast
+{
+	Image
+	{
+		// This is only here to initialize the background and the music
+		Background = "BLACK"
+		Time = -1
+		Music = "HITLWLTZ"
+	}
+	Link = WolfCast
+}
+
+Intermission WolfCast //In case someone uses it...
+{
+/*
+	Cast
+	{
+		CastClass = "Dog"
+		CastName = "$CC_DOG"
+		AttackSound = "Melee", 2, "dog/attack"
+	}
+	Cast
+	{
+		CastClass = "BrownNazi"
+		CastName = "$CC_BROWN"
+		AttackSound = "Missile", 3, "shots/single"
+	}
+	Cast
+	{
+		CastClass = "BlueNazi"
+		CastName = "$CC_BLUE"
+		AttackSound = "Missile", 3, "shots/burst"
+		AttackSound = "Missile", 5, "shots/burst"
+		AttackSound = "Missile", 7, "shots/burst"
+		AttackSound = "Missile", 9, "shots/burst"
+	}
+	Cast
+	{
+		CastClass = "HansGrosseEasy"
+		CastName = "$CC_HANS"
+		AttackSound = "Missile", 3, "boss/attack"
+		AttackSound = "Missile", 5, "boss/attack"
+		AttackSound = "Missile", 7, "boss/attack"
+	}
+	Cast
+	{
+		CastClass = "WhiteNazi"
+		CastName = "$CC_WHITE"
+		AttackSound = "Missile", 2, "shots/single"
+	}
+	Cast
+	{
+		CastClass = "MutantEasy"
+		CastName = "$CC_MUTANT"
+		AttackSound = "Missile", 1, "shots/single"
+		AttackSound = "Missile", 3, "shots/single"
+	}
+	Cast
+	{
+		CastClass = "DrSchabbsEasy"
+		CastName = "$CC_SCHABBS"
+		AttackSound = "Missile", 1, "syringe/throw"
+	}
+	Cast
+	{
+		CastClass = "HitlerEasy"
+		CastName = "$CC_HITLER"
+		AttackSound = "Missile", 3, "boss/attack"
+		AttackSound = "Missile", 5, "boss/attack"
+		AttackSound = "Missile", 7, "boss/attack"
+		AttackSound = "Missile", 9, "boss/attack"
+		AttackSound = "Missile", 11, "boss/attack"
+	}
+	Cast
+	{
+		CastClass = "Hitler2Easy"
+		CastName = "$CC_HITLER"
+		AttackSound = "Missile", 3, "boss/attack"
+		AttackSound = "Missile", 5, "boss/attack"
+		AttackSound = "Missile", 7, "boss/attack"
+		AttackSound = "Missile", 9, "boss/attack"
+		AttackSound = "Missile", 11, "boss/attack"
+	}
+	Cast
+	{
+		CastClass = "HitlerGhostEasy"
+		CastName = "$CC_HITLERGHOST"
+		AttackSound = "Missile", 2, "flame/fire"
+		AttackSound = "Missile", 4, "flame/fire"
+		AttackSound = "Missile", 6, "flame/fire"
+		AttackSound = "Missile", 8, "flame/fire"
+		AttackSound = "Missile", 10, "flame/fire"
+		AttackSound = "Missile", 12, "flame/fire"
+		AttackSound = "Missile", 14, "flame/fire"
+		AttackSound = "Missile", 16, "flame/fire"
+	}
+	Cast
+	{
+		CastClass = "GiftmacherEasy"
+		CastName = "$CC_GIFTMACHER"
+		AttackSound = "Missile", 2, "missile/fire"
+		AttackSound = "Missile", 5, "missile/fire"
+	}
+	Cast
+	{
+		CastClass = "GretelGrossEasy"
+		CastName = "$CC_GRETEL"
+		AttackSound = "Missile", 2, "shots/single"
+		AttackSound = "Missile", 3, "shots/single"
+		AttackSound = "Missile", 4, "shots/single"
+		AttackSound = "Missile", 5, "shots/single"
+		AttackSound = "Missile", 6, "shots/single"
+		AttackSound = "Missile", 7, "shots/single"
+	}
+	Cast
+	{
+		CastClass = "FatFaceEasy"
+		CastName = "$CC_FATFACE"
+		AttackSound = "Missile", 2, "missile/fire"
+		AttackSound = "Missile", 4, "boss/attack"
+		AttackSound = "Missile", 5, "boss/attack"
+	}
+*/
+	Cast
+	{
+		CastClass = "BJ"
+		CastName = "" //"$CC_BJ"
+	}
+}
+
+Automap
+{
+	Base = "Raven"
+	ShowLocks = True
+
+	Background = "00 49 49"
+	YourColor = "EE EE EE"
+	WallColor = "00 66 66"
+	TwoSidedWallColor = "66 66 66"
+	FloorDiffWallColor = "66 66 66"
+	CeilingDiffWallColor = "66 66 66"
+	ExtraFloorWallColor = "66 66 66"
+	ThingColor = "88 88 88"			//Decorations
+	ThingColor_Item = "20 9C FC"		//Weapons and Ammo
+	ThingColor_CountItem = "FC F4 20"	//Treasure (usually)
+	ThingColor_Monster = "FC 00 00"
+	ThingColor_Friend = "00 FC 00"
+	SpecialWallColor = "00 77 77"
+	SecretWallColor = "00 AA AA"
+	GridColor = "00 88 88"
+	NotSeenColor = "00 50 50"
+	AlmostBackgroundColor = "00 50 50"
+}

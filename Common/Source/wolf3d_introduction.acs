@@ -1,0 +1,245 @@
+////////////////////////////////////////////////////////////////////////////////
+// Wolf3D TC - Introduction Scripts
+////////////////////////////////////////////////////////////////////////////////
+// 
+// This file contains the following scripts:
+//
+//   W_GetPsyched	Display the 'Get Psyched!' message
+//			Determines level number
+//   W_TitleMapEnter	Sets up TitleMap, begins animations 
+//   W_TitleMapOpen	Handles timing of the TitleMap slideshow
+//   W_TitleMapNext	Moves through the TitleMap slideshow
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//Get Psyched
+Script "W_GetPsyched" (int Player) //509
+{
+	Level = GetLevelInfo(LEVELINFO_LEVELNUM);
+
+	If (GAME_SOD && Level > 100)
+	{
+		Level = Level % 100;
+		If (Level == 21)
+		{
+			Level = 18;
+			intermission = false;
+			ACS_NamedTerminate("W_GetPsyched", 0);
+		}
+	}
+	Else If (Level > 0)
+	{
+		Level = Level % 10;
+		If (Level == 0) Level = 10;
+	}
+	Else //Not in MAPINFO
+		GiveInventory("Generic_Map_Marker", 1);
+
+	If (GetCvar("g_nointro") == 0)
+	{
+		SetHudSize (320, 200, 1);
+		SetFont("WSMASK");
+		HudMessage (s:"A"; HUDMSG_LAYER_OVERHUD, 349, -1, 160.0, 100.0, 0);
+
+		delay(10);
+
+		SetHudSize(320, 200, 1);
+		Setfont("STATBKG");
+		HudMessage (s:"A"; HUDMSG_LAYER_UNDERHUD, 400, -1, 0.1, 0.1, 0);
+		SetHudSize (320, 232, 1);
+		Setfont("PSYCH");
+		HudMessage (s:"A"; 0, 300, -1, 0.1, 100.0, 0);
+		Setfont("PSYCHBAR");
+		HudMessage (s:"A"; 0, 299, -1, 55.0, 121.0, 0);
+
+		delay(10);
+
+		for (int k = 0; k < 210; k = k + 4)
+		{
+			Setfont("PSYCHBAR");
+			HudMessage (s:"A"; 0, 299 - k, -1, (55+k)*1.0, 121.0, 0);
+			if (!(k % 6))
+				delay (1);
+		}
+
+		delay(10);
+
+		SetHudSize(320, 200, 1);
+		SetFont("BLACK");
+		HudMessage (s:"a"; 3, 0, -1, 160.0, 100.0, 0.1, 0.5, 0.5);
+		Setfont("WSMASK");
+		HudMessage (s:"a"; 3, 1, -1, 160.0, 100.0, 0.1, 0.5, 0.5);
+
+		delay(20);
+
+		HudMessage (s:""; 0, 349, -1, 0.0, 121.0, 0);
+		for (k = 0; k < 210; k = k + 4)
+			HudMessage (s:""; 0, 299 - k, -1, 0.0, 121.0, 0);
+		HudMessage (s:""; 0, 300, -1, 0.0, 121.0, 0);
+		HudMessage (s:""; 0, 400, -1, 0.0, 121.0, 0);
+
+		intermission = false;
+	}
+	else
+		intermission = false;
+}
+
+//TITLEMAP Scripts
+int titlepagecount = 0, maxtitlepage = 6;
+int titlepages[6] = {"STARTUP", "STARTUP2", "ADVISOR", "TITLEPIC", "CREDIT", "SCORES"};
+int speartitlepages[6] = {"SSTART", "SSTART2", "ADVISOR", "STITLEPI", "SCREDIT", "SSCORES"};
+
+int consolidatedtitlepages[7] = {"STARTB", "STARTUP3", "ADVISOR", "TITLEPIC", "STITLEPI", "SCREDIT", "SSCORES"};
+
+int pressed=0, delaytime=0, starttime=0, loopcount=0;
+
+int GAME_ALL = false;
+
+//Initial setup and first graphic
+script "W_TitleMapEnter" (void) //500
+{
+	If (GetLevelInfo(LEVELINFO_LEVELNUM) == 998)
+		GAME_SOD = true;
+	Else If (GetLevelInfo(LEVELINFO_LEVELNUM) == 999)
+	{
+		GAME_ALL = true;
+		GAME_SOD = false;
+		maxtitlepage = 7;
+	}
+
+	//Load High Scores from CVars
+	PopulateHighScores();
+
+	SetPlayerProperty (0, 1, 4);
+	SetWeapon("Fist");
+	SetHudSize(320, 200, 1);
+	Setfont("WSMASK");
+	HudMessage (s:"A"; 0, 349, -1, 160.0, 100.0, 0);
+
+	SetFont("WolfFntS");
+	If (GetScreenHeight() >= 400)
+	{
+		SetHudSize(960, 400, 1);
+		HudMessage (s:"Total Conversion v", f:GetCVar("g_version"), s:"\nhttp://www.afadoomer.com/wolf3d"; HUDMSG_COLORSTRING | HUDMSG_ALPHA, 350, "TrueBlack", 3.1, 378.1, 0, 0.5);
+	}
+	Else
+	{
+		SetHudSize(480, 200, 1);
+		HudMessage (s:"Total Conversion v", f:GetCVar("g_version"); HUDMSG_COLORSTRING | HUDMSG_ALPHA, 350, "TrueBlack", 3.1, 189.1, 0, 0.5);
+	}
+
+	If (GAME_SOD)
+		SetFont(speartitlepages[titlepagecount]);
+	Else If (GAME_ALL)
+		SetFont(consolidatedtitlepages[titlepagecount]);
+	Else
+		SetFont(titlepages[titlepagecount]);
+
+	SetHudSize(320, 200, 1);
+	HudMessage (s:"A"; 0, 999, 0, 0.1, 0.1, 0);
+	titlepagecount++;
+	delay(35);
+
+	If (GAME_SOD)
+		SetFont(speartitlepages[titlepagecount]);
+	Else If (GAME_ALL)
+		SetFont(consolidatedtitlepages[titlepagecount]);
+	Else
+		SetFont(titlepages[titlepagecount]);
+
+	HudMessage (s:"A"; 0, 998, 0, 0.1, 0.1, 0);
+	SetFont("WOLFFNTS");
+	SetPlayerProperty (0, 0, 4);
+	if (!GAME_SOD && !GAME_ALL)
+		HudMessage (l:"PRESS"; HUDMSG_COLORSTRING, 997, "WolfStartupYellow", 160.0, 189.1, 0);
+	delay(25);
+	ACS_NamedExecute("W_TitleMapNext", 0);
+}
+
+//Times slide changes
+script "W_TitleMapOpen" (void) //501
+{
+	SetMusic("", 0);
+	While (True)
+	{
+		delaytime = (timer()-starttime)/35;
+		if ((titlepagecount==2 && delaytime==7) || 
+		(titlepagecount==3 && delaytime==15) || 
+		(titlepagecount > 3 && delaytime==10))
+		{
+			ACS_NamedExecute("W_TitleMapNext", 0);
+		}
+		delay(35);
+	}
+}
+
+//Draws slides
+script "W_TitleMapNext" (void) //Next //255
+{
+	SetHudSize(320, 200, 1);
+
+	HudMessage (s:""; 0, 350, 0, 0, 0, 0);
+
+	if (!pressed && !GAME_SOD && !GAME_ALL)
+	{
+		SetFont("WOLFFNTS");
+		HudMessage (s:"Working..."; HUDMSG_COLORSTRING, 997, "WolfStartupGreen", 160.0, 189.1, 0);
+		delay(5);
+	}
+
+	SetFont("BLACK");
+	HudMessage (s:"a"; 3, 0, -1, 160.0, 100.0, 0.33, 0.5, 0.5);
+
+	delay(20);
+
+	titlepagecount++;
+	if (titlepagecount == maxtitlepage)
+	{
+		loopcount++;
+		titlepagecount = 3;
+	}
+
+	if (titlepagecount == 2)
+	{
+		if (GAME_SOD)
+			SetMusic("XTOWER2", 0, 0);
+		else
+			SetMusic("NAZI_NOR", 0, 0);
+	}
+
+	Teleport_NoFog (1, 1, 1);
+
+	If (GAME_SOD)
+		SetFont("WOLFFNTL");
+	Else
+		SetFont("WOLFFNTS");
+
+	if (loopcount >= 5)
+		HudMessage (s:"Press Escape and Play, already..."; 0, 997, 10, 160.0, 2.1, 0);
+
+	If ((GAME_ALL && titlepagecount == 6) || (!GAME_ALL && titlepagecount == 5))
+		DrawHighScores();
+	Else
+	{
+		For (int c = 0; c <= 25; c++)
+			HudMessage (s:""; 0, c, 0, 0, 0, 0);
+	}
+
+	if (GAME_SOD)
+		SetFont(speartitlepages[titlepagecount]);
+	Else If (GAME_ALL)
+		SetFont(consolidatedtitlepages[titlepagecount]);
+	Else
+		SetFont(titlepages[titlepagecount]);
+
+	if (!pressed)
+	{
+		HudMessage (s:""; 0, 998, 0, 0.1, 0.1, 0);
+		HudMessage (s:""; 0, 997, 0, 0.1, 0.1, 0);
+		pressed = 1;
+	}
+
+	HudMessage (s:"A"; 0, 998, 0, 0.1, 0.1, 0);
+
+	starttime = timer();
+}

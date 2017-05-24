@@ -1,0 +1,575 @@
+////////////////////////////////////////////////////////////////////////////////
+// Wolf3D TC - Gameplay Scripts
+////////////////////////////////////////////////////////////////////////////////
+// 
+// This file contains the following scripts:
+//
+//   W_PickupAmmoBelt	Dev Garbage - Wolf Ammo Belt replacement for Backpack
+//   W_AddPoints	Add amount 's' to activating player score
+//   W_PlayerDeath	Handles actions for player death
+//   W_PlayerLoop	Main game loop
+//   W_PlayerRespawn	Handles actions for Player respawn
+//   W_PlayerSetup	Handles initial setup on game/level load or respawn
+//   W_DoSecretDoor	PolyObject secret doors
+//   W_DoPushObject	Old model-based secret door code
+//   W_DoSlidingDoor	PolyObject Sliding Doors
+//   W_LevelSetup	Handles initial setup on level load
+//   W_SetCeilingColor	Sets ceiling color to index, or uses level number/game to set color if none provided
+//   W_StorePosition	Store player coordinates in arrays; used for SoD map 18 to 21 transition
+//
+////////////////////////////////////////////////////////////////////////////////
+
+str Ceilings[21] = {"98", "1d", "2d", "2e", "4d", "4e", "4f", "6f", "7d", "7f", "8d", "9d", "9e", "ae", "bf", "d7", "dc", "dd", "de", "df", "e1"};
+str WolfCeilings[60] = {"1d", "1d", "1d", "1d", "1d", "1d", "1d", "1d", "1d", "bf", "4e", "4e", "4e", "1d", "8d", "4e", "1d", "2d", "1d", "8d", "1d", "1d", "1d", "1d", "1d", "2d", "dd", "1d", "1d", "98", "1d", "9d", "2d", "dd", "dd", "9d", "2d", "4d", "1d", "dd", "7d", "1d", "2d", "2d", "dd", "d7", "1d", "1d", "1d", "2d", "1d", "1d", "1d", "1d", "dd", "dd", "7d", "dd", "dd", "dd"};
+str SoDCeilings[21] = {"6f", "4f", "1d", "de", "df", "2e", "7f", "9e", "ae", "7f", "1d", "de", "df", "de", "df", "de", "e1", "dc", "2e", "1d", "dc"};
+
+int	polyinfo[255];
+int	PushWalls[255];
+int	intPushWallMoveDist = 128.0;
+
+Script "W_PickupAmmoBelt" (int Amount) //903
+{
+	int Capacity = 99;
+
+	If (Amount)
+	{
+		If (GetAmmoCapacity("WolfClip") >= 199 || Amount == 2)
+			Capacity = 299;
+		Else
+			Capacity = 199;
+	}
+
+	SetAmmoCapacity("WolfClip", Capacity);
+
+	If (Amount)
+		GiveInventory("BackpackItem", 1);
+}
+
+//Add to score.  
+Script "W_AddPoints" (int s) //700
+{
+	SetActorProperty(0, APROP_Score, GetActorProperty(0, APROP_Score) + s);
+}
+
+Script "W_PlayerDeath" DEATH //501
+{
+	If (PlayerCount() == 1)
+		SetMusic("");
+	ActivatorSound("bj/death",127);
+	If (!(GameType() == GAME_NET_DEATHMATCH) && !GetCvar("g_debugdeath"))
+		FadeTo(255, 0, 0, 1.0, 1.0);
+	TakeInventory("Life", 1);
+	LifeCount[PlayerNumber()]--;
+
+	If ((LifeCount[PlayerNumber()] == 0) && (PlayerCount() == 1))
+	{
+		If (CheckHighScore())
+		{
+			SortHighScores();
+			WriteHighScores();
+		}
+	}
+
+	Died[PlayerNumber()] = 1;
+}
+
+Script "W_PlayerLoop" ENTER //503
+{
+	If (!intermission && !Goobers)
+	{
+		If (CheckCheatsEnabled())
+		{
+			Delay(1);
+			While(!KeyPressed()) Delay(1);
+			ClearMessage(True);
+		}
+	}
+
+	CheckShowTimer();
+	CheckDebugMode();
+
+	CheckIdleFace();
+	CheckChaingunFace();
+	CheckStrengthFace();
+	CheckWolfWeapons();
+
+	If (deathcam)
+		ACS_NamedExecute("W_DoDeathCam", 0);
+
+	If (checkhighscores)
+	{
+		checkhighscores = 0;
+		If (PlayerCount() == 1 && CheckHighScore())
+		{
+			SortHighScores();
+			WriteHighScores();
+		}
+	}
+
+	DoScoreCount();
+
+	DoWolfMovement();
+
+	Delay(1);
+	Restart;
+}
+
+Script "W_PlayerRespawn" RESPAWN //502
+{
+	CancelFade();
+	FadeToBlack(1.0, 0.0, 0.5, 0);
+	If ((LifeCount[PlayerNumber()] <= 0) && (!(GameType() == GAME_NET_DEATHMATCH)))
+	{
+		Freeze(1);
+		ACS_NamedExecute("W_DoHighScores", 0);
+		SetActorState(ActivatorTID(), "Death");
+		NamedScriptWait("W_DoHighScores");
+		ClearInventory();
+		While (1)
+		{
+			Thing_Stop(0);
+			delay(1);
+		}
+	}
+	Else
+	{
+		If (PlayerCount() == 1)
+		{
+//			str MapName;
+
+			SetMusic("*");
+
+/*
+			If (GAME_SOD)
+				MapName = StrParam(s:"SOD", d:GetLevelInfo(LEVELINFO_LEVELNUM) - 100);
+			Else If (GAME_LOST)
+				MapName = StrParam(s:"SD", d:GetLevelInfo(LEVELINFO_LEVELNUM));
+			Else If (!CheckInventory("Generic_Map_Marker"))
+			{
+				If (GetLevelInfo(LEVELINFO_LEVELNUM) % 10 > 0)
+					MapName = StrParam(s:"E", d:GetLevelInfo(LEVELINFO_LEVELNUM) / 10 + 1, s:"L", d:GetLevelInfo(LEVELINFO_LEVELNUM) % 10);
+				Else
+					MapName = StrParam(s:"E", d:GetLevelInfo(LEVELINFO_LEVELNUM) / 10, s:"L", d:GetLevelInfo(LEVELINFO_LEVELNUM) % 10);
+			}
+			Else
+			{
+*/
+				Teleport_NewMap(GetLevelInfo(LEVELINFO_LEVELNUM), 0, 0);
+/*
+			}
+
+			ChangeLevel (MapName, 0, CHANGELEVEL_NOINTERMISSION|CHANGELEVEL_RESETHEALTH|CHANGELEVEL_RESETINVENTORY, -1);
+*/
+		}
+		Else
+		{
+			ClearInventory();
+			GiveInventory("Life", LifeCount[PlayerNumber()] - 1);
+			If (GameType() == GAME_NET_DEATHMATCH)
+			{
+				GiveInventory("YellowKey", 1);
+				GiveInventory("BlueKey", 1);
+			}
+			ResetWeapons();
+			SetActorProperty(0, APROP_Score, Old_Score[PlayerNumber()]);
+			Died[PlayerNumber()] = 0;
+			Thing_ChangeTID(0, 1001+PlayerNumber());
+		}
+	}
+}	
+
+Script "W_PlayerSetup" ENTER //500
+{
+	Thing_ChangeTID(0, 1001+PlayerNumber());
+
+	If (GetLevelInfo(LEVELINFO_LEVELNUM) > 100)
+	{
+		GiveInventory("SoD_Game_Marker", 1);
+		GAME_SOD = true;
+	}
+
+	If (GetLevelInfo(LEVELINFO_LEVELNUM) > 200)
+	{
+		GiveInventory("Lost_Game_Marker", 1);
+		GAME_LOST = true;
+	}
+
+	TITLEMAP = (GameType() == GAME_TITLE_MAP);
+
+	If (GAME_SOD && GetLevelInfo(LEVELINFO_LEVELNUM) % 100 == 21)
+	{
+		If ((PositionX[PlayerNumber()] != 0) || (PositionY[PlayerNumber()] != 0 ))
+			SetActorPosition(1001 + PlayerNumber(), PositionX[PlayerNumber()], PositionY[PlayerNumber()], 0, 0);
+	}
+
+	ACS_NamedExecute("W_LevelSetup", 0);
+
+	If (LifeCount[PlayerNumber()] == 0)
+	{
+	//If New Game...
+		ClearInventory();
+		ResetWeapons();
+		LifeCount[PlayerNumber()] = 4;
+		GiveInventory("Life", 3);
+		SetActorProperty(0, APROP_Score, 0);
+		Old_Score[PlayerNumber()] = 0;
+		LifeThreshold[PlayerNumber()]=0;
+		If (GameType() == GAME_NET_DEATHMATCH)
+		{
+			GiveInventory("YellowKey", 1);
+			GiveInventory("BlueKey", 1);
+		}
+		If (PlayerIsBot(PlayerNumber()))
+			GiveInventory("BotPlayer", 1);
+	}
+	Else If (Died[PlayerNumber()] == 1)
+	{
+	//If Just Died...
+		ClearInventory();
+		ResetWeapons();
+//		TakeInventory("Life", 10);
+		GiveInventory("Life", LifeCount[PlayerNumber()] - 1);
+		SetActorProperty(0, APROP_Score, Old_Score[PlayerNumber()]);
+		Died[PlayerNumber()] = 0;
+	}
+	Else
+	{
+	//If just entering new level...
+		Old_Score[PlayerNumber()] = GetActorProperty(0, APROP_Score);
+	}
+
+	If ((GetLevelInfo(LEVELINFO_LEVELNUM) % 100 == 21) && GAME_SOD)
+		GiveInventory("YellowKey", 1);
+
+	If (!(GameType() == GAME_NET_DEATHMATCH) && !TITLEMAP && PlayerCount()==1)
+	{
+		intermission = 1;
+		Freeze(1);
+		ACS_NamedExecute("Freeze", 0, True);
+		If (!(GAME_SOD && GetLevelInfo(LEVELINFO_LEVELNUM) % 100 == 21))
+			FadeToBlack (0.33, 0.0, 0.5, 0);
+		ACS_NamedExecuteWait("W_GetPsyched", 0, PlayerNumber());
+	}
+	Freeze(0);
+	ACS_NamedExecute("Freeze", 0, False);
+
+	If (GetCvar ("cl_noinstantswitch"))
+		SetPlayerProperty(0, 0, PROP_INSTANTWEAPONSWITCH);
+	Else
+		SetPlayerProperty(0, 1, PROP_INSTANTWEAPONSWITCH);
+}
+
+//Secret Doors
+Script "W_DoSecretDoor" (int po, int Angle)
+{
+	int intSpawnDist = 64.0;
+	int intMaxMove = GetCvar("g_maxpushwallmove");
+
+	If (intMaxMove == 0)
+	{
+		intMaxMove = 2;
+	}
+
+	If (!PushWalls[po] || (GetCvar("g_infinitepushwalls") == 1))
+	{
+		int PolyX = GetPolyObjX(po) + 24.0;
+		int PolyY = GetPolyObjY(po);
+
+		int originX, originY, destX, destY, moveX, moveY, intMoveDist;
+
+		moveX = 0;
+		moveY = 0;
+
+		Switch (Angle)
+		{
+			Case 0:
+				moveX = 1;
+			break;
+			Case 64:
+				moveY = 1;
+			break;
+			Case 128:
+				moveX = -1;
+			break;
+			Case 192:
+				moveY = -1;
+			break;
+		}
+
+		originX = PolyX + (32.0 * moveX);
+		originY = PolyY + (32.0 * moveY); 
+
+		Spawn("Secret_Check", originX, originY, 0, 1900 + po, 0);
+
+		For (int i=1; i<=intMaxMove; i=i+1)
+		{
+			destX = originX + (moveX * 64.0 * i) - (32.0 * moveX);
+			destY = originY + (moveY * 64.0 * i) - (32.0 * moveY);
+
+			If (Spawn("Secret_Block", destX, destY, 0, 2000 + po, 0)) //Check if no object is in the way
+			{
+				If(CheckSight (2000 + po, 1900 + po, CSF_NOBLOCKALL)) //Check if destination is inside map
+					intMoveDist += 64.0;
+				Thing_Remove(2000 + po);
+			}
+		}
+		Thing_Remove(1900 + po);
+
+		If (intMoveDist > 0)
+		{
+			PushWalls[po] = 1;
+
+			PolyObj_Move(po, 8, Angle, intMoveDist/1.0);
+
+			If (GAME_LOST)
+				AmbientSound("door/secret2",127);
+			Else
+				AmbientSound("door/secret",127);
+
+			PolyX = GetPolyObjX(po) + 24.0;
+			PolyY = GetPolyObjY(po);
+
+			If (SecretMarkers[WolfCoord(PolyX + (intMoveDist * moveX)) * 64 + WolfCoord(PolyY + (intMoveDist * moveY))] != 0)
+				PushWalls[po] = 0;
+		}
+
+		Thing_Remove(2000+po);
+	}
+}
+
+Script "W_DoPushObject" (int intDistance)
+{
+	bool bPlaySound = true;
+
+	If (!intDistance)
+		intDistance = intPushwallMoveDist;
+	Else
+	{
+		bPlaySound = false;
+		intDistance = intDistance * 1.0;
+	}
+
+	int tid = 2100 + PlayerNumber();
+
+	Thing_ChangeTID(0, tid);
+
+	int WallX = GetActorX(0);
+	int WallY = GetActorY(0);
+
+	SetActivator(tid, AAPTR_TARGET);
+
+	int PusherX = GetActorX(0);
+	int PusherY = GetActorY(0);
+
+	SetActivator(tid, AAPTR_DEFAULT);
+
+	int destx = WallX;
+	int desty = WallY;
+	int dir = 0;
+
+	If (PusherX <= (WallX - 32.0))
+	{
+		If ((PusherY <= WallY + 32.0) && (PusherY >= WallY - 32.0))
+		{
+			destx = WallX + intDistance;
+			dir = 1;
+		}
+	}
+	Else If	(PusherY <= (WallY - 32.0))
+	{
+		If ((PusherX <= WallX + 32.0) && (PusherX >= WallX - 32.0))
+		{
+			desty = WallY + intDistance;
+			dir = 1;
+		}
+	}
+	Else If	(PusherX >= (WallX + 32.0))
+	{
+		If ((PusherY <= WallY + 32.0) && (PusherY >= WallY - 32.0))
+		{
+			destx = WallX + intDistance;
+			dir = -1;
+		}
+	}
+	Else If	(PusherY >= (WallY + 32.0))
+	{
+		If ((PusherX <= WallX + 32.0) && (PusherX >= WallX - 32.0))
+		{
+			desty = WallY + intDistance;
+			dir = -1;
+		}
+	}
+
+	If (dir != 0)
+	{
+		If (bPlaySound)
+			AmbientSound("door/secret",127);
+
+		for (int my=WallY; my<=desty; my=my+1.0)
+		{
+			for (int mx=WallX; mx<=destx; mx=mx+1.0)
+			{
+				int ty, tx;
+				If (dir == 1)
+				{
+					ty = my;
+					tx = mx;
+				}
+				Else
+				{
+					ty = WallY + (WallY - my);
+					tx = WallX + (WallX - mx);
+				}
+				Spawn("MapSpot",tx,ty,0,1900+tid,0);
+				delay(1);
+				Thing_Move(tid, 1900+tid, 1);
+				Thing_Remove(1900+tid);
+				If (GetActorX(tid) != tx || GetActorY(tid) != ty)
+				{
+					my = desty;
+					mx = destx;
+				}
+			}
+		}
+	}
+	Thing_ChangeTID(0, 0);
+}
+
+//Polyobject Doors
+Script "W_DoSlidingDoor" (int po, int dir, int lock)
+{
+	int index = po - 1;
+	int dirStart, dirEnd, bAccess = 0;
+
+	if(dir == 1)
+	{
+		dirStart = 192;
+		dirEnd = 64;
+	}
+	else if(dir == 2)
+	{
+		dirStart = 0;
+		dirEnd = 128;
+	}
+
+	if(lock == 1)
+	{
+		If (CheckInventory("BlueKey") || CheckInventory("BlueKeyLost"))
+			bAccess = 1;
+		Else
+		{
+			if(GetCvar("show_messages"))
+				log(l:"LOCKSILVER");
+		}
+	}
+	else if(lock == 2)
+	{
+		If (CheckInventory("YellowKey") || Checkinventory("YellowKeyLost"))
+			bAccess = 1;
+		Else
+		{
+			if(GetCvar("show_messages"))
+				log(l:"LOCKGOLD");
+			bAccess = 0;
+		}
+	}
+	else if (lock == 5)
+	{
+		If (ActivatorTID() > 1000)
+		{
+			If (PlayerIsBot(PlayerNumber()) && (GameType() == GAME_NET_DEATHMATCH)) //Bots can't open walkover doors in co-op (keeps them from cheating on locked doors)
+				bAccess = 1;
+			Else
+				bAccess = 0;
+		}
+		Else
+			bAccess = 1;
+	}
+	else
+		bAccess = 1;
+
+	if (bAccess == 1)
+	{
+		if (polyinfo[index] == 0)
+		{
+			If (lock==5 && !ActivatorTID()) Thing_Deactivate(0);
+			polyinfo[index] = 1;
+
+			If (GAME_LOST)
+				activatorsound("door/open2",127);
+			Else
+				activatorsound("door/open",127);
+
+			Polyobj_OR_Move(po,16,dirStart,64);
+			delay(30);
+			If (lock==5 && !ActivatorTID()) Thing_Activate(0);
+			delay(120);
+			if (polyinfo[index] == 1)
+			{
+				If (GAME_LOST)
+					activatorsound("door/close2",127);
+				Else
+					activatorsound("door/close",127);
+
+				Polyobj_OR_Move(po,16,dirEnd,64);
+				polyinfo[index] = 0;
+			}
+		}
+		else if (polyinfo[index] == 1 && lock != 5)
+		{
+			If (GAME_LOST)
+				activatorsound("door/close2",127);
+			Else
+				activatorsound("door/close",127);
+
+			Polyobj_OR_Move(po,16,dirEnd,64);
+			polyinfo[index] = 0;
+		}
+	}
+}
+
+Script "W_LevelSetup" (void) //504
+{
+	if (GAME_SOD)
+		stats[8] = GetLevelInfo(LEVELINFO_LEVELNUM);
+	else
+		stats[8] = GetLevelInfo(LEVELINFO_LEVELNUM)%10; //Current Level
+
+	if (!GetCvar("g_defaultceilings"))
+	{
+		ACS_NamedExecute("W_SetCeilingColor", 0, 0);
+	}
+}
+
+//Ceiling Colors
+Script "W_SetCeilingColor" (int index) //505
+{
+	If (!CheckInventory("Generic_Map_Marker"))
+	{
+		str Color = "CEILING";
+
+		If (!index)
+		{
+			index = GetLevelInfo(LEVELINFO_LEVELNUM) % 100 - 1;
+			If (GAME_SOD)
+				Color = SoDCeilings[index];
+			Else
+				Color = WolfCeilings[index];
+		}
+		Else
+			Color = Ceilings[index - 1];
+
+		ChangeCeiling(0, Color);
+
+		If (GetCVar("g_highlightsecrets") && (GetCvar ("sv_cheats") || !GetCvar ("deathmatch")))
+			Color = "HIGHLITE";
+
+		ChangeCeiling(800, Color);
+	}
+}
+
+Script "W_StorePosition" (int actorposx, int actorposy, int playernum) //12
+{
+	PositionX[playernum] = actorposx;
+	PositionY[playernum] = actorposy;
+}

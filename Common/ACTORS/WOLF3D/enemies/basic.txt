@@ -1,0 +1,452 @@
+//Episode 1
+
+ACTOR Dog : WolfDogTemplate 20201
+{
+	SeeSound "dog/sight"
+	AttackSound "dog/attack"
+	DeathSound "dog/death"
+	Obituary "$DTH_DOG"
+	States
+	{
+	Spawn:
+		WDOG A 0
+		Goto Spawn.Patrol
+	}
+}
+
+ACTOR Doberman : WolfDogTemplate 22201
+{
+	SeeSound "doberman/sight"
+	AttackSound "doberman/attack"
+	DeathSound "doberman/death"
+	Obituary "$DTH_DOBERMAN"
+	States
+	{
+	Spawn:
+		WDOB A 0
+		"####" A 0 A_SetUserVar("user_lost", 1)
+		Goto Spawn.Patrol
+	}
+}
+
+ACTOR BrownNazi : WolfSoldierTemplate 20002
+{
+	SeeSound "brown/sight"
+	DeathSound "brown/death"
+	Obituary "$DTH_BROWN"
+	States
+	{
+	Spawn:
+		WBRN A 0
+		Goto Spawn.Stand
+	}
+}
+
+ACTOR GreenNazi : WolfSoldierTemplate 22002
+{
+	SeeSound "green/sight"
+	DeathSound "green/death"
+	Obituary "$DTH_GREEN"
+	States
+	{
+	Spawn:
+		WGRN A 0
+		"####" A 0 A_SetUserVar("user_lost", 1)
+		Goto Spawn.Stand
+/*
+	Death:
+		"####" A 0 ACS_NamedExecuteAlways ("A_Drop", 0, 5)
+		Goto Super::Death+1
+*/
+	}
+}
+
+ACTOR MBrownNazi : BrownNazi 20202
+{
+	+JUSTHIT
+	States
+	{
+	Spawn:
+		WBRN A 0
+		Goto Spawn.Patrol
+	}
+}
+
+ACTOR MGreenNazi : GreenNazi 22202
+{
+	+JUSTHIT
+	States
+	{
+	Spawn:
+		WGRN A 0
+		"####" A 0 A_SetUserVar("user_lost", 1)
+		Goto Spawn.Patrol
+	}
+}
+
+ACTOR BlueNazi : WolfSSTemplate 20003
+{
+	SeeSound "blue/sight"
+	DeathSound "blue/death"
+	Obituary "$DTH_BLUE"
+	States
+	{
+	Spawn:
+		WBLU A 0
+		Goto Spawn.Stand
+	}
+}
+
+ACTOR BlackNazi : WolfSSTemplate 22003
+{
+	SeeSound "black/sight"
+	DeathSound "black/death"
+	Obituary "$DTH_BLACK"
+	States
+	{
+	Spawn:
+		WBLA A 0
+		"####" A 0 A_SetUserVar("user_lost", 1)
+		Goto Spawn.Stand
+	Missile:
+		"####" GH 10 A_FaceTarget
+		"####" I 5 BRIGHT A_WolfAttack(0, "shots/burst2", 0.666, 64, 64, 2, 4, 160.0)
+		"####" H 5 A_FaceTarget
+		"####" I 5 BRIGHT A_WolfAttack(0, "shots/burst2", 0.666, 64, 64, 2, 4, 160.0)
+		"####" H 5 A_FaceTarget
+		"####" I 5 BRIGHT A_WolfAttack(0, "shots/burst2", 0.666, 64, 64, 2, 4, 160.0)
+		"####" H 5 A_FaceTarget
+		"####" I 5 BRIGHT A_WolfAttack(0, "shots/burst2", 0.666, 64, 64, 2, 4, 160.0)
+		Goto Chase
+/*
+	Death:
+		"####" A 0 ACS_NamedExecuteAlways ("A_Drop", 0, 3)
+		Goto Super::Death+1
+*/
+	}
+}
+
+ACTOR MBlueNazi : BlueNazi 20203
+{
+	+JUSTHIT
+	States
+	{
+	Spawn:
+		WBLU A 0
+		Goto Spawn.Patrol
+	}
+}
+
+ACTOR MBlackNazi : BlackNazi 22203
+{
+	+JUSTHIT
+	States
+	{
+	Spawn:
+		WBLA A 0
+		"####" A 0 A_SetUserVar("user_lost", 1)
+		Goto Spawn.Patrol
+	}
+}
+
+//Episode 2
+
+ACTOR WhiteNazi : WolfOfficerTemplate 20004
+{
+	SeeSound "white/sight"
+	AttackSound "shots/single"
+	DeathSound "white/death"
+	Obituary "$DTH_WHITE"
+	States
+	{
+	Spawn:
+		WWHT A 0
+		Goto Spawn.Stand
+	}
+}
+
+ACTOR WhiteNazi2 : WolfOfficerTemplate 22004
+{
+	SeeSound "white2/sight"
+	AttackSound "shots/single"
+	DeathSound "white2/death"
+	Obituary "$DTH_WHITE2"
+	States
+	{
+	Spawn:
+		WWH2 A 0
+		"####" A 0 A_SetUserVar("user_lost", 1)
+		Goto Spawn.Stand
+/*
+	Death:
+		"####" A 0 ACS_NamedExecuteAlways ("A_Drop", 0, 5)
+		Goto Super::Death+1
+*/
+	}
+}
+
+ACTOR MWhiteNazi : WhiteNazi 20204
+{
+	+JUSTHIT
+	States
+	{
+	Spawn:
+		WWHT A 0
+		Goto Spawn.Patrol
+	}
+}
+
+ACTOR MWhiteNazi2 : WhiteNazi2 22204
+{
+	+JUSTHIT
+	States
+	{
+	Spawn:
+		WWH2 A 0
+		"####" A 0 A_SetUserVar("user_lost", 1)
+		Goto Spawn.Patrol
+	}
+}
+
+ACTOR Mutant 20005
+{
+	-SOLID
+	+NOSECTOR
+	RenderStyle None
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 0, "EasySpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 1, "NormalSpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 2, "MediumSpawn") 
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 3, "HardSpawn")
+		Stop
+	EasySpawn:
+		TNT1 A 1 A_SpawnItemEx("MutantEasy")
+		Stop
+	NormalSpawn:
+		TNT1 A 1 A_SpawnItemEx("MutantNormal")
+		Stop
+	MediumSpawn:
+		TNT1 A 1 A_SpawnItemEx("MutantMedium")
+		Stop
+	HardSpawn:
+		TNT1 A 1 A_SpawnItemEx("MutantHard")
+		Stop
+	}
+}
+
+ACTOR LostBat 22005
+{
+	-SOLID
+	+NOSECTOR
+	RenderStyle None
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 0, "EasySpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 1, "NormalSpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 2, "MediumSpawn") 
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 3, "HardSpawn")
+		Stop
+	EasySpawn:
+		TNT1 A 1 A_SpawnItemEx("BatEasy")
+		Stop
+	NormalSpawn:
+		TNT1 A 1 A_SpawnItemEx("BatNormal")
+		Stop
+	MediumSpawn:
+		TNT1 A 1 A_SpawnItemEx("BatMedium")
+		Stop
+	HardSpawn:
+		TNT1 A 1 A_SpawnItemEx("BatHard")
+		Stop
+	}
+}
+
+Actor MutantEasy : WolfMutantTemplate
+{
+	SeeSound "mutant/sight"
+	DeathSound "mutant/death"
+	Obituary "$DTH_MUTANT"
+	BloodColor "FF 00 FF"
+	States
+	{
+	Spawn:
+		WMUT A 0
+		Goto Spawn.Stand
+	}
+}
+
+Actor BatEasy : WolfMutantTemplate
+{
+	+NOGRAVITY
+	+DROPOFF
+	+SPAWNFLOAT
+	+FLOAT
+	+CANPASS
+	SeeSound ""
+	DeathSound "gunbat/death"
+	Obituary "$DTH_BAT"
+	States
+	{
+	Spawn:
+		WBAT A 0
+		"####" A 0 A_SetUserVar("user_lost", 1)
+		Goto Spawn.Stand
+/*
+	Death:
+		"####" A 0 ACS_NamedExecuteAlways ("A_Drop", 0, 5)
+		Goto Super::Death+1
+*/
+	}
+}
+
+ACTOR MutantNormal : MutantEasy {Health 55}
+ACTOR MutantMedium : MutantEasy {Health 55}
+ACTOR MutantHard : MutantEasy {Health 65}
+
+ACTOR BatNormal : BatEasy {Health 55}
+ACTOR BatMedium : BatEasy {Health 55}
+ACTOR BatHard : BatEasy {Health 65}
+
+ACTOR MMutant 20205
+{
+	-SOLID
+	+NOSECTOR
+	RenderStyle None
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 0, "EasySpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 1, "NormalSpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 2, "MediumSpawn") 
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 3, "HardSpawn")
+		Stop
+	EasySpawn:
+		TNT1 A 1 A_SpawnItemEx("MMutantEasy")
+		Stop
+	NormalSpawn:
+		TNT1 A 1 A_SpawnItemEx("MMutantNormal")
+		Stop
+	MediumSpawn:
+		TNT1 A 1 A_SpawnItemEx("MMutantMedium")
+		Stop
+	HardSpawn:
+		TNT1 A 1 A_SpawnItemEx("MMutantHard")
+		Stop
+	}
+}
+
+ACTOR MBat 22205
+{
+	-SOLID
+	+NOSECTOR
+	RenderStyle None
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 0, "EasySpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 1, "NormalSpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 2, "MediumSpawn") 
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 3, "HardSpawn")
+		Stop
+	EasySpawn:
+		TNT1 A 1 A_SpawnItemEx("MBatEasy")
+		Stop
+	NormalSpawn:
+		TNT1 A 1 A_SpawnItemEx("MBatNormal")
+		Stop
+	MediumSpawn:
+		TNT1 A 1 A_SpawnItemEx("MBatMedium")
+		Stop
+	HardSpawn:
+		TNT1 A 1 A_SpawnItemEx("MBatHard")
+		Stop
+	}
+}
+
+ACTOR MMutantEasy : MutantEasy
+{
+	+JUSTHIT
+	States
+	{
+	Spawn:
+		WMUT A 0
+		Goto Spawn.Patrol
+	}
+}
+
+ACTOR MBatEasy : BatEasy
+{
+	+JUSTHIT
+	States
+	{
+	Spawn:
+		WBAT A 0
+		"####" A 0 A_SetUserVar("user_lost", 1)
+		Goto Spawn.Patrol
+	}
+}
+
+ACTOR MMutantMedium : MMutantEasy {Health 55}
+ACTOR MMutantNormal : MMutantEasy {Health 55}
+ACTOR MMutantHard : MMutantEasy {Health 65}
+
+ACTOR MBatMedium : MBatEasy {Health 55}
+ACTOR MBatNormal : MBatEasy {Health 55}
+ACTOR MBatHard : MBatEasy {Health 65}
+
+//Episode 3
+
+Actor HitlerGhost 20160 //20006
+{
+	-SOLID
+	+NOSECTOR
+	RenderStyle None
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 0, "EasySpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 1, "NormalSpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 2, "MediumSpawn") 
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 3, "HardSpawn")
+		Stop
+	EasySpawn:
+		TNT1 A 1 A_SpawnItemEx("HitlerGhostEasy")
+		Stop
+	NormalSpawn:
+		TNT1 A 1 A_SpawnItemEx("HitlerGhostNormal")
+		Stop
+	MediumSpawn:
+		TNT1 A 1 A_SpawnItemEx("HitlerGhostMedium")
+		Stop
+	HardSpawn:
+		TNT1 A 1 A_SpawnItemEx("HitlerGhostHard")
+		Stop
+	}
+}
+
+ACTOR HitlerGhostEasy : WolfHitlerGhostTemplate
+{
+	SeeSound "hgst/sight"
+	AttackSound ""
+	DeathSound "hgst/death"
+	Obituary "$DTH_HITLERGHOST"
+	BloodColor "00 00 00"
+	States
+	{
+	Spawn:
+		WHGT A 0
+		Goto Spawn.Stand
+	}
+}
+
+ACTOR HitlerGhostNormal : HitlerGhostEasy {Health 300}
+ACTOR HitlerGhostMedium : HitlerGhostEasy {Health 400}
+ACTOR HitlerGhostHard : HitlerGhostEasy {Health 500}

@@ -1,0 +1,12 @@
+//Enemies, projectiles used in Wolfenstein 3D
+
+// Items With Spawn Numbers follow the following rules:
+// 	1) Numbered in order of appearance (1-15)
+//	2) Still Actors are 200XX, where XX is 1-15
+//	3) Moving Actors are 202XX, where XX is 1-15
+//	4) Pac-Man Ghosts are a special case, as I forgot to add 200.
+
+#include "actors/wolf3d/enemies/templates.txt"
+#include "actors/wolf3d/enemies/bosses.txt"
+#include "actors/wolf3d/enemies/basic.txt"
+#include "actors/wolf3d/enemies/miscellaneous.txt"

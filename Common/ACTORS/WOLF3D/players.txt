@@ -1,0 +1,153 @@
+actor WolfPlayer : DoomPlayer
+{
+	var int user_mapmarker;
+	var int user_funnyticount;
+	var int user_HasChaingun;
+	var int user_HasShotgun;
+	var int user_HasStrength;
+
+	var int user_Goobers;
+	var int user_GodMode;
+
+	var int user_Weapon;
+
+	Health 100
+	Mass 10000
+	Height 56
+	DeathHeight 0
+	Player.MaxHealth 100
+	Player.DisplayName "BJ"
+	Player.ColorRange 0x60, 0x6F
+	Player.ColorSet 0, "Green",	0x60, 0x6F,  0x62
+	Player.ColorSet 1, "Gray",	0x10, 0x1F,  0x14
+	Player.ColorSet 2, "Brown",	0xD0, 0xDF,  0xD2
+	Player.ColorSet 3, "Red",	0x20, 0x2F,  0x22
+	Player.ColorSet 4, "Yellow",	0x40, 0x4F,  0x44
+	Player.ColorSet 5, "Tan",	0xC0, 0xCF,  0xCA
+	Player.ColorSet 6, "Purple",	0xB0, 0xBF,  0xB2
+	Player.ColorSet 7, "Teal",	0x70, 0x7F,  0x7A
+	Player.ViewHeight 32
+	Player.StartItem "WolfPistol"
+	Player.StartItem "WolfKnife"
+	Player.StartItem "WolfClip", 8
+	Player.StartItem "Life", 3
+	Player.StartItem "Active", 1
+	Player.WeaponSlot 1, WolfKnife, WolfKnifeLost
+	Player.WeaponSlot 2, WolfPistol, WolfPistolLost
+	Player.WeaponSlot 3, WolfMachinegun, WolfMachinegunLost
+	Player.WeaponSlot 4, WolfChaingun, WolfChaingunSoD, WolfChaingunLost, WolfDualChaingun
+	Player.WeaponSlot 5, WolfFlameThrower
+	Player.WeaponSlot 6, WolfRocketLauncher
+	Player.Face "WLF"
+	Player.ForwardMove 1.3, 1.3
+	Player.SideMove 1.3, 1.3
+	Player.DamageScreenColor "Red", 1.0
+	States
+	{
+		Spawn:
+			PLAY A 1
+			PLAY A 0 A_JumpIf (user_mapmarker > 0, "Stand")
+			PLAY A 0 ACS_NamedExecuteAlways ("SetMapMarker", 0, 0)
+			PLAY A 0 A_SetUserVar("user_mapmarker", 1)
+		Stand:
+			PLAY A 1
+			Loop
+		See:
+			PLAY ABCD 4 A_JumpIf (velx + vely == 0, "Stand")
+			Loop
+		Missile:
+			PLAY E 12 
+			Goto Stand
+		Melee:
+			PLAY F 6 BRIGHT
+			Goto Missile
+		Pain:
+			PLAY G 4 
+			PLAY G 4 A_Pain
+			Goto Stand
+		Death:
+		Death1:
+		XDeath:
+		XDeath1:
+			PLAY H 1 A_GiveToTarget("Points", 2500)
+			PLAY H 9 A_PlayerSkinCheck("AltSkinDeath")
+			PLAY I 10 A_PlayerScream
+			PLAY JKLM 10 A_NoBlocking
+			PLAY N 1 A_CheckPlayerDone
+			Wait
+		AltSkinDeath:
+		AltSkinXDeath:
+			PLAY H 1 A_GiveToTarget("Points", 2500)
+			PLAY H 5
+			PLAY I 6 A_PlayerScream
+			PLAY JKLMNO 6
+			PLAY P 1 A_CheckPlayerDone
+			Wait
+	}
+}
+
+Actor SoDPlayer : WolfPlayer
+{
+	Player.DisplayName "BJ (SoD)"
+	Player.StartItem "WolfPistol"
+	Player.StartItem "WolfKnife"
+	Player.StartItem "WolfClip", 8
+	Player.StartItem "Life", 3
+	Player.StartItem "Active", 1
+	Player.StartItem "SoD_Game_Marker"
+}
+
+Actor LostPlayer : WolfPlayer
+{
+	Player.DisplayName "BJ (Lost Episodes)"
+	Player.StartItem "WolfPistolLost"
+	Player.StartItem "WolfKnifeLost"
+	Player.StartItem "WolfClipLost", 8
+	Player.StartItem "Life", 3
+	Player.StartItem "Active", 1
+	Player.StartItem "SoD_Game_Marker"
+	Player.StartItem "Lost_Game_Marker"
+}
+
+Actor JagPlayer : WolfPlayer
+{
+	Player.DisplayName "BJ (Jaguar)"
+	Player.StartItem "WolfPistol"
+	Player.StartItem "WolfKnife"
+	Player.StartItem "WolfClip", 8
+	Player.StartItem "Life", 3
+	Player.StartItem "Active", 1
+	Player.StartItem "AtariJaguar", 1
+	Player.Face "JAG"
+}
+
+Actor BJDisguise : WolfPlayer
+{
+	Speed 1
+	+Pickup
+	+NoSkin
+	Player.DisplayName "Nazi"
+	Player.MorphWeapon "WolfMachineGun"
+	Player.Face "WSS"
+	Player.ForwardMove 0.4, 0.8
+	Player.SideMove 0.4, 0.8
+	States
+	{
+		Spawn:
+			WBLU E -1
+			Stop
+		See:
+			WBLU AAAAABBBBBBCCCCCDDDDDD 1 ACS_ExecuteAlways (604, 0, 3)
+			Loop
+		Missile:
+			WBLU G 4
+			Goto Spawn
+		Melee:
+			WBLU H 4 ACS_ExecuteAlways (604, 0, 2)
+			WBLU I 4 Bright ACS_ExecuteAlways (604, 0, 3) 
+			Goto Missile
+		Pain:
+			WBLU F 3 ACS_ExecuteAlways (604, 0, 0)
+			Goto See
+	}	
+}

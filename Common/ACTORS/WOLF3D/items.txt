@@ -1,0 +1,2579 @@
+//Decorations and Pickups in Wolfenstein 3D
+
+//BJ for 'running to escape' end sequences
+ACTOR BJVictory 20000
+{
+	States
+	{
+		Spawn:
+			TNT1 A 1
+			TNT1 A 1 ACS_NamedExecute("W_VictorySetup", 0, x, y, angle * 256 / 360)
+			Stop
+	}
+}
+
+ACTOR BJ
+{
+	MONSTER
+	- COUNTKILL
+	- SOLID
+	- SHOOTABLE
+	+FRIENDLY
+	+FULLVOLDEATH
+	+INVULNERABLE
+	+NOTARGET
+	+AMBUSH
+	Renderstyle None
+	Height 0
+	Radius 0
+	Speed 4
+	Health 5
+	DeathSound "bj/yell"
+	States
+	{
+	Spawn:
+	Melee:
+	Missile:
+		BJJU AAABBBCCCDDD 2 A_Look
+		Loop
+	See: 
+		BJJU ABCD 6 ThrustThing (angle * 256 / 360, 1, 0, 0)
+		BJJU ABCD 6 ThrustThing (angle * 256 / 360, 1, 0, 0)
+		BJJU ABCD 6 ThrustThing (angle * 256 / 360, 1, 0, 0)
+	Death:
+	Jump:
+		BJJU EF 7
+		BJJU G 7 A_Scream
+		BJJU H -1
+		Stop
+	}
+}
+
+ACTOR WolfDecoration
+{
+	+Solid		//Combining 'Solid' with a Height of 0 lets actors
+	Radius 32	// walk over these seamlessly if the actor has the
+	Height 0	// CANPASS flag...  Otherwise they are blocked.
+	States
+	{
+		Spawn:
+			TNT1 A 1
+			"####" A 0 ACS_NamedExecuteAlways ("SetMapMarker", 0, 1)
+			"####" A 0 A_Jump(256, "Static")
+		Static:
+			UNKN A -1
+			Stop
+	}
+}
+
+ACTOR WolfHealth : Health
+{
+	States
+	{
+		Spawn:
+			TNT1 A 1
+			"####" A 0 ACS_NamedExecuteAlways ("SetMapMarker", 0, 1)
+			"####" A 0 A_Jump(256, "Static")
+		Static:
+			TNT1 A -1
+			Stop
+	}
+}
+
+ACTOR WolfKey : Key
+{
+	States
+	{
+		Spawn:
+			TNT1 A 1
+			"####" A 0 ACS_NamedExecuteAlways ("SetMapMarker", 0, 1)
+			"####" A 0 A_Jump(256, "Static")
+		Static:
+			TNT1 A -1
+			Stop
+	}
+}
+
+ACTOR WolfCustomInventory : CustomInventory
+{
+	States
+	{
+		Spawn:
+			TNT1 A 1
+			"####" A 0 ACS_NamedExecuteAlways ("SetMapMarker", 0, 1)
+			"####" A 0 A_Jump(256, "Static")
+		Static:
+			TNT1 A -1
+			Stop
+	}
+}
+
+ACTOR WolfScoreItem : ScoreItem
+{
+	States
+	{
+		Spawn:
+			TNT1 A 1
+			"####" A 0 ACS_NamedExecuteAlways ("SetMapMarker", 0, 1)
+			"####" A 0 A_Jump(256, "Static")
+		Static:
+			TNT1 A -1
+			Stop
+	}
+}
+
+ACTOR PushableWolfDecoration : SwitchableDecoration
+{
+	Mass 10000
+	Radius 28
+	Height 64
+	+Solid
+	+UseSpecial
+	Activation THINGSPEC_Activate | THINGSPEC_Switch | THINGSPEC_ThingTargets | THINGSPEC_ThingActs
+	States
+	{
+	Spawn:
+		"####" A 1
+		Wait
+	Inactive:
+	Active:
+		"####" A 1 ACS_NamedExecuteAlways("W_DoPushObject", 0, 128)
+		Goto Spawn
+	}
+}
+
+// From Here on, entries retain original actor order, 
+// just converted Hex numbers to Decimal, added 21000
+
+ACTOR PoolofWater : WolfDecoration 21023
+{
+	-SOLID
+	States
+	{
+		Static:
+			POL1 A -1
+			Stop
+	}
+} 
+
+ACTOR OilDrum : WolfDecoration 21024
+{
+	Height 30 
+	States
+	{
+		Static:
+			BARL A -1
+			Stop
+	}
+} 
+
+ACTOR ExplodingOilDrum : OilDrum
+{
+	Health 20
+	DeathSound "missile/hit"
+	+SHOOTABLE
+	+NOBLOOD
+	+ACTIVATEMCROSS
+	+DONTGIB
+	+NOICEDEATH
+	+OLDRADIUSDMG
+	Translation "96:111=32:47", "88:95=48:55", "80:87=56:63", "2:2=4:4", "10:10=12:12"
+	States
+	{
+		Death:
+			WBXP A 5 Bright
+			WBXP B 5 Bright A_Scream
+			WBXP C 5 Bright
+			WBXP D 5 Bright A_Explode
+			WBXP E 10 Bright
+			WBXP E 1050 Bright A_BarrelDestroy
+			WBXP E 5 A_Respawn
+			Wait
+	}
+} 
+
+ACTOR TableandChairs : WolfDecoration 21025
+{
+	Height 32 
+	States
+	{
+		Static:
+			TAB1 A -1
+			Stop
+	}
+} 
+
+ACTOR FloorLamp : WolfDecoration 21026
+{
+	Height 32
+	States
+	{
+		Static:
+			LIT1 A -1 BRIGHT
+			Stop
+	}
+} 
+
+ACTOR Chandalier : WolfDecoration 21027
+{
+	-SOLID
+	States
+	{
+		Static:
+			LIT3 A -1 BRIGHT
+			Stop
+	}
+} 
+
+ACTOR HangingSkeleton : WolfDecoration 21028
+{
+	Height 64 
+	States
+	{
+		Static:
+			HNG1 A -1
+			Stop
+	}
+} 
+
+ACTOR DogFood : WolfHealth 21029
+{
+	+AUTOACTIVATE
+	Inventory.Amount 4
+	Inventory.MaxAmount 100
+	Inventory.PickupSound "pickups/food"
+	Inventory.PickupMessage "$PU_DOGFOOD"
+	States
+	{
+	Static:
+		HLTH C -1
+		Loop
+	}
+}
+
+ACTOR StoneColumn : WolfDecoration 21030
+{
+	Height 64
+	States
+	{
+		Static:
+			COLW A -1
+			Stop
+	}
+}
+
+ACTOR Plant : WolfDecoration 21031
+{
+	Height 40
+	States
+	{
+		Static:
+			PLT1 A -1
+			Stop
+	}
+} 
+
+ACTOR Skeleton : WolfDecoration 21032
+{
+	-SOLID
+	States
+	{
+		Static:
+			BONE A -1
+			Stop
+	}
+} 
+
+ACTOR Sink : WolfDecoration 21033
+{
+	Height 40
+	States
+	{
+		Static:
+			SINK A -1
+			Stop
+	}
+} 
+
+ACTOR PlantinVase : WolfDecoration 21034
+{
+	Height 50
+	States
+	{
+		Static:
+			PLT2 A -1
+			Stop
+	}
+} 
+
+ACTOR Vase : WolfDecoration 21035
+{
+	Height 30
+	States
+	{
+		Static:
+			VASE A -1
+			Stop
+	}
+} 
+
+ACTOR Table : WolfDecoration 21036
+{
+	Height 30
+	States
+	{
+		Static:
+			TAB2 A -1
+			Stop
+	}
+} 
+
+ACTOR GreenCeilingLight : WolfDecoration 21037
+{
+	-SOLID
+	States
+	{
+		Static:
+			LIT5 A -1 BRIGHT
+			Stop
+	}
+}
+
+ACTOR KitchenUtensils : WolfDecoration 21038
+{
+	-SOLID
+	States
+	{
+		Static:
+			POT1 A -1
+			Stop
+	}
+} 
+
+ACTOR SuitofArmor : WolfDecoration 21039
+{
+	Height 64
+	States
+	{
+		Static:
+			KNIG A -1
+			Stop
+	}
+} 
+
+ACTOR EmptyCage : WolfDecoration 21040
+{
+	Height 64 
+	States
+	{
+		Static:
+			CAG1 A -1
+			Stop
+	}
+} 
+
+ACTOR Cage : WolfDecoration 21041
+{
+	Height 64
+	States
+	{
+		Static:
+			CAG2 A -1
+			Stop
+	}
+} 
+
+ACTOR Bones : WolfDecoration 21042
+{
+	-SOLID
+	States
+	{
+		Static:
+			POB1 A -1
+			Stop
+	}
+} 
+
+ACTOR YellowKey : WolfKey 21043
+{
+	Inventory.PickupSound "pickups/key"
+	Inventory.PickupMessage "$PU_YKEY"
+	Inventory.Icon "YKEY"
+	States
+	{
+	Static:
+		KEYS A -1
+		Stop
+	}
+}
+
+ACTOR BlueKey : WolfKey 21044
+{
+	Inventory.PickupSound "pickups/key"
+	Inventory.PickupMessage "$PU_BKEY"
+	Inventory.Icon "BKEY"
+	States
+	{
+	Static:
+		KEYS B -1
+		Stop
+	}
+}
+
+ACTOR Bed : WolfDecoration 21045
+{
+	Height 30
+	States
+	{
+		Static:
+			BED1 A -1
+			Stop
+	}
+} 
+
+ACTOR Basket : WolfDecoration 21046
+{
+	-SOLID
+	States
+	{
+		Static:
+			BASK A -1
+			Stop
+	}
+} 
+
+ACTOR PlateofFood : WolfHealth 21047
+{
+	+AUTOACTIVATE
+	Inventory.Amount 10
+	Inventory.MaxAmount 100
+	Inventory.PickupSound "pickups/food"
+	Inventory.PickupMessage "$PU_FOOD"
+	States
+	{
+	Static:
+		HLTH D -1
+		Loop
+	}
+}
+
+ACTOR FirstAidKit : WolfHealth 21048
+{
+	+AUTOACTIVATE
+	Inventory.Amount 25
+	Inventory.MaxAmount 100
+	Inventory.PickupSound "pickups/medkit"
+	Inventory.PickupMessage "$PU_FIRSTAID"
+	States
+	{
+	Static:
+		HLTH E -1
+		Loop
+	}
+}
+
+ACTOR Cross : WolfScoreItem 21052
+{
+	+COUNTITEM
+	Inventory.Amount 100
+	Inventory.PickupSound "pickups/cross"
+	Inventory.PickupMessage "$PU_CROSS"
+	States
+	{
+	Static:
+		TREA A -1
+		Stop
+	}
+}
+
+ACTOR Chalice : WolfScoreItem 21053
+{
+	+COUNTITEM
+	Inventory.Amount 500
+	Inventory.PickupSound "pickups/cup"
+	Inventory.PickupMessage "$PU_CHALICE"
+	States
+	{
+	Static:
+		TREA C -1
+		Stop
+	}
+}
+
+ACTOR Chest : WolfScoreItem 21054
+{
+	+COUNTITEM
+	Inventory.Amount 1000
+	Inventory.PickupSound "pickups/chest"
+	Inventory.PickupMessage "$PU_CHEST"
+	States
+	{
+	Static:
+		TREA D -1
+		Stop
+	}
+}
+
+ACTOR Crown : WolfScoreItem 21055
+{
+	+COUNTITEM
+	Inventory.Amount 5000
+	Inventory.PickupSound "pickups/crown"
+	Inventory.PickupMessage "$PU_CROWN"
+	States
+	{
+	Static:
+		TREA B -1
+		Stop
+	}
+}
+
+ACTOR LifePickup : WolfCustomInventory 21056
+{
+	+COUNTITEM
+	+AUTOACTIVATE
+	Inventory.Amount 1
+	Inventory.MaxAmount 0
+	Inventory.PickupSound "pickups/life"
+	Inventory.PickupMessage "$PU_LIFE"
+	States
+	{
+	Static:
+		LIFE A -1
+		Loop
+	Pickup:
+		LIFE A 0 ACS_NamedExecuteAlways("A_GiveLife", 0, 0)
+		Stop
+	}
+}
+
+ACTOR Life : Inventory
+{
+	//Placeholder for Life Counter
+//	+Inventory.Undroppable
+	Inventory.Amount 1
+	Inventory.MaxAmount 10
+}
+
+ACTOR BoneswithBlood : WolfHealth 21057
+{
+	+AUTOACTIVATE
+	Inventory.Amount 1
+	Inventory.MaxAmount 11
+	Inventory.PickupSound "slurpie"
+	Inventory.PickupMessage "$PU_BONES"
+	States
+	{
+	Static:
+		HLTH B -1
+		Loop
+	}
+}
+
+ACTOR WoodBarrel : WolfDecoration 21058
+{
+	Height 30
+	States
+	{
+		Static:
+			BAR2 A -1
+			Stop
+	}
+} 
+
+ACTOR WellwithWater : WolfDecoration 21059
+{
+	Height 30
+	States
+	{
+		Static:
+			WEL1 A -1
+			Stop
+	}
+} 
+
+ACTOR DryWell : WolfDecoration 21060
+{
+	Height 30 
+	States
+	{
+		Static:
+			WEL2 A -1
+			Stop
+	}
+} 
+
+ACTOR PoolofBlood : BonesWithBlood 21061
+{
+	States
+	{
+		Static:
+			HLTH A -1
+			Loop
+	}
+}
+
+ACTOR NaziFlag : WolfDecoration 21062
+{
+	Height 64
+	States
+	{
+		Static:
+			FLAG A -1
+			Stop
+	}
+} 
+
+ACTOR AardwolfSign : WolfDecoration 21063
+{
+	Height 64
+	States
+	{
+		Static:
+			AARD A -1
+			Stop
+	}
+} 
+
+ACTOR CrushedBones1 : WolfDecoration 21064
+{
+	-SOLID
+	States
+	{
+		Static:
+			POB2 A -1
+			Stop
+	}
+} 
+
+ACTOR CrushedBones2 : WolfDecoration 21065
+{
+	-SOLID
+	States
+	{
+		Static:
+			POB3 A -1
+			Stop
+	}
+} 
+
+ACTOR CrushedBody : WolfDecoration 21066
+{
+	-SOLID
+	States
+	{
+		Static:
+			POB4 A -1
+			Stop
+	}
+} 
+
+ACTOR HangingUtensils : WolfDecoration 21067
+{
+	-SOLID
+	States
+	{
+		Static:
+			POT2 A -1
+			Stop
+	}
+} 
+
+ACTOR Stove : WolfDecoration 21068
+{
+	Height 64 
+	States
+	{
+		Static:
+			STOV A -1
+			Stop
+	}
+} 
+
+ACTOR SpearRack : WolfDecoration 21069
+{
+	Height 64 
+	States
+	{
+		Static:
+			SPEA A -1
+			Stop
+	}
+} 
+
+ACTOR HangingVines : WolfDecoration 21070
+{
+	-SOLID
+	States
+	{
+		Static:
+			VINE A -1
+			Stop
+	}
+} 
+
+ACTOR DeadGuard : WolfDecoration 21124
+{
+	States
+	{
+		Static:
+			WBRN N -1
+			Stop
+	}
+}
+
+ACTOR SkullsonStick : WolfDecoration 21133
+{
+	Height 64
+	States
+	{
+		Static:
+			HEL3 A -1
+			Stop
+	}
+} 
+
+ACTOR BloodyCage : WolfDecoration 21138
+{ 
+	Height 64
+	States
+	{
+		Static:
+			HEL4 A -1
+			Stop
+	}
+} 
+
+ACTOR CageofSkulls : WolfDecoration 21145
+{ 
+	Height 64
+	States
+	{
+		Static:
+			HEL2 A -1
+			Stop
+	}
+} 
+
+ACTOR RedCeilingLight : WolfDecoration 21163
+{ 
+	-SOLID
+	States
+	{
+		Static:
+			LITR A -1
+			Stop
+	}
+} 
+
+ACTOR BullHeadonStick : WolfDecoration 21167
+{
+	Height 64
+	States
+	{
+		Static:
+			HEL1 A -1
+			Stop
+	}
+} 
+
+ACTOR BloodyWell : WolfDecoration 21168
+{ 
+	Height 64
+	States
+	{
+		Static:
+			HEL5 A -1
+			Stop
+	}
+}
+
+ACTOR AngelofDeathStatue : WolfDecoration 21169
+{ 
+	Height 64
+	States
+	{
+		Static:
+			ADTH A -1
+			Stop
+	}
+} 
+
+ACTOR BrownColumn : WolfDecoration 21171
+{ 
+	Height 64
+	States
+	{
+		Static:
+			COL2 A -1
+			Stop
+	}
+}
+
+ACTOR Truck : WolfDecoration 21173
+{
+	Height 64
+	Radius 32
+	+SOLID
+	+FLOORCLIP
+	+SHOOTABLE
+	+INVULNERABLE
+	+NODAMAGETHRUST
+	States
+	{
+	Static:
+		WTRK A 8 A_Playsound("truck/idle")
+		Loop
+	}
+}
+
+ACTOR SpearofDestiny : WolfCustomInventory replaces Megasphere 21074
+{
+	+AUTOACTIVATE
+	+INVENTORY.PERSISTENTPOWER
+	+INVENTORY.BIGPOWERUP
+	+INVENTORY.KEEPDEPLETED
+	Inventory.Amount 1
+	Inventory.MaxAmount 0
+	Inventory.PickupSound "spear/pickup"
+	Inventory.PickupMessage "$PU_SOD"
+	States
+	{
+	Static:
+		SOFD A -1
+		Loop
+	Pickup:
+		SOFD A 0 A_GiveInventory("SpearDamagePower")
+		SOFD A 0 A_GiveInventory("SpearRegenPower")
+		Stop
+	}
+}
+
+ACTOR SpearofDestinyLevelEnd : SpearofDestiny 21174
+{
+	States
+	{
+	Pickup:
+		SOFD A 0 ACS_NamedExecute("W_DoLevelEnd", 0, 3)
+		Stop
+	}	
+}
+
+//Lost Episodes
+ACTOR PoolofWaterLost : WolfDecoration 21223
+{
+	-SOLID
+	States
+	{
+		Static:
+			POL2 A -1
+			Stop
+	}
+} 
+
+ACTOR OilDrumLost : WolfDecoration 21224
+{
+	Height 30 
+	States
+	{
+		Static:
+			BAR3 A -1
+			Stop
+	}
+} 
+
+ACTOR TableandChairsLost : WolfDecoration 21225
+{
+	Height 32 
+	States
+	{
+		Static:
+			TAB3 A -1
+			Stop
+	}
+} 
+
+ACTOR FloorLampLost : WolfDecoration 21226
+{
+	Height 32
+	States
+	{
+		Static:
+			LIT2 A -1 BRIGHT
+			Stop
+	}
+} 
+
+ACTOR ChandalierLost : WolfDecoration 21227
+{
+	-SOLID
+	States
+	{
+		Static:
+			LIT4 A -1 BRIGHT
+			Stop
+	}
+} 
+
+ACTOR HangingSkeletonLost : WolfDecoration 21228
+{
+	Height 64 
+	States
+	{
+		Static:
+			HNG2 A -1
+			Stop
+	}
+} 
+
+ACTOR DogFoodLost : WolfHealth 21229
+{
+	+AUTOACTIVATE
+	Inventory.Amount 4
+	Inventory.MaxAmount 100
+	Inventory.PickupSound "pickups/food"
+	Inventory.PickupMessage "$PU_DOGFOOD"
+	States
+	{
+	Static:
+		HLTH H -1
+		Loop
+	}
+}
+
+ACTOR StoneColumnLost : WolfDecoration 21230
+{
+	Height 64
+	States
+	{
+		Static:
+			PILW A -1
+			Stop
+	}
+}
+
+ACTOR PlantLost : WolfDecoration 21231
+{
+	Height 40
+	States
+	{
+		Static:
+			PLT3 A -1
+			Stop
+	}
+} 
+
+ACTOR SkeletonLost : WolfDecoration 21232
+{
+	-SOLID
+	States
+	{
+		Static:
+			BONE B -1
+			Stop
+	}
+} 
+
+ACTOR PileofSkullsLost : WolfDecoration 21233
+{
+	Height 40
+	States
+	{
+		Static:
+			POSK A -1
+			Stop
+	}
+} 
+
+ACTOR BrownPlantLost : WolfDecoration 21234
+{
+	Height 50
+	States
+	{
+		Static:
+			PLT4 A -1
+			Stop
+	}
+} 
+
+ACTOR VaseLost : WolfDecoration 21235
+{
+	Height 30
+	States
+	{
+		Static:
+			VAS2 A -1
+			Stop
+	}
+} 
+
+ACTOR TableLost : WolfDecoration 21236
+{
+	Height 30
+	States
+	{
+		Static:
+			TAB4 A -1
+			Stop
+	}
+} 
+
+ACTOR GreenCeilingLightLost : WolfDecoration 21237
+{
+	-SOLID
+	States
+	{
+		Static:
+			LIT6 A -1 BRIGHT
+			Stop
+	}
+}
+
+ACTOR CagewithBloodLost : WolfDecoration 21238
+{
+	States
+	{
+		Static:
+			CAG6 A -1
+			Stop
+	}
+} 
+
+ACTOR SuitofArmorLost : WolfDecoration 21239
+{
+	Height 64
+	States
+	{
+		Static:
+			KNIG B -1
+			Stop
+	}
+} 
+
+ACTOR EmptyCageLost : WolfDecoration 21240
+{
+	Height 64 
+	States
+	{
+		Static:
+			CAG3 A -1
+			Stop
+	}
+} 
+
+ACTOR BrokenCageLost : WolfDecoration 21241
+{
+	Height 64
+	States
+	{
+		Static:
+			CAG4 A -1
+			Stop
+	}
+} 
+
+ACTOR Bones1Lost : WolfDecoration 21242
+{
+	-SOLID
+	States
+	{
+		Static:
+			POB6 A -1
+			Stop
+	}
+} 
+
+ACTOR YellowKeyLost : YellowKey 21243
+{
+	States
+	{
+	Static:
+		KEYS C -1
+		Stop
+	}
+}
+
+ACTOR BlueKeyLost : BlueKey 21244
+{
+	States
+	{
+	Static:
+		KEYS D -1
+		Stop
+	}
+}
+
+ACTOR CagewithSkullsLost : WolfDecoration 21245
+{
+	Height 30
+	States
+	{
+		Static:
+			CAG5 A -1
+			Stop
+	}
+} 
+
+ACTOR DeadRatLost: WolfDecoration 21246
+{
+	-SOLID
+	States
+	{
+		Static:
+			DRAT A -1
+			Stop
+	}
+} 
+
+ACTOR PlateofFoodLost : WolfHealth 21247
+{
+	+AUTOACTIVATE
+	Inventory.Amount 10
+	Inventory.MaxAmount 100
+	Inventory.PickupSound "pickups/food"
+	Inventory.PickupMessage "$PU_FOOD"
+	States
+	{
+	Static:
+		HLTH I -1
+		Loop
+	}
+}
+
+ACTOR FirstAidKitLost : WolfHealth 21248
+{
+	+AUTOACTIVATE
+	Inventory.Amount 25
+	Inventory.MaxAmount 100
+	Inventory.PickupSound "pickups/medkit"
+	Inventory.PickupMessage "$PU_FIRSTAID"
+	States
+	{
+	Static:
+		HLTH J -1
+		Loop
+	}
+}
+
+ACTOR RadioLost : WolfScoreItem 21252
+{
+	+COUNTITEM
+	Inventory.Amount 100
+	Inventory.PickupSound "pickups/cross"
+	Inventory.PickupMessage "$PU_RADIO"
+	States
+	{
+	Static:
+		TREA E -1
+		Stop
+	}
+}
+
+ACTOR ShellLost: WolfScoreItem 21253
+{
+	+COUNTITEM
+	Inventory.Amount 500
+	Inventory.PickupSound "pickups/cup"
+	Inventory.PickupMessage "$PU_SHELL"
+	States
+	{
+	Static:
+		TREA G -1
+		Stop
+	}
+}
+
+ACTOR TimerLost : WolfScoreItem 21254
+{
+	+COUNTITEM
+	Inventory.Amount 1000
+	Inventory.PickupSound "pickups/chest"
+	Inventory.PickupMessage "$PU_TIMER"
+	States
+	{
+	Static:
+		TREA H -1
+		Stop
+	}
+}
+
+ACTOR BombLost : WolfScoreItem 21255
+{
+	+COUNTITEM
+	Inventory.Amount 5000
+	Inventory.PickupSound "pickups/crown"
+	Inventory.PickupMessage "$PU_BOMB"
+	States
+	{
+	Static:
+		TREA F -1
+		Stop
+	}
+}
+
+ACTOR LifePickupLost : WolfCustomInventory 21256
+{
+	+COUNTITEM
+	+AUTOACTIVATE
+	Inventory.Amount 1
+	Inventory.MaxAmount 0
+	Inventory.PickupSound "pickups/life"
+	Inventory.PickupMessage "$PU_LIFE"
+	States
+	{
+	Static:
+		LIFE B -1
+		Loop
+	Pickup:
+		LIFE B 0 ACS_NamedExecuteAlways("A_GiveLife", 0, 0)
+		Stop
+	}
+}
+
+ACTOR BoneswithBloodLost : WolfHealth 21257
+{
+	+AUTOACTIVATE
+	Inventory.Amount 1
+	Inventory.MaxAmount 11
+	Inventory.PickupSound "slurpie"
+	Inventory.PickupMessage "$PU_BONES"
+	States
+	{
+	Static:
+		HLTH G -1
+		Loop
+	}
+}
+
+ACTOR WoodBarrelLost : WolfDecoration 21258
+{
+	Height 30
+	States
+	{
+		Static:
+			BAR4 A -1
+			Stop
+	}
+} 
+
+ACTOR WellwithWaterLost : WolfDecoration 21259
+{
+	Height 30
+	States
+	{
+		Static:
+			WEL3 A -1
+			Stop
+	}
+} 
+
+ACTOR DryWellLost : WolfDecoration 21260
+{
+	Height 30 
+	States
+	{
+		Static:
+			WEL4 A -1
+			Stop
+	}
+} 
+
+ACTOR PoolofBloodLost : BonesWithBlood 21261
+{
+	States
+	{
+		Static:
+			HLTH F -1
+			Loop
+	}
+}
+
+ACTOR ElectrofieldLost : WolfDecoration 21262
+{
+	Height 64
+	States
+	{
+		Static:
+			GZMO A -1 BRIGHT
+			Stop
+	}
+} 
+
+ACTOR RedCeilingLightLost : WolfDecoration 21263
+{
+	-SOLID
+	States
+	{
+		Static:
+			LIT7 A -1 BRIGHT
+			Stop
+	}
+} 
+
+ACTOR Bones2Lost : WolfDecoration 21264
+{
+	-SOLID
+	States
+	{
+		Static:
+			POB7 A -1
+			Stop
+	}
+} 
+
+ACTOR LightBulbLost : WolfDecoration 21265
+{
+	-SOLID
+	States
+	{
+		Static:
+			LIT8 A -1 BRIGHT
+			Stop
+	}
+} 
+
+ACTOR SlimeLost : WolfDecoration 21266
+{
+	-SOLID
+	States
+	{
+		Static:
+			GGOO A -1
+			Stop
+	}
+} 
+
+ACTOR HLabTableLost : WolfDecoration 21267
+{
+	States
+	{
+		Static:
+			TAB5 A -1
+			Stop
+	}
+} 
+
+ACTOR RadioactiveBarrelLost : WolfDecoration 21268
+{
+	Height 64 
+	States
+	{
+		Static:
+			BAR5 A -1
+			Stop
+	}
+} 
+
+ACTOR PipeLost: WolfDecoration 21269
+{
+	Height 64 
+	States
+	{
+		Static:
+			PiPE A -1
+			Stop
+	}
+} 
+
+ACTOR BubblesLost: WolfDecoration 21270
+{
+	-SOLID
+	States
+	{
+		Static:
+			BUBL A -1
+			Stop
+	}
+} 
+
+ACTOR DeadGuardLost : WolfDecoration 21324
+{
+	States
+	{
+		Static:
+			WGRN N -1
+			Stop
+	}
+}
+
+ACTOR DemonStatueLost: WolfDecoration 21271
+{ 
+	Height 64
+	States
+	{
+		Static:
+			DEVS A -1
+			Stop
+	}
+}
+
+ACTOR BJWasHereLost : WolfDecoration 21273
+{
+	Height 64
+	States
+	{
+		Static:
+			BJWH A -1
+			Stop
+	}
+}
+
+ACTOR SpearofDestinyLost : SpearofDestiny 21274
+{
+	Inventory.PickupSound "spear/pickup2"
+	States
+	{
+	Static:
+		SOFD B -1
+		Loop
+	Pickup:
+		SOFD B 0 ACS_NamedExecute("W_DoLevelEnd", 0, 3)
+		Stop
+	}	
+}
+
+ACTOR SpearDamagePower : PowerDamage
+{
+	Powerup.Color 256, 192, 0, 0.1
+	Powerup.Duration 0x7FFFFFFF
+	+INVENTORY.AUTOACTIVATE
+	+INVENTORY.ALWAYSPICKUP
+	Damagefactor "Normal", 4
+}
+
+ACTOR SpearRegenPower : PowerupGiver
+{
+	Powerup.Type Regeneration
+	Powerup.Duration 0x7FFFFFFF
+	+INVENTORY.AUTOACTIVATE
+	+INVENTORY.ALWAYSPICKUP
+}
+
+//Other miscellaneous items and markers
+
+ACTOR BotPlayer : Inventory
+{
+//Given to bots to allow them to activate walkover lines for doors
+}
+
+ACTOR WalkoverKey : Key
+{
+//
+}
+
+ACTOR AtariJaguar : Inventory
+{
+//
+}
+
+ACTOR Points : ScoreItem
+{
+	Inventory.Amount 1
+	Inventory.MaxAmount 30000
+}
+
+ACTOR Freeze : PowerupGiver
+{
+	+AUTOACTIVATE
+	+INVENTORY.ADDITIVETIME
+	Inventory.MaxAmount 0
+	Powerup.Type "TimeFreezer"
+	Powerup.Duration 35
+}
+
+ACTOR WolfAmmoBelt : WolfCustomInventory 21085
+{
+	Height 26
+	-INVENTORY.INVBAR
+	+INVENTORY.AUTOACTIVATE
+	Inventory.PickupMessage "$PU_AMMOPOUCH"
+	Inventory.PickupSound "pickups/ammo"
+	Inventory.Icon "WBPKA0"
+	States
+	{
+		Static:
+			WBPK A -1
+			Stop
+		Use:
+			WBPK A 0 ACS_NamedExecuteAlways ("W_PickupAmmoBelt", 0, 1)
+			Stop
+	}
+}
+
+ACTOR NoFlash
+{
+	RenderStyle None
+	States
+	{
+	Spawn:
+		TNT1 A 1
+		Stop
+	}
+}
+
+ACTOR NaziUniform : WolfCustomInventory 21088
+{
+	+COUNTITEM
+	+INVENTORY.AUTOACTIVATE
+	+INVENTORY.ALWAYSPICKUP
+	+INVENTORY.BIGPOWERUP
+	+INVENTORY.KEEPDEPLETED
+	Inventory.Amount 1
+	Inventory.MaxAmount 1
+	Inventory.PickupMessage "$PU_UNIFORM"
+	States
+	{
+	Static:
+		UNIF A -1
+		Stop
+	Use:
+		TNT1 A 0 A_GiveInventory("WolfMachineGun")
+		TNT1 A 0 A_GiveInventory("Invisibility")
+		TNT1 A 0 ACS_NamedExecuteAlways ("A_NoTarget", 0, 1)
+		Stop
+
+	}
+}
+
+ACTOR Invisibility : PowerupGiver
+{
+	+VISIBILITYPULSE
+	+INVENTORY.AUTOACTIVATE
+	Powerup.Type "Shadow"
+}
+
+ACTOR PowerDisguise : PowerMorph
+{
+	Powerup.Duration -60
+	Powerup.Color 0,0,150,0.125
+	PowerMorph.PlayerClass "BJDisguise"
+	PowerMorph.MorphStyle (MRF_FULLHEALTH|MRF_NEWTIDBEHAVIOUR|MRF_WHENINVULNERABLE|MRF_LOSEACTUALWEAPON|MRF_UNDOBYDEATHFORCED)
+	PowerMorph.MorphFlash "NoFlash"
+	PowerMorph.UnMorphFlash "NoFlash"
+}
+
+ACTOR BulletProofVest : BasicArmorPickup 21084
+{
+	Inventory.PickupMessage "$PU_VEST"
+	DamageFactor "WolfNazi", 0.25
+	Armor.SaveAmount 200
+	Armor.SavePercent 50.0
+	Armor.MaxAbsorb 50
+	States
+	{
+		Spawn:
+			VEST A 1
+			loop
+	}
+}
+
+ACTOR BerserkArmor : BasicArmorPickup
+{
+	DamageFactor 0.75
+	DamageFactor "WolfNazi", 0.25
+	Armor.SaveAmount 1000
+	Armor.SavePercent 50.0
+	Armor.MaxFullAbsorb 30
+	Armor.MaxAbsorb 75
+}
+
+ACTOR RandomTreasure
+{
+	-SOLID
+	+NOSECTOR
+	RenderStyle None
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_Jump(192, "SpawnCross")
+		TNT1 A 0 A_Jump(192, "SpawnChalice")
+		TNT1 A 0 A_Jump(192, "SpawnChest")
+	SpawnCrown:
+		TNT1 A 1 A_SpawnItemEx("Crown")
+		Stop
+	SpawnChest:
+		TNT1 A 1 A_SpawnItemEx("Chest")
+		Stop
+	SpawnChalice:
+		TNT1 A 1 A_SpawnItemEx("Chalice")
+		Stop
+	SpawnCross:
+		TNT1 A 1 A_SpawnItemEx("Cross")
+		Stop
+
+	}
+}
+
+ACTOR WolfBerserk : Berserk 21083
+{
+	Inventory.PickupMessage "$PU_ADRENALINE"
+	States
+	{
+		Spawn:
+			WSTR A -1
+			Stop
+		Pickup:
+			TNT1 A 0 A_GiveInventory("PowerStrength")
+			TNT1 A 0 A_GiveInventory("BerserkArmor")
+			TNT1 A 0 HealThing(100, 0)
+			TNT1 A 0 A_SelectWeapon("WolfKnife")
+			Stop
+	}
+}
+
+ACTOR SpawnCheck
+{
+	+CanPass
+	Radius 10
+	Damage 0
+	+Missile
+	States
+	{
+	Spawn:
+		TNT1 A 1
+		Loop
+	Death:
+		TNT1 A 1
+		Loop
+	}
+}
+
+ACTOR Secret_Block
+{
+	Radius 32
+	States
+	{
+	Spawn:
+		TNT1 A -1
+	}
+}
+
+ACTOR Secret_Check
+{
+	Radius 0
+	Height 64
+	States
+	{
+	Spawn:
+		TNT1 A -1
+	}
+}
+
+//Patrol turn points
+ACTOR Turn : SwitchableDecoration 22090
+{
+	Mass 10000
+	Radius 0
+	Height 1
+	+Shootable
+	+BumpSpecial
+	+NOTONAUTOMAP
+	Activation THINGSPEC_Activate | THINGSPEC_TriggerActs | THINGSPEC_MonsterTrigger | THINGSPEC_ThingTargets | THINGSPEC_Switch
+	States
+	{
+	Spawn:
+		TNT1 A 1
+		Wait
+	Inactive:
+	Active:
+		TNT1 A 10
+		TNT1 A 35 ACS_NamedExecuteAlways("A_PatrolTurn", 0, angle, x, y)
+		TNT1 A 70
+		Wait
+	}
+}
+
+ACTOR Turn45 : Turn 22091
+{
+	States
+	{
+	Spawn:
+		TNT1 A 1 A_SetAngle (45)
+		Wait
+	}
+}
+
+ACTOR Turn90 : Turn 22092
+{
+	States
+	{
+	Spawn:
+		TNT1 A 1 A_SetAngle (90)
+		Wait
+	}
+}
+
+ACTOR Turn135 : Turn 22093
+{
+	States
+	{
+	Spawn:
+		TNT1 A 1 A_SetAngle (135)
+		Wait
+	}
+}
+
+ACTOR Turn180 : Turn 22094
+{
+	States
+	{
+	Spawn:
+		TNT1 A 1 A_SetAngle (180)
+		Wait
+	}
+}
+
+ACTOR Turn225 : Turn 22095
+{
+	States
+	{
+	Spawn:
+		TNT1 A 1 A_SetAngle (225)
+		Wait
+	}
+}
+
+ACTOR Turn270 : Turn 22096
+{
+	States
+	{
+	Spawn:
+		TNT1 A 1 A_SetAngle (270)
+		Wait
+	}
+}
+
+ACTOR Turn315 : Turn 22097
+{
+	States
+	{
+	Spawn:
+		TNT1 A 1 A_SetAngle (315)
+		Wait
+	}
+}
+
+ACTOR Active : Inventory
+{
+//Given to active enemies.  Keeps them from being affected by patrol points after they see the player.
+}
+
+ACTOR SoD_Game_Marker : Inventory
+{
+//Used to change some things in ACS.  Given in base SoD player.
+}
+
+ACTOR Lost_Game_Marker : Inventory
+{
+//Used to change some things in ACS.  Given in base Lost Episodes player.
+}
+
+ACTOR Generic_Map_Marker : Inventory
+{
+//Used to change some things in ACS.  Given when the current map isn't in MAPINFO.
+}
+
+ACTOR DeathCam
+{
+	Height 32
+	Radius 8
+	+NOGRAVITY
+	+NOBLOCKMAP
+	States
+	{
+	Spawn:
+		TNT1 A -1
+		Stop
+	}
+}
+
+ACTOR BreakableColumn : WolfDecoration
+{
+	Height 64
+	Mass 10000
+	Health 75
+	+SHOOTABLE
+	+NOBLOOD
+	DamageFactor Fire, 0.0
+	States
+	{
+	Spawn:
+		COLB A 1
+		Wait
+	Death:
+		COLB B 10
+		COLB C 5 A_UnSetSolid
+		COLB D 3 A_UnSetShootable
+		COLB E -1
+		Stop
+	}
+}
+
+ACTOR PushableSpearRack : PushableWolfDecoration
+{
+	States
+	{
+	Spawn:
+		SPEA A 1
+		Wait
+	}
+}
+
+ACTOR PushableColumn : PushableWolfDecoration
+{
+	States
+	{
+	Spawn:
+		COLW A 1
+		Wait
+	}
+}
+
+ACTOR PushableColumn2 : PushableWolfDecoration //Pushes on first use, breaks on second use
+{
+	States
+	{
+	Spawn:
+		COLB A 1
+		Wait
+	Inactive:
+		COLB A 0 A_ChangeFlag("UseSpecial", 0)
+		COLB A 0 A_UnSetShootable
+		COLB A 0 A_UnSetSolid
+		COLB A 0 A_PlaySound("missile/hit")
+		COLB BCD 6
+		COLB E -1
+		Stop
+	}
+}
+
+ACTOR ShoveableColumn : SwitchableDecoration //Breaks when shot or used
+{
+	Mass 10000
+	Radius 28
+	Height 54
+	Health 25
+	+SHOOTABLE
+	+SOLID
+	+NOBLOOD
+	DamageFactor Fire, 0.0
+	+UseSpecial
+	Activation THINGSPEC_Activate | THINGSPEC_ThingTargets | THINGSPEC_ThingActs
+	States
+	{
+	Spawn:
+		COLB A 1
+		Wait
+	Active:
+	Death:
+		COLB A 2 ACS_NamedExecuteAlways("W_DoPushObject", 0, 16.0)
+		COLB B 5 A_PlaySound("missile/hit")
+		COLB C 3 A_UnSetSolid
+		COLB D 3 A_UnSetShootable
+		COLB E -1
+		Stop
+	}
+}
+
+ACTOR StaticPlatform
+{
+	Height 12
+	Radius 16
+	Mass 10000
+	+SOLID
+	+ACTLIKEBRIDGE
+	+CANPASS
+	+NOGRAVITY
+	States
+	{
+	Spawn:
+		PLAT A -1
+		Stop
+	}
+}
+
+ACTOR DrivePlatform : SwitchableDecoration
+{
+	Height 12
+	Radius 32
+	Speed 6
+	+SOLID
+	+ACTLIKEBRIDGE
+	+CANPASS
+	+BUMPSPECIAL
+	+NOGRAVITY
+	+NOBLOCKMONST
+	Activation THINGSPEC_ThingTargets | THINGSPEC_ThingActs | THINGSPEC_Switch
+	States
+	{
+	Spawn:
+		PLAT A 1
+		Loop
+	Inactive:
+	Active:
+		"####" A 0 ACS_NamedExecute("W_DrivePlatform", 0, tid, 0, 0)
+		Goto Spawn
+	}
+}
+
+ACTOR HoverBoard : DrivePlatform
+{
+	Height 1
+	Radius 16
+	Speed 18
+	States
+	{
+	Spawn:
+		HBRD A 1
+		Loop
+	Inactive:
+	Active:
+		"####" A 0 ACS_NamedExecute("W_DrivePlatform", 0, tid, 16, 1 + 2 + 8 + 16)
+		Goto Spawn
+	}
+}
+
+ACTOR MotorCycle: DrivePlatform 21100
+{
+	-NOGRAVITY
+	Height 1
+	Radius 16
+	Speed 24
+	States
+	{
+	Spawn:
+		WMOT A 1
+		Loop
+	Spawn.Left:
+		WMOT L 1
+		Loop
+	Spawn.Right:
+		WMOT R 1
+		Loop
+	Spawn.Jump:
+		WMOT J 1
+		Loop
+	Inactive:
+	Active:
+		"####" A 0 ACS_NamedExecute("W_DrivePlatform", 0, tid, 8, 2 + 8 + 16 + 32)
+		Goto Spawn
+	}
+}
+
+ACTOR Platform : SwitchableDecoration
+{
+	var int user_moveangle;
+
+	Height 12
+	Radius 32
+	Speed 3
+	+SOLID
+	+ACTLIKEBRIDGE
+	+CANPASS
+	+BUMPSPECIAL
+	+NOGRAVITY
+	+NOBLOCKMONST
+	Activation THINGSPEC_ThingTargets | THINGSPEC_ThingActs | THINGSPEC_Switch | THINGSPEC_MonsterTrigger
+	States
+	{
+	Spawn:
+		PLAT A 0
+		"####" A 0 A_SetUserVar("user_moveangle", angle)
+		"####" A 0 A_JumpIf(256, "Move")
+	Move:
+		"####" A 1 ACS_NamedExecuteAlways("W_MovePlatform", 0, tid, user_moveangle)
+		Loop
+	Reverse:
+		"####" A 35 A_SetUserVar("user_moveangle", (user_moveangle + 180) % 360)
+		"####" A 0 A_JumpIf(256, "Move")
+	Inactive:
+	Active:
+		"####" A 0 ACS_NamedExecuteAlways("W_DoPlatform2", 0, tid, Radius * 2, Radius * 2)
+		"####" A 0 A_JumpIf(256, "Move")
+	}
+}
+
+ACTOR Platform5 : Platform
+{
+	States
+	{
+	Reverse:
+		"####" A 0 A_SetUserVar("user_moveangle", (user_moveangle + 5) % 360)
+		"####" A 0 A_JumpIf(256, "Move")
+	}
+}
+
+ACTOR Platform45 : Platform
+{
+	States
+	{
+	Reverse:
+		"####" A 0 A_SetUserVar("user_moveangle", (user_moveangle + 45) % 360)
+		"####" A 0 A_JumpIf(256, "Move")
+	}
+}
+
+ACTOR Platform90 : Platform
+{
+	States
+	{
+	Reverse:
+		"####" A 0 A_SetUserVar("user_moveangle", (user_moveangle + 90) % 360)
+		"####" A 0 A_JumpIf(256, "Move")
+	}
+}
+
+ACTOR PlatformRandom : Platform
+{
+	States
+	{
+	Reverse:
+		"####" A 0 A_SetUserVar("user_moveangle", (user_moveangle + Random(1,359)) % 360)
+		"####" A 0 A_JumpIf(256, "Move")
+	}
+}
+
+ACTOR PlatformCircle : Platform
+{
+	States
+	{
+	Move:
+		"####" A 0 A_SetUserVar("user_moveangle", (user_moveangle + 1) % 360)
+		"####" A 1 ACS_NamedExecuteAlways("W_MovePlatform", 0, tid, user_moveangle)
+		Loop
+	}
+}
+
+ACTOR ImpPlatform : PlatformRandom
+{
+	States
+	{
+	Spawn:
+		PLAT A 0
+		"####" A 0 A_SetUserVar("user_moveangle", angle)
+		"####" A 0 A_SpawnItemEx("DoomImp", 0, 0, 20.0)
+		"####" A 0 A_JumpIf(256, "Move")
+	}
+}
+
+ACTOR FastPlatform : Platform
+{
+	Speed 6
+}
+
+ACTOR WolfMapMarker : MapMarker
+{
+	+NOCLIP
+	Args 0, 1
+	Scale 0.1
+	States
+	{
+	Spawn.AoD:
+		WB10 A -1
+		Stop
+	Spawn.Axe:
+		LB06 A -1
+		Stop
+	Spawn.Barnacle:
+		WBO9 A -1
+		Stop
+	Spawn.Bat:
+		WBAT A -1
+		Stop
+	Spawn.BJ:
+		TNT1 A -1 //PLAY A -1
+		Stop
+	Spawn.Black:
+		WBLA A -1
+		Stop
+	Spawn.Blue:
+		WBLU A -1
+		Stop
+	Spawn.Brown:
+		WBRN A -1
+		Stop
+	Spawn.DI:
+		LB10 A -1
+		Stop
+	Spawn.DK:
+		WBO7 A -1
+		Stop
+	Spawn.Dob:
+		WDOB A -1
+		Stop
+	Spawn.Dog:
+		WDOG A -1
+		Stop
+	Spawn.Fat:
+		WBO5 A -1
+		Stop
+	Spawn.Ghost:
+		LSPE A -1
+		Stop
+	Spawn.Gift:
+		WBO8 A -1
+		Stop
+	Spawn.Green:
+		WGRN A -1
+		Stop
+	Spawn.Gretel:
+		WBO4 A -1
+		Stop
+	Spawn.H1:
+		WHR1 A -1
+		Stop
+	Spawn.H2:
+		WHR2 A -1
+		Stop
+	Spawn.Hans:
+		WBOS A -1
+		Stop
+	Spawn.HG:
+		WHGT A -1
+		Stop
+	Spawn.Mist:
+		LSP2 A -1
+		Stop
+	Spawn.Mutant:
+		WMUT A -1
+		Stop
+	Spawn.Blinky:
+		GHO0 A -1
+		Stop
+	Spawn.Inky:
+		GHO1 A -1
+		Stop
+	Spawn.Pinky:
+		GHO2 A -1
+		Stop
+	Spawn.Clyde:
+		GHO3 A -1
+		Stop
+	Spawn.Quark:
+		LBO9 A -1
+		Stop
+	Spawn.Random:
+		WBRN A 11
+		WBLU A 11
+		WWHT A 11
+		Loop
+	Spawn.Robot:
+		LBO7 A -1
+		Stop
+	Spawn.Schabbs:
+		WBO3 A -1
+		Stop
+	Spawn.Spectre:
+		WSPE A -1
+		Stop
+	Spawn.Trans:
+		WBO2 A -1
+		Stop
+	Spawn.Uber:
+		WBO6 A -1
+		Stop
+	Spawn.White:
+		WWHT A -1
+		Stop
+	Spawn.White2:
+		WWH2 A -1
+		Stop
+	Spawn.Willy:
+		LBO2 A -1
+		Stop
+	Spawn.AARDA:
+		AARD A -1
+		Stop
+	Spawn.ADTHA:
+		ADTH A -1
+		Stop
+	Spawn.BASKA:
+		BASK A -1
+		Stop
+	Spawn.BED1A:
+		BED1 A -1
+		Stop
+	Spawn.BJWHA:
+		BJWH A -1
+		Stop
+	Spawn.HEL4A:
+		HEL4 A -1
+		Stop
+	Spawn.HEL5A:
+		HEL5 A -1
+		Stop
+	Spawn.KEYSB:
+		KEYS B -1
+		Stop
+	Spawn.KEYSD:
+		KEYS D -1
+		Stop
+	Spawn.TREAF:
+		TREA F -1
+		Stop
+	Spawn.POB1A:
+		POB1 A -1
+		Stop
+	Spawn.POB6A:
+		POB6 A -1
+		Stop
+	Spawn.POB7A:
+		POB7 A -1
+		Stop
+	Spawn.HLTHB:
+		HLTH B -1
+		Stop
+	Spawn.HLTHG:
+		HLTH G -1
+		Stop
+	Spawn.CAG4A:
+		CAG4 A -1
+		Stop
+	Spawn.COL2A:
+		COL2 A -1
+		Stop
+	Spawn.PLT4A:
+		PLT4 A -1
+		Stop
+	Spawn.BUBLA:
+		BUBL A -1
+		Stop
+	Spawn.HEL1A:
+		HEL1 A -1
+		Stop
+	Spawn.CAG2A:
+		CAG2 A -1
+		Stop
+	Spawn.HEL2A:
+		HEL2 A -1
+		Stop
+	Spawn.CAG6A:
+		CAG6 A -1
+		Stop
+	Spawn.CAG5A:
+		CAG5 A -1
+		Stop
+	Spawn.TREAC:
+		TREA C -1
+		Stop
+	Spawn.LIT3A:
+		LIT3 A -1
+		Stop
+	Spawn.LIT4A:
+		LIT4 A -1
+		Stop
+	Spawn.TREAD:
+		TREA D -1
+		Stop
+	Spawn.TREAA:
+		TREA A -1
+		Stop
+	Spawn.TREAB:
+		TREA B -1
+		Stop
+	Spawn.POB4A:
+		POB4 A -1
+		Stop
+	Spawn.POB2A:
+		POB2 A -1
+		Stop
+	Spawn.POB3A:
+		POB3 A -1
+		Stop
+	Spawn.WBRNN:
+		WBRN N -1
+		Stop
+	Spawn.WGRNN:
+		WGRN N -1
+		Stop
+	Spawn.DRATA:
+		DRAT A -1
+		Stop
+	Spawn.DEVSA:
+		DEVS A -1
+		Stop
+	Spawn.HLTHC:
+		HLTH C -1
+		Stop
+	Spawn.HLTHH:
+		HLTH H -1
+		Stop
+	Spawn.WEL2A:
+		WEL2 A -1
+		Stop
+	Spawn.WEL4A:
+		WEL4 A -1
+		Stop
+	Spawn.GZMOA:
+		GZMO A -1
+		Stop
+	Spawn.CAG1A:
+		CAG1 A -1
+		Stop
+	Spawn.CAG3A:
+		CAG3 A -1
+		Stop
+	Spawn.HLTHE:
+		HLTH E -1
+		Stop
+	Spawn.HLTHJ:
+		HLTH J -1
+		Stop
+	Spawn.LIT1A:
+		LIT1 A -1
+		Stop
+	Spawn.LIT2A:
+		LIT2 A -1
+		Stop
+	Spawn.LIT5A:
+		LIT5 A -1
+		Stop
+	Spawn.LIT6A:
+		LIT6 A -1
+		Stop
+	Spawn.HNG1A:
+		HNG1 A -1
+		Stop
+	Spawn.HNG2A:
+		HNG2 A -1
+		Stop
+	Spawn.POT2A:
+		POT2 A -1
+		Stop
+	Spawn.VINEA:
+		VINE A -1
+		Stop
+	Spawn.TAB5A:
+		TAB5 A -1
+		Stop
+	Spawn.POT1A:
+		POT1 A -1
+		Stop
+	Spawn.LIFEA:
+		LIFE A -1
+		Stop
+	Spawn.LIFEB:
+		LIFE B -1
+		Stop
+	Spawn.LIT8A:
+		LIT8 A -1
+		Stop
+	Spawn.FLAGA:
+		FLAG A -1
+		Stop
+	Spawn.UNIFA:
+		UNIF A -1
+		Stop
+	Spawn.BARLA:
+		BARL A -1
+		Stop
+	Spawn.BAR3A:
+		BAR3 A -1
+		Stop
+	Spawn.POSKA:
+		POSK A -1
+		Stop
+	Spawn.PIPEA:
+		PIPE A -1
+		Stop
+	Spawn.PLT1A:
+		PLT1 A -1
+		Stop
+	Spawn.PLT2A:
+		PLT2 A -1
+		Stop
+	Spawn.PLT3A:
+		PLT3 A -1
+		Stop
+	Spawn.HLTHD:
+		HLTH D -1
+		Stop
+	Spawn.HLTHI:
+		HLTH I -1
+		Stop
+	Spawn.HLTHA:
+		HLTH A -1
+		Stop
+	Spawn.HLTHF:
+		HLTH F -1
+		Stop
+	Spawn.POL1A:
+		POL1 A -1
+		Stop
+	Spawn.POL2A:
+		POL2 A -1
+		Stop
+	Spawn.BAR5A:
+		BAR5 A -1
+		Stop
+	Spawn.TREAE:
+		TREA E -1
+		Stop
+	Spawn.LITRA:
+		LITR A -1
+		Stop
+	Spawn.LIT7A:
+		LIT7 A -1
+		Stop
+	Spawn.TREAG:
+		TREA G -1
+		Stop
+	Spawn.SINKA:
+		SINK A -1
+		Stop
+	Spawn.BONEA:
+		BONE A -1
+		Stop
+	Spawn.BONEB:
+		BONE B -1
+		Stop
+	Spawn.HEL3A:
+		HEL3 A -1
+		Stop
+	Spawn.GGOOA:
+		GGOO A -1
+		Stop
+	Spawn.SOFDA:
+		SOFD A -1
+		Stop
+	Spawn.SOFDA:
+		SOFD A -1
+		Stop
+	Spawn.SOFDB:
+		SOFD B -1
+		Stop
+	Spawn.SPEAA:
+		SPEA A -1
+		Stop
+	Spawn.COLWA:
+		COLW A -1
+		Stop
+	Spawn.PILWA:
+		PILW A -1
+		Stop
+	Spawn.STOVA:
+		STOV A -1
+		Stop
+	Spawn.KNIGA:
+		KNIG A -1
+		Stop
+	Spawn.KNIGB:
+		KNIG B -1
+		Stop
+	Spawn.TAB2A:
+		TAB2 A -1
+		Stop
+	Spawn.TAB1A:
+		TAB1 A -1
+		Stop
+	Spawn.TAB3A:
+		TAB3 A -1
+		Stop
+	Spawn.TAB4A:
+		TAB4 A -1
+		Stop
+	Spawn.TREAH:
+		TREA H -1
+		Stop
+	Spawn.WTRKA:
+		WTRK A -1
+		Stop
+	Spawn.VASEA:
+		VASE A -1
+		Stop
+	Spawn.VAS2A:
+		VAS2 A -1
+		Stop
+	Spawn.WEL1A:
+		WEL1 A -1
+		Stop
+	Spawn.WEL3A:
+		WEL3 A -1
+		Stop
+	Spawn.BPAKA:
+		BPAK A -1
+		Stop
+	Spawn.BAR2A:
+		BAR2 A -1
+		Stop
+	Spawn.BAR4A:
+		BAR4 A -1
+		Stop
+	Spawn.KEYSA:
+		KEYS A -1
+		Stop
+	Spawn.KEYSC:
+		KEYS C -1
+		Stop
+	Spawn.CGUNP:
+		CGUN P -1
+		Stop
+	Spawn.CGUNU:
+		CGUN U -1
+		Stop
+	Spawn.CGUNP:
+		CGUN P -1
+		Stop
+	Spawn.WKNIF:
+		KNIF P -1
+		Stop
+	Spawn.WCLIA:
+		WCLI A -1
+		Stop
+	Spawn.WLUGR:
+		LUGR P -1
+		Stop
+	Spawn.WAMMA:
+		WAMM A -1
+		Stop
+	Spawn.WAMMB:
+		WAMM B -1
+		Stop
+	Spawn.WCLIA:
+		WCLI A -1
+		Stop
+	Spawn.WCLIB:
+		WCLI B -1
+		Stop
+	Spawn.WCLIB:
+		WCLI B -1
+		Stop
+	Spawn.CGUNP:
+		CGUN P -1
+		Stop
+	Spawn.FLAMP:
+		FLAM P -1
+		Stop
+	Spawn.WGASA:
+		WGAS A -1
+		Stop
+	Spawn.WGASA:
+		WGAS A -1
+		Stop
+	Spawn.MGUNP:
+		MGUN P -1
+		Stop
+	Spawn.MGUNU:
+		MGUN U -1
+		Stop
+	Spawn.WCLIA:
+		WCLI A -1
+		Stop
+	Spawn.WCLIB:
+		WCLI B -1
+		Stop
+	Spawn.WROKA:
+		WROK A -1
+		Stop
+	Spawn.WROCP:
+		WROC P -1
+		Stop
+	Spawn.WRKTA:
+		WRKT A -1
+		Stop
+	Spawn:
+		TNT1 A -1
+		Stop
+	}
+}

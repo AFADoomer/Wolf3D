@@ -1,0 +1,264 @@
+Texture Optional GREEN, 64, 64
+{
+	Patch BLANK, 0, 0
+	{
+		Translation "0:255=[0, 64, 64]:[0, 64, 64]"
+	}
+}
+
+Texture Optional AUTOPAGE, 64, 64
+{
+	Patch BLANK, 0, 0
+	{
+		Translation "0:255=[0, 64, 64]:[0, 64, 64]"
+	}
+}
+
+//Flat replacements for floors and ceiling
+Texture Optional F_SKY1, 64, 64 {Patch BLANK, 0, 0 {Translation "0:255=[38,38,38]:[38,38,38]"}}
+Texture Optional SKY1, 64, 64 {Patch BLANK, 0, 0 {Translation "0:255=[38,38,38]:[38,38,38]"}}
+Texture Optional CEILING, 64, 64 {Patch BLANK, 0, 0 {Translation "0:255=[38,38,38]:[38,38,38]"}}
+Texture Optional FLOOR, 64, 64 {Patch BLANK, 0, 0 {Translation "0:255=[112,112,112]:[112,112,112]"}}
+Texture Optional 1D, 64, 64 {Patch BLANK, 0, 0 {Translation "0:255=[38,38,38]:[38,38,38]"}}
+Texture Optional 2D, 64, 64 {Patch BLANK, 0, 0 {Translation "0:255=[88,0,0]:[88,0,0]"}}
+Texture Optional 2E, 64, 64 {Patch BLANK, 0, 0 {Translation "0:255=[76,0,0]:[76,0,0]"}}
+Texture Optional 4D, 64, 64 {Patch BLANK, 0, 0 {Translation "0:255=[112,108,0]:[112,108,0]"}}
+Texture Optional 4E, 64, 64 {Patch BLANK, 0, 0 {Translation "0:255=[88,84,0]:[88,84,0]"}}
+Texture Optional 4F, 64, 64 {Patch BLANK, 0, 0 {Translation "0:255=[64,64,0]:[64,64,0]"}}
+Texture Optional 6F, 64, 64 {Patch BLANK, 0, 0 {Translation "0:255=[4,64,0]:[4,64,0]"}}
+Texture Optional 7D, 64, 64 {Patch BLANK, 0, 0 {Translation "0:255=[0,112,112]:[0,112,112]"}}
+Texture Optional 7F, 64, 64 {Patch BLANK, 0, 0 {Translation "0:255=[0,64,64]:[0,64,64]"}}
+Texture Optional 8D, 64, 64 {Patch BLANK, 0, 0 {Translation "0:255=[64,64,252]:[64,64,252]"}}
+Texture Optional 98, 64, 64 {Patch BLANK, 0, 0 {Translation "0:255=[0,0,152]:[0,0,152]"}}
+Texture Optional 9D, 64, 64 {Patch BLANK, 0, 0 {Translation "0:255=[0,0,88]:[0,0,88]"}}
+Texture Optional 9E, 64, 64 {Patch BLANK, 0, 0 {Translation "0:255=[0,0,76]:[0,0,76]"}}
+Texture Optional AE, 64, 64 {Patch BLANK, 0, 0 {Translation "0:255=[52,0,88]:[52,0,88]"}}
+Texture Optional BF, 64, 64 {Patch BLANK, 0, 0 {Translation "0:255=[64,0,64]:[64,0,64]"}}
+Texture Optional D7, 64, 64 {Patch BLANK, 0, 0 {Translation "0:255=[128,80,44]:[128,80,44]"}}
+Texture Optional DC, 64, 64 {Patch BLANK, 0, 0 {Translation "0:255=[72,56,24]:[72,56,24]"}}
+Texture Optional DD, 64, 64 {Patch BLANK, 0, 0 {Translation "0:255=[64,48,24]:[64,48,24]"}}
+Texture Optional DE, 64, 64 {Patch BLANK, 0, 0 {Translation "0:255=[64,44,20]:[64,44,20]"}}
+Texture Optional DF, 64, 64 {Patch BLANK, 0, 0 {Translation "0:255=[40,32,12]:[40,32,12]"}}
+Texture Optional E1, 64, 64 {Patch BLANK, 0, 0 {Translation "0:255=[0,100,100]:[0,100,100]"}}
+Texture Optional HIGHLITE, 64, 64 {Patch BLANK, 0, 0 {Translation "0:255=[255,255,0]:[255,255,0]"}}
+
+Texture Optional HUDBKG1, 4, 31
+{
+	Patch BLANK, 0, 0
+	{
+		Translation "0:255=[112,112,112]:[112,112,112]"
+	}
+}
+
+Texture Optional HUDBKGS, 1, 15
+{
+	Patch HUDBKG1, 0, 0
+}
+
+Texture Optional HUDBKG, 30, 31
+{
+	Patch HUDBKG1, -1, 0
+	Patch HUDBKG1, 26, 0
+
+	Patch HUDBKGS, 3, -3
+	Patch HUDBKGS, 4, -11
+	Patch HUDBKGS, 5, -13
+	Patch HUDBKGS, 6, -14
+	Patch HUDBKGS, 20, -14
+	Patch HUDBKGS, 21, -14
+	Patch HUDBKGS, 22, -14
+	Patch HUDBKGS, 23, -13
+	Patch HUDBKGS, 24, -11
+	Patch HUDBKGS, 25, -3
+
+	Patch HUDBKGS, 3, 17
+	Patch HUDBKGS, 4, 22
+	Patch HUDBKGS, 5, 28
+	Patch HUDBKGS, 23, 28
+	Patch HUDBKGS, 24, 20
+	Patch HUDBKGS, 25, 17
+}
+
+Texture Optional M_BSEL1, 24, 16
+{
+	Graphic WVGA0011, 0, 0
+	{
+		Translation "45:45=[0, 0, 88]:[0, 0, 88]"
+	}
+}
+
+Texture Optional M_BSEL2, 24, 16
+{
+	Graphic WVGA0012, 0, 0
+	{
+		Translation "45:45=[0, 0, 88]:[0, 0, 88]"
+	}
+}
+
+Texture Optional PLATA0, 32, 32
+{
+	Graphic UNKNA0, 0, 0
+}
+
+Sprite LUGRP0, 64, 64
+{
+	Offset 32, 64
+	Graphic LUGRP0, 0, 0
+}
+
+Sprite KNIFP0, 64, 64
+{
+	Offset 32, 64
+	Graphic KNIFP0, 0, 0
+}
+
+Sprite WBPKA0, 64, 64
+{
+	Offset 32, 64
+	Graphic WBPKA0, 0, 0
+}
+
+Sprite FLAMP0, 256, 128
+{
+	Offset 128, 128
+	Graphic FLAMP0, 0, 0
+}
+
+Sprite VESTA0, 24, 24
+{
+	Offset 12, 24
+	Graphic VESTA0, 0, 0
+}
+Sprite WGASA0, 97, 82
+{
+	Offset 48, 82
+	Graphic WGASA0, 0, 0
+}
+Sprite WRKTA0, 14, 19
+{
+	Offset 7, 19
+	Graphic WRKTA0, 0, 0
+}
+Sprite WROCP0, 256, 128
+{
+	Offset 128, 128
+	Graphic WROCP0, 0, 0
+}
+Sprite WROKA0, 140, 80
+{
+	Offset 70, 80
+	Graphic WROKA0, 0, 0
+}
+Sprite WROKB0, 64, 64
+{
+	Offset 32, 64
+	Graphic WROKB0, 0, 0
+}
+Sprite WSTRA0, 64, 64
+{
+	Offset 32, 64
+	Graphic WSTRA0, 0, 0
+}
+Sprite UNIFA0, 64, 32
+{
+	Offset 32, 32
+	Graphic UNIFA0, 0, 0
+}
+
+Texture Optional DOS2, 15, 15
+{
+	Graphic DOS, 0, 0
+}
+
+Texture Optional BOSS, 640, 400
+{
+	Graphic BLACK, 0, 0
+	Graphic BLACK, 0, 200
+	Graphic BLACK, 320, 0
+	Graphic BLACK, 320, 200
+	Graphic DOS, 0, 0
+}
+
+Texture Optional BOSS2, 320, 200
+{
+	Graphic BLACK, 0, 0
+	Graphic BLACK, 0, 200
+	Graphic BLACK, 320, 0
+	Graphic BLACK, 320, 200
+	Graphic DOS2, 0, 0
+}
+
+Texture Optional FADEGRN, 1, 1 {Patch BLACK, 0, 0 {Translation "0:255=[0, 64, 64]:[0, 64, 64]"}}
+
+Texture Optional FADEGRN1, 320, 200 {Patch FADE1, 0, 0 {Translation "0:255=[0, 64, 64]:[0, 64, 64]"}}
+Texture Optional FADEGRN2, 320, 200 {Patch FADE2, 0, 0 {Translation "0:255=[0, 64, 64]:[0, 64, 64]"}}
+Texture Optional FADEGRN3, 320, 200 {Patch FADE3, 0, 0 {Translation "0:255=[0, 64, 64]:[0, 64, 64]"}}
+Texture Optional FADEGRN4, 320, 200 {Patch FADE4, 0, 0 {Translation "0:255=[0, 64, 64]:[0, 64, 64]"}}
+Texture Optional FADEGRN5, 320, 200 {Patch FADE5, 0, 0 {Translation "0:255=[0, 64, 64]:[0, 64, 64]"}}
+Texture Optional FADEGRN6, 320, 200 {Patch FADE6, 0, 0 {Translation "0:255=[0, 64, 64]:[0, 64, 64]"}}
+Texture Optional FADEGRN7, 320, 200 {Patch FADE7, 0, 0 {Translation "0:255=[0, 64, 64]:[0, 64, 64]"}}
+Texture Optional FADEGRN8, 320, 200 {Patch FADE8, 0, 0 {Translation "0:255=[0, 64, 64]:[0, 64, 64]"}}
+
+Texture Optional FADERED, 2, 2 {Patch BLACK, 0, 0 {Translation "0:255=[255, 0, 0]:[255, 0, 0]"}}
+
+Texture Optional FADERED1, 320, 200 {Patch FADE1, 0, 0 {Translation "0:255=[255, 0, 0]:[255, 0, 0]"}}
+Texture Optional FADERED2, 320, 200 {Patch FADE2, 0, 0 {Translation "0:255=[255, 0, 0]:[255, 0, 0]"}}
+Texture Optional FADERED3, 320, 200 {Patch FADE3, 0, 0 {Translation "0:255=[255, 0, 0]:[255, 0, 0]"}}
+Texture Optional FADERED4, 320, 200 {Patch FADE4, 0, 0 {Translation "0:255=[255, 0, 0]:[255, 0, 0]"}}
+Texture Optional FADERED5, 320, 200 {Patch FADE5, 0, 0 {Translation "0:255=[255, 0, 0]:[255, 0, 0]"}}
+Texture Optional FADERED6, 320, 200 {Patch FADE6, 0, 0 {Translation "0:255=[255, 0, 0]:[255, 0, 0]"}}
+Texture Optional FADERED7, 320, 200 {Patch FADE7, 0, 0 {Translation "0:255=[255, 0, 0]:[255, 0, 0]"}}
+Texture Optional FADERED8, 320, 200 {Patch FADE8, 0, 0 {Translation "0:255=[255, 0, 0]:[255, 0, 0]"}}
+
+Sprite WBXPA0, 64, 64 {Offset 32, 64 Graphic WBXPA0, 0, 0}
+Sprite WBXPB0, 64, 64 {Offset 32, 64 Graphic WBXPB0, 0, 0}
+Sprite WBXPC0, 64, 64 {Offset 32, 64 Graphic WBXPC0, 0, 0}
+Sprite WBXPD0, 64, 64 {Offset 32, 64 Graphic WBXPD0, 0, 0}
+Sprite WBXPE0, 64, 64 {Offset 32, 64 Graphic WBXPE0, 0, 0}
+
+//Player
+Sprite Optional PLAYA1, 64, 64 {Offset 32, 64 Graphic PLAYA1, 0, 0}
+Sprite Optional PLAYA2A8, 64, 64 {Offset 32, 64 Graphic PLAYA2A8, 0, 0}
+Sprite Optional PLAYA3A7, 64, 64 {Offset 32, 64 Graphic PLAYA3A7, 0, 0}
+Sprite Optional PLAYA4A6, 64, 64 {Offset 32, 64 Graphic PLAYA4A6, 0, 0}
+Sprite Optional PLAYA5, 64, 64 {Offset 32, 64 Graphic PLAYA5, 0, 0}
+Sprite Optional PLAYB1, 64, 64 {Offset 32, 64 Graphic PLAYB1, 0, 0}
+Sprite Optional PLAYB2B8, 64, 64 {Offset 32, 64 Graphic PLAYB2B8, 0, 0}
+Sprite Optional PLAYB3B7, 64, 64 {Offset 32, 64 Graphic PLAYB3B7, 0, 0}
+Sprite Optional PLAYB4B6, 64, 64 {Offset 32, 64 Graphic PLAYB4B6, 0, 0}
+Sprite Optional PLAYB5, 64, 64 {Offset 32, 64 Graphic PLAYB5, 0, 0}
+Sprite Optional PLAYC1, 64, 64 {Offset 32, 64 Graphic PLAYC1, 0, 0}
+Sprite Optional PLAYC2C8, 64, 64 {Offset 32, 64 Graphic PLAYC2C8, 0, 0}
+Sprite Optional PLAYC3C7, 64, 64 {Offset 32, 64 Graphic PLAYC3C7, 0, 0}
+Sprite Optional PLAYC4C6, 64, 64 {Offset 32, 64 Graphic PLAYC4C6, 0, 0}
+Sprite Optional PLAYC5, 64, 64 {Offset 32, 64 Graphic PLAYC5, 0, 0}
+Sprite Optional PLAYD1, 64, 64 {Offset 32, 64 Graphic PLAYD1, 0, 0}
+Sprite Optional PLAYD2D8, 64, 64 {Offset 32, 64 Graphic PLAYD2D8, 0, 0}
+Sprite Optional PLAYD3D7, 64, 64 {Offset 32, 64 Graphic PLAYD3D7, 0, 0}
+Sprite Optional PLAYD4D6, 64, 64 {Offset 32, 64 Graphic PLAYD4D6, 0, 0}
+Sprite Optional PLAYD5, 64, 64 {Offset 32, 64 Graphic PLAYD5, 0, 0}
+Sprite Optional PLAYE0, 64, 64 {Offset 32, 64 Graphic PLAYE0, 0, 0}
+Sprite Optional PLAYF0, 64, 64 {Offset 32, 64 Graphic PLAYF0, 0, 0}
+Sprite Optional PLAYG0, 64, 64 {Offset 32, 64 Graphic PLAYG0, 0, 0}
+Sprite Optional PLAYH0, 64, 64 {Offset 32, 64 Graphic PLAYH0, 0, 0}
+Sprite Optional PLAYI0, 64, 64 {Offset 32, 64 Graphic PLAYI0, 0, 0}
+Sprite Optional PLAYJ0, 64, 64 {Offset 32, 64 Graphic PLAYJ0, 0, 0}
+Sprite Optional PLAYK0, 64, 64 {Offset 32, 64 Graphic PLAYK0, 0, 0}
+Sprite Optional PLAYL0, 64, 64 {Offset 32, 64 Graphic PLAYL0, 0, 0}
+Sprite Optional PLAYM0, 64, 64 {Offset 32, 64 Graphic PLAYM0, 0, 0}
+Sprite Optional PLAYN0, 64, 64 {Offset 32, 64 Graphic PLAYN0, 0, 0}
+
+// Shut up stupid parsing errors from default MENUDEF
+Graphic M_DOOM, 1, 1 { Patch BLACK, 0, 0 }
+Graphic M_NGAME, 1, 1 { Patch BLACK, 0, 0 }
+Graphic M_OPTION, 1, 1 { Patch BLACK, 0, 0 }
+Graphic M_LOADG, 1, 1 { Patch BLACK, 0, 0 }
+Graphic M_SAVEG, 1, 1 { Patch BLACK, 0, 0 }
+Graphic M_QUITG, 1, 1 { Patch BLACK, 0, 0 }
+Graphic M_EPISOD, 1, 1 { Patch BLACK, 0, 0 }
+Graphic M_NEWG, 1, 1 { Patch BLACK, 0, 0 }
+Graphic M_SKILL, 1, 1 { Patch BLACK, 0, 0 }
+Graphic M_LOADG, 1, 1 { Patch BLACK, 0, 0 }
+Graphic M_SAVEG, 1, 1 { Patch BLACK, 0, 0 }
+Graphic M_SKULL1, 1, 1 { Patch BLACK, 0, 0 }
+Graphic M_SKULL2, 1, 1 { Patch BLACK, 0, 0 }

@@ -1,0 +1,177 @@
+DEFAULTLISTMENU
+{
+	Font "WOLFFNTL", "WolfMenuGray", "WolfMenuLightGray"
+	Selector "M_BSEL1", -26, -2
+	Linespacing 13
+}
+
+LISTMENU "MainMenu"
+{
+	StaticPatch 0, 0, "M_SMENU"
+
+	Position 100, 61
+	StaticPatch 70, 57, "M_SBORTL"
+	StaticPatch 72, 57, "M_SBORTR"
+	StaticPatch 70, 92, "M_SBORBL"
+	StaticPatch 72, 92, "M_SBORBR"
+	TextItem "New Game", "n", "PlayerclassMenu"
+	TextItem "Sound", "s", "SoundOptions"
+	TextItem "Control", "c", "OptionsMenu" //CustomizeControls"
+	TextItem "Load Game", "l", "LoadGameMenu"
+	TextItem "Save Game", "s", "SaveGameMenu"
+	TextItem "Change View", "w", "VideoModeMenu"
+	ifOption(ReadThis)
+	{
+		TextItem "Read This!", "r", "ReadThisMenu"
+	}
+	TextItem "End Game", "e", "EndGameMenu"
+	//No idea if this will ever be able to work right...
+	//TextItem "Back to Demo", "b", "CloseMenu"
+	Font "BigFont", "WolfMenuYellow", "WolfMenuYellowBright"
+	TextItem "Back to Game", "b", "CloseMenu"
+	Font "BigFont", "WolfMenuGray", "WolfMenuLightGray"
+	TextItem "Quit", "q", "QuitMenu"
+}
+
+ListMenu "EpisodeMenu"
+{
+	NetgameMessage "$NETGAME"
+
+	StaticPatch 0, 0, "MENUBACS"
+
+	Font "BigFont", "WolfMenuYellowBright"
+	StaticTextCentered 160, 4, "Which episode to play?"
+	Font "BigFont", "WolfMenuGray", "WolfMenuLightGray"
+
+	StaticPatch 7, 20, "M_SBORTL"
+	StaticPatch 140, 20, "M_SBORTR"
+	StaticPatch 7, 82, "M_SBORBL"
+	StaticPatch 140, 82, "M_SBORBR"
+
+	StaticPatch 0, 0, "M_EPISAL"
+
+	Selector "M_BSEL1", -88, -3
+
+	Position 98, 25
+	Linespacing 17
+	// items will be filled in by MAPINFO
+}
+
+ListMenu "SkillMenu"
+{
+	StaticPatch 0, 0, "MENUBACS"
+
+	Font "BigFont", "WolfMenuYellowBright"
+
+	//To accomodate skill levels...
+	StaticTextCentered 160, 34, "How tough are you?"
+
+	StaticPatch 46, 50, "M_SBORTL"
+	StaticPatch 96, 50, "M_SBORTR"
+	StaticPatch 46, 58, "M_SBORBL"
+	StaticPatch 96, 58, "M_SBORBR"
+
+	StaticPatch 82, 60, "M_SBABY"
+	StaticPatch 126, 60, "M_SEASY"
+	StaticPatch 170, 60, "M_SNORMA"
+	StaticPatch 214, 60, "M_SHARD"
+
+	//Common to both...
+	Font "BigFont", "WolfMenuGray", "WolfMenuLightGray"
+
+	Position 75, 102
+}
+
+ListMenu "LoadGameMenu"
+{
+	NetgameMessage "$LOADNET"
+	StaticPatchCentered 480, -1, "M_SLOADG"
+	Position 80,54
+	Class "LoadMenu"	// uses its own implementation
+}
+
+ListMenu "SaveGameMenu"
+{
+	StaticPatchCentered 480, -1, "M_SSAVEG"
+	Position 80,54
+	Class "SaveMenu"	// uses its own implementation
+}
+
+OptionMenuSettings
+{
+	Linespacing 10
+}
+
+
+OptionMenu "OptionsMenu"
+{
+	Title "OPTIONS"
+	Submenu "Wolfenstein 3D TC Options",	"TCOptions"
+	StaticText " "
+	Submenu "Customize Controls",		"CustomizeControls"
+	Submenu "Mouse options",		"MouseOptions"
+	Submenu "Joystick options",		"JoystickOptions"
+	StaticText " "
+	Submenu "Player Setup",			"PlayerMenu"
+	Submenu "Gameplay Options",		"GameplayOptions"
+	Submenu "Compatibility Options",	"CompatibilityOptions"
+	Submenu "Automap Options",		"AutomapOptions"
+	Submenu "HUD Options",			"HUDOptions"
+	Submenu "Miscellaneous Options",	"MiscOptions"
+	Submenu "Sound Options",		"SoundOptions"
+	Submenu "Display Options",		"VideoOptions"
+	Submenu "Set video mode",		"VideoModeMenu"
+	StaticText " "
+	SafeCommand "Reset to defaults",	"reset2defaults"
+	SafeCommand "Reset to last saved",	"reset2saved"
+	Command "Go to console",		"menuconsole"
+}
+
+OptionMenu "TCOptions"
+{
+	Title "WOLF3D TC OPTIONS"
+	Option "Disable Wolf3D-style movement",	"g_momentum", "YesNo"
+	Option "Enable Wolf3D-style cheats",	"goobers", "YesNo"
+	StaticText ""
+	Option "Skip 'Get Psyched' screen",	"g_nointro", "YesNo"
+	StaticText ""
+	Option "Use fast fireballs",		"g_fastfireballs", "YesNo"
+	Slider "Max pushwall move distance",	"g_maxpushwallmove", 2, 5, 1
+	StaticText ""
+	Option "Show actor icons on automap",	"g_mapmarkers", "YesNo"
+	Slider "Map marker scale",		"g_mapmarkerscale", 1, 16, 1
+	StaticText ""
+	StaticText ""
+	StaticText "Map marker visibility setting changes will not"
+	StaticText "take effect until a new map is loaded!"
+}
+
+ListMenu "PlayerMenu"
+{
+	Font "BigFont", "WolfMenuYellowBright"
+	StaticTextCentered 160, 4, "$MNU_PLAYERSETUP"
+	Font "SmallFont", "WolfMenuGray", "WolfMenuLightGray"
+	Linespacing 16
+	Position 48, 36
+
+	PlayerNameBox "Name", -2, "Playerbox"
+	Selector "-", -16, -1
+
+	MouseWindow 0, 220
+	PlayerDisplay 220, 80, "20 00 00", "80 40 00", 1, "PlayerDisplay"
+	
+	ValueText "Team", "Team"
+	ValueText "Color", "Color"
+	Linespacing 12
+	Slider "Red", "Red", 0, 255, 16
+	Slider "Green", "Green", 0, 255, 16
+	Linespacing 16
+	Slider "Blue", "Blue", 0, 255, 16
+	ValueText "Class", "Class"
+	ValueText "Skin", "Skin"
+	ValueText "Gender", "Gender", "Gender"
+	ValueText "Autoaim", "Autoaim", "Autoaim"
+	ValueText "Switch on pickup", "Switch", "OffOn"
+	ValueText "Always Run", "AlwaysRun", "OnOff"
+	Class "PlayerMenu"
+}

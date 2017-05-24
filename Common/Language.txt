@@ -1,0 +1,239 @@
+[enu default]
+
+//Wolf Exit Messages
+QUITMSG1 = "Dost thou wish to\nleave with such hasty\nabandon?";
+QUITMSG2 = "Chickening out...\nalready?";
+QUITMSG3 = "Press N for more carnage.\nPress Y to be a weenie.";
+QUITMSG4 = "So, you think you can\nquit this easily, huh?";
+QUITMSG5 = "Press N to save the world.\nPress Y to abandon it in\nits hour of need.";
+QUITMSG6 = "Press N if you are brave.\nPress Y to cower in shame.\n";
+QUITMSG7 = "Heroes, press N.\nWimps, press Y.";
+QUITMSG8 = "You are at an intersection.\nA sign says, 'Press Y to quit.'\n>";
+QUITMSG9 = "For guns and glory, press N.\nFor work and worry, press Y.";
+//SoD Exit Messages
+QUITMSG10 = "Heroes don't quit, but\ngo ahead and press Y\nif you aren't one.";
+QUITMSG11 = " Press Y to quit,\n or press N to enjoy\n more violent diversion.";
+QUITMSG12 = "Depressing the Y key means\nyou must return to the\nhumdrum workday world.";
+QUITMSG13 = "Hey, quit or play,\nY or N:\nit's your choice.";
+QUITMSG14 = "Sure you don't want to\nwaste a few more\nproductive hours?";
+QUITMSG15 = "I think you had better\nplay some more. Please\npress N...please?";
+QUITMSG16 = "If you are tough, press N.\nIf not, press Y daintily.";
+QUITMSG17 = "I'm thinkin' that\nyou might wanna press N\nto play more. You do it.";
+QUITMSG18 = "Sure. Fine. Quit.\nSee if we care.\nGet it over with.\nPress Y.";
+
+ENDGAME = "Are you sure you want \nto end the game you \nare playing?\n\n(Y or N)";
+LOADNET = "You can't do load while in a net game!\n\nPress a key.";
+QLOADNET = "You can't quickload during a netgame!\n\nPress a key.";
+QSAVESPOT = "You haven't picked a quicksave slot yet!\n\nPress a key.";
+SAVEDEAD = "You can't save if you aren't playing!\n\nPress a key.";
+QSPROMPT = "Quicksave over your game named\n\n'%s'?\n\nPress Y or N.";
+QLPROMPT = "Do you want to quickload the game named\n\n'%s'?\n\nPress Y or N.";
+NEWGAME = "You can't start a new game\nwhile in a network game.\n\nPress a key.";
+NETEND = "You can't end a netgame!\n\nPress a key.";
+
+SWSTRING = "Please Select 'Read This!'\nfrom the Options menu to\nfind out how to order this\nepisode from Apogee.";
+
+STSTR_DQDON = "God Mode ON";
+STSTR_DQDOFF = "God Mode OFF";
+STSTR_KFAADDED = "All Weapons, Keys, and Ammo Added";
+STSTR_FAADDED = "All Weapons and Ammo Added";
+STSTR_NCON = "Walk Through Walls ON";
+STSTR_NCOFF = "Walk Through Walls OFF";
+STSTR_CHOPPERS = "";
+
+DOSY = "";
+
+SAVEGAMENAME = "wolf3dsv";
+
+//Custom Messages
+PRESS = "Press a key";
+PRESSKEY = "Press a key.";
+PRESSYN = "Press Y or N.";
+
+GOOBERS = "Debugging keys are\nnow available!";
+CHEAT_ILM = "You now have 100% Health,\n99 Ammo and both Keys!\n\nNote that you have basically\neliminated your chances of\ngetting a high score!";
+CHEAT_GOD_ON = "God mode ON";
+CHEAT_GOD_OFF = "God mode OFF";
+CHEAT_ITEMS = "Free items!";
+
+LOCKSILVER = "This door requires the silver key";
+LOCKGOLD = "This door requires the gold key";
+
+END_1A_TITLE = "CONGRATULATIONS!";
+END_1A_UPPER = "You run out of the castle and hook up with the Underground.  They inform you that the rumors were true: some hideous human experiments were seen ";
+END_1A_LOWER = "around Castle Hollehammer. So Operation Eisenfaust is real!\n\nYou must journey there and terminate the maniacal Dr. Schabbs before his undead army marches against humanity!";
+END_1B_TITLE = "MORE WOLFENSTEIN";
+END_1B = "And in episode three, Hitler hides in his titanic bunker as the Third Reich crumbles about him.  It is your job to assassinate him, ending his mad reign.\n\nAnd if you like Wolfenstein, you'll love the prequel trilogy of Nocturnal Missions!  Thirty more action-packed, super- challenging levels!";
+END_2A_TITLE = "CONGRATULATIONS!";
+END_2A_UPPER = "You stand over Schabbs' fat, evil, swollen putrid body, glad your mission is finally over.  All his journals and equipment will be destroyed.  Humanity is safe from ";
+END_2A_LOWER = "his hordes of hideous mutants.\n\nYet the Nazi atrocities continue: thousands march into death camps even as the Nazi war machine falls to its knees.  There is \nonly one way to stop the madness. . . .";
+END_2B_TITLE = "MISSION: TERMINATE HITLER";
+END_2B = "In episode three, Hitler hides in his titanic bunker as the Third Reich crumbles about him.  It is your job to assassinate him, ending his mad reign.  You find he has escaped to the Reichstag, and there you must confront him.\n\nAnd if you like Wolfenstein, you'll love the prequel trilogy of \"Nocturnal Missions!\" Thirty more action-packed, super- challenging levels!";
+END_3A_TITLE = "CONGRATULATIONS!";
+END_3A_UPPER = "The absolute incarnation of evil, Adolf Hitler, lies at your feet in a pool of his own blood.  His wrinkled, crimson- splattered visage still strains, a jagged- ";
+END_3A_LOWER = "toothed rictus trying to cry out.  Insane even in death.  Your lips pinched in bitter victory, you kick his head off his remains and spit on his corpse.\n\nSieg heil . . . huh.  Sieg hell.";
+END_3B_TITLE = "BUT THE ADVENTURE IS JUST BEGINNING!";
+END_3B = "And if you like Wolfenstein, you'll love the prequel trilogy of \"Nocturnal Missions!\"  Thirty more action-packed, super- challenging levels!  B.J. battles the Nazis as they plan large-scale chemical warfare.  Fight Otto Giftmacher, Gretel Grosse, and General Fettgesicht! ";
+END_4A_TITLE = "MAD OTTO GIFTMACHER IS DEAD!";
+END_4A_UPPER = "\nThe twisted scientist behind the chemical war lies at your feet, but the fruits of his labor grow elsewhere!  The first wave of chemical ";
+END_4A_LOWER = "war is already underway.  In the heavily guarded fortress of Erlangen are the plans for the upcoming Giftkrieg (or Poison War).  Find them and you'll know where to find General Fettgesicht, leader of the deadly assault.";
+END_4B_TITLE = "THE NEXT ADVENTURE AWAITS!";
+END_4B = "So don't wait . . . start the next adventure and find those plans!";
+END_5A_TITLE = "THE PLANS ARE IN YOUR HANDS!";
+END_5A_UPPER = "Gretel Grosse the giantess guard has fallen.  Hope her brother, Hans, doesn't get mad about this....";
+END_5A_LOWER = "Now rush to the military installation at Offenbach and stop the horrible attack before thousands die under the deadly, burning clouds of chemical war.  Only you can do it, B.J. ";
+END_5B_TITLE = "THE END IS NEAR!";
+END_5B = "Go get General Fettgeischt before he begins the mad plans of pain and destruction!";
+END_6A_TITLE = "CONGRATULATIONS!";
+END_6A_UPPER = "The General gasps his last breath, and the free world is safe from the terrifying Nazi chemical war.  You return to Allied Headquarters, a Medal ";
+END_6A_LOWER = "of Honor waiting for you.\n\nAllied Command informs you of some nefarious activities around Castle Hollehammer.  Something about some grey-skinned berserk soldiers . . . .";
+END_6B_TITLE = "YOU DID IT!";
+END_6B = "You have finished the sixth Wolfenstein episode!\n\nYou are truly one of the great heroes!  The world cheers your name!  You get your picture taken with the president!  People name their babies after you!  You marry a movie star!  Yes!  You are so cool!\n\nTHE END";
+
+SODEND1 = "We owe you a great debt, Mr. Blazkowicz.\nYou have served your country well.";
+SODEND2 = "With the spear gone, the Allies will finally\nbe able to destroy Hitler...";
+
+FLOOR = "FLOOR";
+COMPLETED = "COMPLETED";
+
+BONUS = "BONUS";
+
+TIME = "TIME";
+PAR = "PAR";
+
+KILL = "KILL RATIO";
+SECRET = "SECRET RATIO";
+TREASURE = "TREASURE RATIO";
+
+KILLTOTAL = "KILL";
+SECRETTOTAL = "SECRET";
+TREASURETOTAL = "TREASURE";
+
+WIN = "YOU WIN!";
+TOTALTIME = "TOTAL TIME";
+AVERAGES = "AVERAGES";
+
+SECRETFLOOR = "SECRET FLOOR\n COMPLETED!";
+
+SECRETTUNNEL = "SECRET TUNNEL";
+SECRETCASTLE = "SECRET CASTLE";
+SECRETAREA = "    AREA\n  COMPLETED";
+
+SECRETBONUS = "15000 BONUS!";
+
+BOSSTRANS = " TRANS\n GROSSE";
+BOSSBARNACLE = "BARNACLE\nWILHELM";
+BOSSUBER = "UBERMUTANT";
+BOSSDK = " DEATH\n KNIGHT";
+
+BOSSDEFEATED = "DEFEATED!";
+
+//Enemy Obituary Strings
+DTH_DOG = "%o was bitten by a Dog.";
+DTH_BROWN = "%o was killed by a Guard.";
+DTH_BLUE = "%o was killed by an SS Nazi.";
+DTH_HANS = "%o was killed by Hans Grosse.";
+DTH_WHITE = "%o was killed by a Nazi Officer.";
+DTH_MUTANT = "%o was killed by a Mutant.";
+DTH_SCHABBS = "%o was killed by Doctor Schabbs.";
+DTH_HITLER = "%o was killed by Adolf Hitler.";
+DTH_HITLERGHOST = "%o was killed by Hitler's Ghost.";
+DTH_PACMAN = "%o was killed by a Pac-Man ghost.";
+DTH_GIFTMACHER = "%o was killed by Otto Giftmacher.";
+DTH_GRETEL = "%o was killed by Gretel Grosse.";
+DTH_FATFACE = "%o was killed by General Fettgesicht.";
+
+//Spear Enemy Obituary Strings
+DTH_TRANS = "%o was killed by Trans Grosse.";
+DTH_UBER = "%o was killed by the UberMutant.";
+DTH_KNIGHT = "%o was killed by a Death Knight.";
+DTH_ANGEL = "%o was killed by the Angel of Death.";
+DTH_SPECTRE = "%o was killed by a spectre.";
+DTH_WILHELM = "%o was killed by Barnacle Wilhelm.";
+
+DTH_SPECTRE2 = "%o was killed by a Nazi soldier's ghost.";
+DTH_SPECTRE3 = "%o was killed by a radioactive cloud.";
+
+//Item Pickup Strings
+PU_DOGFOOD = "Dog Food";
+PU_YKEY = "Gold Key";
+PU_BKEY = "Silver Key";
+PU_FOOD = "Plate of Food";
+PU_FIRSTAID = "First-Aid Kit";
+PU_CROSS = "Cross";
+PU_CHALICE = "Chalice";
+PU_CHEST = "Chest";
+PU_CROWN = "Crown";
+PU_LIFE = "Extra Life";
+PU_BONES = "Bloody Bones";
+PU_BLOOD = "Pool of Blood";
+PU_AMMOPOUCH = "Ammo Pouch";
+PU_UNIFORM = "Nazi Uniform";
+PU_VEST = "Ballistic Vest";
+PU_ADRENALINE = "Adrenaline Injection";
+PU_CLIP = "Clip of Bullets";
+PU_BULLETBOX = "Box of Bullets";
+PU_ROCKET = "A Rocket";
+PU_ROCKETS = "Crate of Rockets";
+PU_GAS = "Gas";
+PU_GASCAN = "Canister of Gas";
+PU_KNIF = "Knife";
+PU_LUGR = "Pistol";
+PU_MGUN = "Machine Gun";
+PU_CGUN = "Chaingun";
+PU_RL = "Rocket Launcher";
+PU_FLAME = "Flame Thrower";
+PU_SOD = "Spear of Destiny";
+
+PU_RADIO = "Radio";
+PU_SHELL = "Shell";
+PU_TIMER = "Timer";
+PU_BOMB = "Bomb";
+
+TAG_KNIF = "Knife";
+TAG_LUGR = "Pistol";
+TAG_MGUN = "Machine Gun";
+TAG_CGUN = "Chaingun";
+TAG_RL = "Rocket Launcher";
+TAG_FLAME = "Flame Thrower";
+
+SECRETFOUND = "A Secret Area";
+DEATHCAM = "Let's see that again!";
+
+//Cast Call Names
+CC_DOG = "Dog";
+CC_BROWN = "Guard";
+CC_BLUE = "SS Nazi";
+CC_HANS = "Hans Grosse";
+CC_WHITE = "Nazi Officer";
+CC_MUTANT = "Mutant";
+CC_SCHABBS = "Doctor Schabbs";
+CC_HITLER = "Adolf Hitler";
+CC_HITLERGHOST = "Hitler's Ghost";
+CC_PACMAN = "Pac-Man ghost";
+CC_GIFTMACHER = "Otto Giftmacher";
+CC_GRETEL = "Gretel Grosse";
+CC_FATFACE = "General Fettgesicht";
+CC_BJ = "BJ Blazkowicz";
+
+//Episode Names
+EP_1 = "Episode 1\nEscape from Wolfenstein";
+EP_2 = "Episode 2\nOperation: Eisenfaust";
+EP_3 = "Episode 3\nDie, Fuhrer, Die!";
+EP_4 = "Episode 4\nA Dark Secret";
+EP_5 = "Episode 5\nTrail of the Madman";
+EP_6 = "Episode 6\nConfrontation";
+EP_SOD = "Spear of Destiny\n";
+EP_SD2 = "Spear of Destiny: \nReturn to Danger";
+EP_SD3 = "Spear of Destiny: \nUltimate Challenge";
+
+//Skill Names
+SK_1 = "Can I play, Daddy?";
+SK_2 = "Don't hurt me.";
+SK_3 = "Bring 'em on!";
+SK_4 = "I am Death incarnate!";
+
+//Automap Labels
+AM_MONSTERS = "Enemies:";
+AM_SECRETS = "Secrets:";
+AM_ITEMS = "Treasure:";

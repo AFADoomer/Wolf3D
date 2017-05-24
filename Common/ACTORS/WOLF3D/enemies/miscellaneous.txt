@@ -1,0 +1,321 @@
+//Pac-man Ghosts
+ACTOR Blinky : WolfPacManGhostTemplate 20224 //20020
+{
+	States
+	{
+	Spawn:
+		GHO0 A 0
+		Goto Spawn.Stand
+	}
+}
+
+ACTOR Inky : WolfPacManGhostTemplate 20225 //20021
+{
+	States
+	{
+	Spawn:
+		GHO1 A 0
+		Goto Spawn.Stand
+	}
+}
+
+ACTOR Pinky : WolfPacManGhostTemplate 20226 //20022
+{
+	States
+	{
+	Spawn:
+		GHO2 A 0
+		Goto Spawn.Stand
+	}
+}
+
+ACTOR Clyde : WolfPacManGhostTemplate 20227 //20023
+{
+	States
+	{
+	Spawn:
+		GHO3 A 0
+		Goto Spawn.Stand
+	}
+}
+
+//Random Spawners
+ACTOR RandomNazi
+{
+	-SOLID
+	+NOSECTOR
+	RenderStyle None
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_Jump(192, "SpawnBrown")
+		TNT1 A 0 A_Jump(192, "SpawnBlue")
+	SpawnWhite:
+		TNT1 A 1 A_SpawnItemEx("WhiteNazi")
+		Stop
+	SpawnBlue:
+		TNT1 A 1 A_SpawnItemEx("BlueNazi")
+		Stop
+	SpawnBrown:
+		TNT1 A 1 A_SpawnItemEx("BrownNazi")
+		Stop
+	}
+}
+
+ACTOR MovingRandomNaziSpawner : WolfEnemy
+{
+	-IsMonster
+	-CountKill
+	-Solid
+	-Shootable
+	+Frightened
+	Speed 8
+	States
+	{
+	Spawn:
+		TNT1 AA 5 A_Look
+		Loop
+	Chase:
+		TNT1 AAAAAA 10 A_Chase("CheckLOS", "CheckLOS", CHF_NOPLAYACTIVE)
+	CheckLOS:
+		TNT1 AAA 5 A_FaceTarget
+		TNT1 A 1 A_CheckSight("SpawnRandom")
+		Goto See
+	SpawnRandom:
+		TNT1 A 1 A_PainAttack("RandomNazi", 0, PAF_NOSKULLATTACK, 4)
+		Goto See
+	Death:
+		TNT1 A 1
+		Stop
+	}
+}
+
+//Friendly Prisoner (weapon-aware, vaguely bot-like)
+ACTOR Prisoner : WolfEnemy
+{
+	Health 100
+	PainChance 256
+	Speed 16
+	Radius 16
+	Height 64
+	MeleeThreshold 128
+	+TELESTOMP
+	+FRIENDLY
+	+PICKUP
+	+DROPOFF
+	+NOBLOCKMONST
+	+MISSILEMORE
+	+MISSILEEVENMORE
+//	+QUICKTORETALIATE
+	-COUNTKILL
+	DamageFactor "WolfNazi", 1.0
+	DeathSound "bj/death"
+	States
+	{
+		Spawn:
+			PLAY A 1
+			PLAY A 1 A_GiveInventory("Active", 1)
+			"####" A 0 ACS_NamedExecuteAlways ("SetMapMarker", 0, 0)
+		Wander:
+			PLAY AAAAAA 1 A_Wander
+			TNT1 A 0 A_Look
+			PLAY BBBBBB 1 A_Wander
+			TNT1 B 0 A_Look
+			PLAY CCCCCC 1 A_Wander
+			TNT1 C 0 A_Look
+			PLAY DDDDDD 1 A_Wander
+			TNT1 D 0 A_Look
+			Loop
+		Pain:
+			TNT1 A 0 A_ChangeFlag("FRIGHTENED", 1)
+		See:
+			PLAY AAAAAA Random(1, 2) A_Chase ("Melee", "Missile")
+			PLAY BBBBBB Random(1, 2) A_Chase ("Melee", "Missile")
+			PLAY CCCCCC Random(1, 2) A_Chase ("Melee", "Missile")
+			PLAY DDDDDD Random(1, 2) A_Chase ("Melee", "Missile")
+			TNT1 A 0 A_CheckSightOrRange(1024.0, "Relocate")
+			TNT1 A 0 A_ChangeFlag("FRIGHTENED", 1)
+			TNT1 A 0 A_JumpIfCloser(256.0, "See")
+			TNT1 A 0 A_JumpIf(health < 35, "See")
+			TNT1 A 0 A_JumpIfInventory("WolfClip", 16, 1)
+			Goto See
+			TNT1 A 0 A_Jump(128, "See")
+			TNT1 A 0 A_ChangeFlag("FRIGHTENED", 0)
+			Loop
+		Melee:
+			PLAY E 1 A_JumpIfInventory("WolfGas", 1, "CloseMissile")
+			TNT1 A 0 A_JumpIfInventory("WolfClip", 1, "CloseMissile")
+		KnifeRefire:
+			PLAY E Random(12, 17) A_CustomMeleeAttack (ACS_NamedExecuteWithResult("A_Random", 4) * 3, "weapons/wknife", "weapons/wknife")
+			TNT1 A 0 A_Jump(225, "See")
+			TNT1 A 0 A_JumpIfTargetInLOS ("KnifeRefire", 80.0)
+			Goto See
+		CloseMissile:
+			TNT1 A 0 A_ChangeFlag("FRIGHTENED", 1)
+			TNT1 A 0 A_Recoil(20)
+		Missile:
+			TNT1 A 0 A_FaceTarget
+			TNT1 A 0 A_AlertMonsters
+			TNT1 A 0 A_CheckLOF("Missile.Resume", CLOFF_SKIPOBSTACLES | CLOFF_JUMPENEMY)
+			Goto Missile.Bullets
+		Missile.Resume:
+			TNT1 A 0 A_Jump(128, "Missile.NoSplash")
+			TNT1 A 0 A_JumpIfInventory("WolfRocketPickup", 1, "CheckRocketLauncher")
+		Missile.NoSplash:
+			TNT1 A 0 A_Jump(128, "Missile.Bullets")
+			TNT1 A 0 A_JumpIfInventory("WolfGas", 1, "CheckFlamethrower")
+		Missile.Bullets:
+			TNT1 A 0 A_JumpIfInventory("WolfClip", 20, "CheckChaingun")
+			TNT1 A 0 A_JumpIfInventory("WolfClip", 1, "CheckMachineGun")
+			Goto See
+		CheckRocketLauncher:
+			TNT1 A 0 A_JumpIfCloser(256.0, "Missile.NoSplash")
+			TNT1 A 0 A_JumpIfInventory("WolfRocketLauncher",1, "RocketLauncher")
+			Goto Missile.NoSplash
+		CheckFlamethrower:
+			TNT1 A 0 A_JumpIfInventory("WolfFlamethrower",1,"Flamethrower")
+			Goto Missile.Bullets
+		CheckChaingun:
+			TNT1 A 0 A_JumpIfInventory("WolfChainGun",1,"Chaingun")
+		CheckMachineGun:
+			TNT1 A 0 A_JumpIfInventory("WolfMachineGun",1,"Machinegun")
+		Pistol:
+			PLAY E Random(2, 7)
+			TNT1 A 0 A_FaceTarget
+			PLAY F 1 BRIGHT A_WolfAttack(0, "weapons/wpistol", 0.666, 64, 64, 2, 4, 160.0)
+			PLAY FFFFFFFF 1 BRIGHT A_Chase ("", "", CHF_FASTCHASE)
+			TNT1 A 0 A_TakeInventory("WolfClip", 1)
+			Goto See
+		MachineGun:
+			PLAY E 4
+		MachineGunRefire:
+			TNT1 A 0 A_FaceTarget
+			PLAY F 1 BRIGHT A_WolfAttack(0, "weapons/wmachinegun", 0.666, 64, 64, 2, 4, 160.0)
+			PLAY F 5 BRIGHT A_Chase ("", "", CHF_FASTCHASE)
+			TNT1 A 0 A_TakeInventory("WolfClip", 1)
+			TNT1 A 0 A_JumpIfInventory("WolfClip", 1, 1)
+			Goto See
+			TNT1 A 0 A_JumpIfTargetInLOS ("MachineGunRefire", 80.0, JLOSF_DEADNOJUMP | JLOSF_CLOSENOFOV)
+//			PLAY E 3
+			Goto See
+		Chaingun:
+			PLAY E 4
+		ChaingunRefire:
+			TNT1 A 0 A_FaceTarget
+			PLAY F 1 BRIGHT A_WolfAttack(0, "weapons/wchaingun", 0.666, 64, 64, 2, 4, 160.0)
+			PLAY F 2 BRIGHT A_Chase ("", "", CHF_FASTCHASE)
+			TNT1 A 0 A_TakeInventory("WolfClip", 1)
+			TNT1 A 0 A_JumpIfInventory("WolfClip", 1, 1)
+			Goto See
+			PLAY F 1 A_JumpIfTargetInLOS ("ChaingunRefire", 80.0, JLOSF_DEADNOJUMP | JLOSF_CLOSENOFOV)
+//			PLAY E 2
+			Goto See
+		Flamethrower:
+			PLAY E 4
+		FlamethrowerRefire:
+			TNT1 A 0 A_FaceTarget
+			PLAY F 1 BRIGHT A_CustomMissile ("WolfFlame", 32, 0, 0, 0, 0)
+			PLAY F 2 BRIGHT A_Chase ("", "", CHF_FASTCHASE)
+			TNT1 A 0 A_TakeInventory("WolfGas", 1)
+			TNT1 A 0 A_JumpIfInventory("WolfGas", 1, 1)
+			Goto See
+			TNT1 A 0 A_JumpIfTargetInLOS ("FlamethrowerRefire", 80.0, JLOSF_DEADNOJUMP | JLOSF_CLOSENOFOV)
+//			PLAY E 2
+			Goto See
+		RocketLauncher:
+			PLAY E 4
+		RocketLauncherRefire:
+			TNT1 A 0 A_FaceTarget
+			TNT1 A 0 A_Recoil(10)
+			PLAY F 3 BRIGHT A_CustomMissile ("WolfRocketPlayer", 32, 0, 0, CMF_ABSOLUTEPITCH, 0)
+			PLAY FF 1 BRIGHT A_Chase ("", "", CHF_FASTCHASE)
+			TNT1 A 0 A_TakeInventory("WolfRocketPickup", 1)
+			TNT1 A 0 A_JumpIfInventory("WolfRocketPickup", 1, 1)
+			Goto See
+			PLAY E 2
+			PLAY AAAAABBBBBCCCCCDDDDD 1 A_Chase ("", "")
+			PLAY AAAAABBBBBCCCCCDDDDD 1 A_Chase ("", "")
+			TNT1 A 0 A_JumpIfTargetInLOS ("RocketLauncherRefire", 80.0, JLOSF_DEADNOJUMP)
+			Goto See
+		XDeath:
+		Death:
+			PLAY H 6 A_GiveToTarget("Points", 2500)
+			PLAY I 6 A_Scream
+			PLAY JK 6
+			PLAY L 6 
+			PLAY M 6
+			PLAY N -1
+			Stop
+		Death.Respawn:
+			PLAY H 6 A_GiveToTarget("Points", 2500)
+			PLAY I 6 A_Scream
+			PLAY JK 6
+			PLAY L 6 
+			PLAY M 6
+			PLAY N Random(105, 210) A_Respawn(False)
+			Stop
+		Relocate:
+			PLAY A 1 A_Warp(AAPTR_PLAYER1, -64, 0, 0, 0, WARPF_INTERPOLATE)
+			TNT1 A 0 A_ClearTarget
+			TNT1 A 0 A_ChangeFlag("FRIGHTENED", 0)
+			Goto See
+	}
+}
+
+ACTOR ArmedPrisoner : Prisoner
+{
+	Speed 8
+	States
+	{
+		Spawn:
+			PLAY A 1
+			PLAY A 1 A_SpawnItemEx("DeadGuard", 64.0)
+			PLAY A 1 A_GiveInventory("WolfClip", 50)
+			PLAY A 1 A_GiveInventory("Active", 1)
+			"####" A 0 ACS_NamedExecuteAlways ("SetMapMarker", 0, 0)
+			Goto Wander
+		Relocate:
+			TNT1 A 0 A_ClearTarget
+			TNT1 A 0 A_ChangeFlag("FRIGHTENED", 0)
+			Goto See
+	}
+}
+
+ACTOR ArmedPrisonerLoaded : ArmedPrisoner
+{
+	Speed 16
+	States
+	{
+		Spawn:
+			PLAY A 1
+			PLAY A 4 A_GiveInventory("WolfClip", 99)
+			PLAY A 4 A_GiveInventory("WolfGas", 99)
+			PLAY A 4 A_GiveInventory("WolfRocketPickup", 99)
+			PLAY A 4 A_GiveInventory("WolfMachineGun", 1)
+			PLAY A 4 A_GiveInventory("WolfChaingun", 1)
+			PLAY A 4 A_GiveInventory("WolfFlamethrower", 1)
+			PLAY A 4 A_GiveInventory("WolfRocketLauncher", 1)
+			PLAY A 1 A_GiveInventory("Active", 1)
+			"####" A 0 ACS_NamedExecuteAlways ("SetMapMarker", 0, 0)
+			Goto Wander
+		Death:
+			Goto Death.Respawn
+	}
+}
+
+ACTOR ArmedPrisonerLoadedClassic : ArmedPrisoner
+{
+	Speed 16
+	States
+	{
+		Spawn:
+			PLAY A 1
+			PLAY A 4 A_GiveInventory("WolfClip", 99)
+			PLAY A 4 A_GiveInventory("WolfMachineGun", 1)
+			PLAY A 4 A_GiveInventory("WolfChaingun", 1)
+			PLAY A 1 A_GiveInventory("Active", 1)
+			"####" A 0 ACS_NamedExecuteAlways ("SetMapMarker", 0, 0)
+			Goto Wander
+	}
+}

@@ -1,0 +1,964 @@
+//Generalized Base Templates for Enemies
+// These are the things that each enemy/boss all have in common
+
+ACTOR WolfEnemy
+{
+	var int user_active;
+	var int user_mapmarker;
+	var int user_lost;
+
+	Height 54
+	Radius 26
+	Mass 10000
+	DeathHeight 0 //Must have this and NOT A_NoBlocking/A_Fall so that bodies block doors!
+	Painchance 256
+	MONSTER 
+	+FLOORCLIP
+	+FULLVOLACTIVE
+	+FULLVOLDEATH
+	+DONTGIB
+	+FIXMAPTHINGPOS
+	BloodColor "FF 00 00"
+	DamageFactor "WolfNazi", 0.0
+	States
+	{
+		Raise:
+		See:
+			"####" A 1 A_JumpIf (user_active > 0, "See.Active")
+			"####" A 0 ACS_NamedExecute ("A_AlertActors", 0, tid)
+			"####" A 0 A_GiveInventory("Active", 1) // Keep until Patrol Point code can be updated
+			"####" A 0 A_SetUserVar("user_active", 1)
+		See.Active:
+			"####" A 1 A_JumpIf (user_mapmarker > 0, "See.Marked")
+			"####" A 0 ACS_NamedExecuteAlways ("SetMapMarker", 0, 0)
+			"####" A 0 A_SetUserVar("user_mapmarker", 1)
+		See.Marked:
+			"####" A 0 A_Jump(256, "Chase")
+		Freeze:
+			"####" A 0 A_JumpIf(health <= 0, "Dead")
+			"####" A -1
+			Stop
+		UnFreeze:
+			"####" A 0 A_JumpIf(health > 0, "See")
+			"####" A 0 A_Jump(256, "Dead")
+		Invisible:
+			"####" A 0 A_CheckFlag("BOSS","Dead")
+			TNT1 A -1
+			Stop
+	}
+}
+
+ACTOR WolfBoss : WolfEnemy
+{
+	Painchance 0
+	+BOSS
+	+JUSTHIT
+	+AMBUSH
+	+LOOKALLAROUND
+	+NORADIUSDMG
+	States
+	{
+		Raise:
+			"####" A 0 A_Jump(256, "Dead")
+	}
+}
+
+//Generalized Templates for Wolf Enemy Types
+// Actual actors can be defined from these by inheriting and putting the correct sprite in the initial spawn state,
+// followed by 'Goto Spawn.Patrol' or 'Goto Spawn.Stand' (see basic.txt)
+
+ACTOR WolfDogTemplate : WolfEnemy
+{
+	Health 1
+	Height 38
+	Speed 5
+	-CANUSEWALLS
+	-ACTIVATEMCROSS
+	MeleeDamage 2
+	States
+	{
+	Spawn:
+		UNKN A 0
+		Goto Spawn.Patrol
+	Spawn.PatrolNoClip:
+		"####" A 0 A_JumpIf(angle % 90 == 0, "TurnAround")
+		"####" A 6 A_Warp(AAPTR_DEFAULT, 45, 0, 0, 0, WARPF_STOP | WARPF_INTERPOLATE, "Spawn.Patrol")
+		"####" A 6 A_Warp(AAPTR_DEFAULT, 90, 0, 0, 0, WARPF_STOP | WARPF_INTERPOLATE, "Spawn.Patrol")
+	TurnAround:
+		"####" AB 5
+		"####" CCC 1 ThrustThing (angle * 256 / 360, 1, 0, 0)
+		"####" A 0 A_JumpIf((velx != 0) || (vely != 0), "Spawn.Patrol")
+		"####" DA 5
+		"####" BBB 1 ThrustThing (angle * 256 / 360, 1, 0, 0)
+		"####" A 0 A_JumpIf((velx != 0) || (vely != 0), "Spawn.Patrol")
+		"####" A 0 A_SetAngle(angle + 180)
+	Spawn.Patrol:
+		"####" AAA 1 ThrustThing (angle * 256 / 360, 1, 0, 0)
+		"####" AAA 1 A_LookEx (0, 0, 0, 2048, 0, "See")
+		"####" BBBBBB 1 A_LookEx (0, 0, 0, 2048, 0, "See")
+		"####" CCC 1 ThrustThing (angle * 256 / 360, 1, 0, 0)
+		"####" CCC 1 A_LookEx (0, 0, 0, 2048, 0, "See")
+		"####" DDDDDD 1 A_LookEx (0, 0, 0, 2048, 0, "See")
+		"####" A 0 A_JumpIf((velx == 0) && (vely == 0), "Spawn.PatrolNoClip")
+		Loop
+	Spawn.Stand:
+		"####" AAAABBBBCCCCDDDD 1 A_LookEx (0, 0, 0, 2048, 0, "See")
+		Loop
+	Wander:
+		"####" AA 1 A_Wander
+		"####" AB 1 A_Look
+		"####" BB 1 A_Wander
+		"####" BB 1 A_Look
+		"####" CC 1 A_Wander
+		"####" CC 1 A_Look
+		"####" DD 1 A_Wander
+		"####" DD 1 A_Look
+		Loop
+	Chase:
+		"####" AAAAA 1 A_Chase
+		"####" A 1
+		"####" BBBB 1 A_Chase
+		"####" CCCCC 1 A_Chase
+		"####" CC 1
+		"####" DDDD 1 A_Chase
+		Goto See
+	Melee:
+		"####" # 0 A_Stop
+		"####" EF 5 A_FaceTarget
+		"####" G 5 A_CustomMeleeAttack(random(1,15))
+		"####" EA 5
+		Goto Chase
+	Death:
+		"####" A 0 A_JumpIf(CallACS("A_DeathScream"), 2)
+		"####" A 0 A_Scream
+		"####" HI 5
+		"####" J 5 A_GiveToTarget("Points", 200)
+	Dead:
+		"####" K -1
+		Stop
+	}
+}
+
+ACTOR WolfSoldierTemplate : WolfEnemy
+{
+	Health 25
+	Speed 3
+	States
+	{
+	Spawn:
+		UNKN A 0
+	Spawn.Stand:
+		"####" EEEEEE 4 A_LookEx (0, 0, 0, 2048, 0, "See")
+		Loop
+	Spawn.PatrolNoClip:
+		"####" A 0 A_JumpIf(angle % 90 == 0, "TurnAround")
+		"####" A 6 A_Warp(AAPTR_DEFAULT, 45, 0, 0, 0, WARPF_STOP | WARPF_INTERPOLATE, "Spawn.Patrol")
+		"####" A 6 A_Warp(AAPTR_DEFAULT, 90, 0, 0, 0, WARPF_STOP | WARPF_INTERPOLATE, "Spawn.Patrol")
+	TurnAround:
+		"####" E 10
+		"####" EEE 1 ThrustThing (angle * 256 / 360, 1, 0, 0)
+		"####" A 0 A_JumpIf((velx != 0) || (vely != 0), "Spawn.Patrol")
+		"####" E 10
+		"####" EEE 1 ThrustThing (angle * 256 / 360, 1, 0, 0)
+		"####" A 0 A_JumpIf((velx != 0) || (vely != 0), "Spawn.Patrol")
+		"####" A 0 A_SetAngle(angle + 180)
+	Spawn.Patrol:
+		"####" AAA 1 ThrustThing (angle * 256 / 360, 1, 0, 0)
+		"####" AAA 1 A_LookEx (0, 0, 0, 2048, 0, "See")
+		"####" BBBBBB 1 A_LookEx (0, 0, 0, 2048, 0, "See")
+		"####" CCC 1 ThrustThing (angle * 256 / 360, 1, 0, 0)
+		"####" CCC 1 A_LookEx (0, 0, 0, 2048, 0, "See")
+		"####" DDDDDD 1 A_LookEx (0, 0, 0, 2048, 0, "See")
+		"####" A 0 A_JumpIf((velx == 0) && (vely == 0), "Spawn.PatrolNoClip")
+		Loop
+	Chase:
+		"####" AAAAA 1 A_Chase
+		"####" A 1
+		"####" BBBB 1 A_Chase
+		"####" CCCCC 1 A_Chase
+		"####" CC 1
+		"####" DDDD 1 A_Chase
+		Goto See
+	Missile:
+		"####" # 0 A_Stop
+		"####" GH 10 A_FaceTarget
+		"####" I 8 BRIGHT A_WolfAttack(0, "shots/single", 1.0, 64, 64, 2, 4, 160.0)
+		Goto Chase
+	Pain:
+		"####" A 0 A_JumpIf(health % 1, "Pain.Alt")
+		"####" F 5 A_Pain
+		Goto Chase
+	Pain.Alt:
+		"####" J 5 A_Pain
+		Goto Chase
+	Pain:
+		"####" F 6 A_Pain
+		Goto Chase
+	Death:
+		"####" A 0 ACS_NamedExecuteAlways ("A_Drop", 0, 0, 0, user_lost)
+		"####" A 0 A_JumpIf(CallACS("A_DeathScream"), 2)
+		"####" A 0 A_Scream
+		"####" K 7
+		"####" L 8
+		"####" M 7 A_GiveToTarget("Points", 100)
+	Dead:
+		"####" N -1
+		Stop
+	}
+}
+
+ACTOR WolfSSTemplate : WolfEnemy
+{
+	Health 100
+	Speed 4
+	States
+	{
+	Spawn:
+		UNKN A 0
+	Spawn.Stand:
+		"####" EEEEEE 4 A_LookEx (0, 0, 0, 2048, 0, "See")
+		Loop
+	Spawn.PatrolNoClip:
+		"####" A 0 A_JumpIf(angle % 90 == 0, "TurnAround")
+		"####" A 6 A_Warp(AAPTR_DEFAULT, 45, 0, 0, 0, WARPF_STOP | WARPF_INTERPOLATE, "Spawn.Patrol")
+		"####" A 6 A_Warp(AAPTR_DEFAULT, 90, 0, 0, 0, WARPF_STOP | WARPF_INTERPOLATE, "Spawn.Patrol")
+	TurnAround:
+		"####" E 10
+		"####" EEE 1 ThrustThing (angle * 256 / 360, 1, 0, 0)
+		"####" A 0 A_JumpIf((velx != 0) || (vely != 0), "Spawn.Patrol")
+		"####" E 10
+		"####" EEE 1 ThrustThing (angle * 256 / 360, 1, 0, 0)
+		"####" A 0 A_JumpIf((velx != 0) || (vely != 0), "Spawn.Patrol")
+		"####" A 0 A_SetAngle(angle + 180)
+	Spawn.Patrol:
+		"####" AAA 1 ThrustThing (angle * 256 / 360, 1, 0, 0)
+		"####" AAA 1 A_LookEx (0, 0, 0, 2048, 0, "See")
+		"####" BBBBBB 1 A_LookEx (0, 0, 0, 2048, 0, "See")
+		"####" CCC 1 ThrustThing (angle * 256 / 360, 1, 0, 0)
+		"####" CCC 1 A_LookEx (0, 0, 0, 2048, 0, "See")
+		"####" DDDDDD 1 A_LookEx (0, 0, 0, 2048, 0, "See")
+		"####" A 0 A_JumpIf((velx == 0) && (vely == 0), "Spawn.PatrolNoClip")
+		Loop
+	Chase:
+		"####" AAAAA 1 A_Chase
+		"####" A 1
+		"####" BBBB 1 A_Chase
+		"####" CCCCC 1 A_Chase
+		"####" CC 1
+		"####" DDDD 1 A_Chase
+		Loop
+	Missile:
+		"####" # 0 A_Stop
+		"####" GH 10 A_FaceTarget
+		"####" I 5 BRIGHT A_WolfAttack(0, "shots/burst", 0.666, 64, 64, 2, 4, 160.0)
+		"####" H 5 A_FaceTarget
+		"####" I 5 BRIGHT A_WolfAttack(0, "shots/burst", 0.666, 64, 64, 2, 4, 160.0)
+		"####" H 5 A_FaceTarget
+		"####" I 5 BRIGHT A_WolfAttack(0, "shots/burst", 0.666, 64, 64, 2, 4, 160.0)
+		"####" H 5 A_FaceTarget
+		"####" I 5 BRIGHT A_WolfAttack(0, "shots/burst", 0.666, 64, 64, 2, 4, 160.0)
+		Goto Chase
+	Pain:
+		"####" A 0 A_JumpIf(health % 1, "Pain.Alt")
+		"####" F 5 A_Pain
+		Goto Chase
+	Pain.Alt:
+		"####" J 5 A_Pain
+		Goto Chase
+	Death:
+		"####" A 0 ACS_NamedExecuteAlways ("A_Drop", 0, 1, 0, user_lost)
+		"####" A 0 A_JumpIf(CallACS("A_DeathScream"), 2)
+		"####" A 0 A_Scream
+		"####" K 7
+		"####" L 8
+		"####" M 7 A_GiveToTarget("Points", 500)
+	Dead:
+		"####" N -1 
+		Stop
+	}
+}
+
+ACTOR WolfOfficerTemplate : WolfEnemy
+{
+	Speed 5
+	Health 50
+	States
+	{
+	Spawn:
+		UNKN A 0
+	Spawn.Stand:
+		"####" ZZZZZZ 2 A_LookEx (0, 0, 0, 2048, 0, "See")
+		Loop
+	Spawn.PatrolNoClip:
+		"####" A 0 A_JumpIf(angle % 90 == 0, "TurnAround")
+		"####" A 6 A_Warp(AAPTR_DEFAULT, 45, 0, 0, 0, WARPF_STOP | WARPF_INTERPOLATE, "Spawn.Patrol")
+		"####" A 6 A_Warp(AAPTR_DEFAULT, 90, 0, 0, 0, WARPF_STOP | WARPF_INTERPOLATE, "Spawn.Patrol")
+	TurnAround:
+		"####" Z 10
+		"####" ZZ 1 ThrustThing (angle * 256 / 360, 1, 0, 0)
+		"####" A 0 A_JumpIf((velx != 0) || (vely != 0), "Spawn.Patrol")
+		"####" Z 10
+		"####" ZZ 1 ThrustThing (angle * 256 / 360, 1, 0, 0)
+		"####" A 0 A_JumpIf((velx != 0) || (vely != 0), "Spawn.Patrol")
+		"####" A 0 A_SetAngle(angle + 180)
+	Spawn.Patrol:
+		"####" AA 1 ThrustThing (angle * 256 / 360, 1, 0, 0)
+		"####" AA 1 A_LookEx (0, 0, 0, 2048, 0, "See")
+		"####" BBBB 1 A_LookEx (0, 0, 0, 2048, 0, "See")
+		"####" CC 1 ThrustThing (angle * 256 / 360, 1, 0, 0)
+		"####" CC 1 A_LookEx (0, 0, 0, 2048, 0, "See")
+		"####" DDDD 1 A_LookEx (0, 0, 0, 2048, 0, "See")
+		"####" A 0 A_JumpIf((velx == 0) && (vely == 0), "Spawn.PatrolNoClip")
+		Loop
+	Chase:
+		"####" AAAAA 1 A_Chase
+		"####" A 1
+		"####" BBBB 1 A_Chase
+		"####" CCCCC 1 A_Chase
+		"####" CC 1
+		"####" DDDD 1 A_Chase
+		Loop
+	Missile:
+		"####" # 0 A_Stop
+		"####" E 3 A_FaceTarget
+		"####" F 10 A_FaceTarget
+		"####" G 5 BRIGHT A_WolfAttack(0, "shots/single", 1.0, 64, 64, 2, 4, 160.0)
+		Goto Chase
+	Pain:
+		"####" A 0 A_JumpIf(health % 1, "Pain.Alt")
+		"####" H 5 A_Pain
+		Goto Chase
+	Pain.Alt:
+		"####" L 5 A_Pain
+		Goto Chase
+	Death:
+		"####" A 0 ACS_NamedExecuteAlways ("A_Drop", 0, 0, 0, user_lost)
+		"####" A 0 A_JumpIf(CallACS("A_DeathScream"), 2)
+		"####" A 0 A_Scream
+		"####" I 5
+		"####" J 6
+		"####" K 5 A_GiveToTarget("Points", 400)
+		"####" M 6
+	Dead:
+		"####" N -1 
+		Stop
+	}
+}
+
+Actor WolfMutantTemplate : WolfEnemy
+{
+	Health 45
+	Speed 3
+	States
+	{
+	Spawn:
+		UNKN A 0
+	Spawn.Stand:
+		"####" ZZZZZZ 3 A_LookEx (0, 0, 0, 2048, 0, "See")
+		Loop
+	Spawn.PatrolNoClip:
+		"####" A 0 A_JumpIf(angle % 90 == 0, "TurnAround")
+		"####" A 6 A_Warp(AAPTR_DEFAULT, 45, 0, 0, 0, WARPF_STOP | WARPF_INTERPOLATE, "Spawn.Patrol")
+		"####" A 6 A_Warp(AAPTR_DEFAULT, 90, 0, 0, 0, WARPF_STOP | WARPF_INTERPOLATE, "Spawn.Patrol")
+	TurnAround:
+		"####" Z 10
+		"####" ZZZ 1 ThrustThing (angle * 256 / 360, 1, 0, 0)
+		"####" A 0 A_JumpIf((velx != 0) || (vely != 0), "Spawn.Patrol")
+		"####" Z 10
+		"####" ZZZ 1 ThrustThing (angle * 256 / 360, 1, 0, 0)
+		"####" A 0 A_JumpIf((velx != 0) || (vely != 0), "Spawn.Patrol")
+		"####" A 0 A_SetAngle(angle + 180)
+	Spawn.Patrol:
+		"####" AAA 1 ThrustThing (angle * 256 / 360, 1, 0, 0)
+		"####" AAA 1 A_LookEx (0, 0, 0, 2048, 0, "See")
+		"####" BBBBBB 1 A_LookEx (0, 0, 0, 2048, 0, "See")
+		"####" CCC 1 ThrustThing (angle * 256 / 360, 1, 0, 0)
+		"####" CCC 1 A_LookEx (0, 0, 0, 2048, 0, "See")
+		"####" DDDDDD 1 A_LookEx (0, 0, 0, 2048, 0, "See")
+		"####" A 0 A_JumpIf((velx == 0) && (vely == 0), "Spawn.PatrolNoClip")
+		Loop
+	Chase:
+		"####" AAAAA 1 A_Chase
+		"####" A 1
+		"####" BBBB 1 A_Chase
+		"####" CCCCC 1 A_Chase
+		"####" CC 1
+		"####" DDDD 1 A_Chase
+		Loop
+	Missile:
+		"####" # 0 A_Stop
+		"####" G 3 A_FaceTarget
+		"####" H 10 BRIGHT A_WolfAttack(0, "shots/single", 1.0, 64, 64, 2, 4, 160.0)
+		"####" G 5 A_FaceTarget
+		"####" I 10 BRIGHT A_WolfAttack(0, "shots/single", 1.0, 64, 64, 2, 4, 160.0)
+		"####" G 0 A_JumpIfCloser(64.0, "Missile")
+		Goto Chase
+	Pain:
+		"####" A 0 A_JumpIf(health % 1, "Pain.Alt")
+		"####" E 5 A_Pain
+		Goto Chase
+	Pain.Alt:
+		"####" J 5 A_Pain
+		Goto Chase
+	Death:
+		"####" A 0 ACS_NamedExecuteAlways ("A_Drop", 0, 0, 0, user_lost)
+		"####" A 0 A_JumpIf(CallACS("A_DeathScream"), 2)
+		"####" A 0 A_Scream
+		"####" K 3
+		"####" L 4
+		"####" M 3
+		"####" N 4 A_GiveToTarget("Points", 700)
+	Dead:
+		"####" O -1 
+		Stop
+	}
+}
+
+ACTOR WolfHitlerGhostTemplate : WolfEnemy
+{
+	Health 200
+	Speed 4
+	Painchance 0
+	+NOGRAVITY
+	+DROPOFF
+	+SPAWNFLOAT
+	+FLOAT
+	+NORADIUSDMG
+	+AMBUSH
+	+LOOKALLAROUND
+	States
+	{
+	Spawn:
+		UNKN A 0
+	Spawn.Stand:
+		"####" A 5 A_Look
+		Loop
+	Chase:
+		"####" AAAAA 1 A_Chase
+		"####" A 1
+		"####" BBBB 1 A_Chase
+		"####" CCCCC 1 A_Chase
+		"####" CC 1
+		"####" DDDD 1 A_Chase
+		Loop
+	Missile:
+		"####" E 4 A_FaceTarget
+		"####" E 0 A_JumpIf(ACS_NamedExecuteWithResult ("A_CheckFastFireballs"), "Missile.Fast")
+		"####" EEEEEEEE 4 BRIGHT A_CustomMissile ("GhostFireBall", 30, 0, 0)
+		Goto Chase
+	Missile.Fast:
+		"####" EEEEEEEE 4 BRIGHT A_CustomMissile ("FastGhostFireBall", 30, 0, 0)
+		Goto Chase
+	Death:
+		"####" F 5
+		"####" G 5 A_Scream
+		"####" HI 5
+		"####" J 5 A_GiveToTarget("Points", 2000)
+	Dead:
+		"####" K -1
+		Stop
+	}
+}
+
+//Bosses
+
+ACTOR WolfBossGrosseTemplate : WolfBoss 
+//Base template for Hans, Gretel, and Trans
+{
+	Health 850
+	Speed 3
+	MaxTargetRange 256
+	States
+	{
+	Spawn:
+		UNKN A 0
+	Spawn.Stand:
+		"####" A 5 A_Look
+		Goto Spawn + 1
+	Walk:
+		"####" AAAAA 1 A_Chase ("", "")
+		"####" A 1
+		"####" BBBB 1 A_Chase ("", "")
+		"####" CCCCC 1 A_Chase ("", "")
+		"####" CC 1
+		"####" DDDD 1 A_Chase ("", "")
+	Chase:
+		"####" AAAAA 1 A_Chase ("", "Attack")
+		"####" A 1
+		"####" BBBB 1 A_Chase ("", "Attack")
+		"####" CCCCC 1 A_Chase ("", "Attack")
+		"####" CC 1
+		"####" DDDD 1 A_Chase ("", "Attack")
+		Loop
+	Attack:
+		"####" E 15 A_FaceTarget
+		"####" F 5 A_FaceTarget
+		"####" GFGFGE 5 BRIGHT A_WolfAttack(0, "shots/single", 0.666, 64, 64, 2, 4, 160.0)
+		"####" A 0 A_JumpIfCloser(64, "Attack")
+		Goto Walk
+	Death:
+		"####" H 3 ACS_NamedExecuteAlways ("A_Drop", 0, 2, 0, user_lost)
+		"####" H 4 A_GiveToTarget("Points", 5000)
+		"####" I 8 A_Scream
+		"####" J 7 A_BossDeath
+	Dead:
+		"####" K -1 
+		Stop
+	}
+}
+
+ACTOR WolfBossSchabbsTemplate : WolfBoss
+{
+	Health 850
+	Speed 4
+	States
+	{
+	Spawn:
+		UNKN A 0
+	Spawn.Stand:
+		"####" A 5 A_Look
+		Loop
+	Chase:
+		"####" AAAAA 1 A_Chase
+		"####" A 1
+		"####" BBBB 1 A_Chase
+		"####" CCCCC 1 A_Chase
+		"####" CC 1
+		"####" DDDD 1 A_Chase
+		Loop
+	Missile:
+		"####" E 15 A_FaceTarget
+		"####" F 5 A_CustomMissile ("Syringe", 30, 18, 0)
+		Goto Chase
+	Death:
+		"####" A 75 A_Scream
+		"####" H 5
+		"####" I 5 A_GiveToTarget("Points", 5000)
+		"####" J 5
+		"####" K 5 
+		"####" K -1 A_BossDeath
+	Dead:
+		"####" K -1
+		Stop
+	Death.Cam:
+		"####" K 10 A_FaceTarget
+		"####" K 60 A_SpawnItemEx("DeathCam", -64.0, 0, 32.0, 0, 0, 0, 180.0, 0, 0, 999)
+		"####" A 60
+		"####" A 60 A_Scream
+		"####" HIJK 5
+		"####" K -1
+		Stop
+	}
+}
+
+ACTOR WolfBossHitlerMechTemplate : WolfBoss
+{
+	Health 400
+	Speed 2
+	States
+	{
+	Spawn:
+		UNKN A 0
+	Spawn.Stand:
+		"####" AAAAAAAAAAAA 1 A_Look
+		Loop
+	Chase:
+		"####" AAAAA 1 A_Chase
+		"####" AAA 1 A_Pain
+		"####" BBBB 1 A_Chase
+		"####" CCCCC 1 A_Chase
+		"####" CCC 1 A_Pain
+		"####" DDDD 1 A_Chase
+		Loop
+	Missile:
+		"####" E 15 A_FaceTarget
+		"####" F 5 A_FaceTarget
+		"####" GFGF 5 BRIGHT A_WolfAttack(0, "boss/attack", 1.0, 64, 64, 2, 4, 160.0)
+		Goto Chase
+	Death:
+		"####" H 5 A_Scream
+		"####" I 5
+		"####" J 5 A_GiveToTarget("Points", 5000)
+		"####" K 1 A_BossDeath
+	Dead:
+		"####" K -1
+		Stop
+	}
+}
+
+ACTOR WolfBossHitlerTemplate : WolfBoss
+{
+	Health 400
+	Speed 4
+	States
+	{
+	Spawn:
+		UNKN A 0
+	Spawn.Stand:
+		"####" A 5 A_Look
+		Loop
+	Chase:
+		"####" AAA 1 A_Chase
+		"####" AA 1
+		"####" B 1 A_Chase
+		"####" CCC 1 A_Chase
+		"####" CC 1
+		"####" D 1 A_Chase
+		Loop
+	Missile:
+		"####" G 15 A_FaceTarget
+		"####" H 5 A_FaceTarget
+		"####" IHIH 5 BRIGHT A_WolfAttack(0, "boss/attack", 1.0, 64, 64, 2, 4, 160.0)
+		Goto Chase
+	Death:
+		"####" A 70 A_Scream
+		"####" J 5 A_Pain
+		"####" K 5 A_GiveToTarget("Points", 5000)
+		"####" LMNO 5
+		"####" P 5 A_BossDeath
+	Dead:
+		"####" Q -1
+		Stop
+	Death.Cam:
+		"####" Q 10 A_FaceTarget
+		"####" Q 60 A_SpawnItemEx("DeathCam", -64.0, 0, 32.0, 0, 0, 0, 180.0, 0, 0, 999)
+		"####" A 60
+		"####" A 70 A_Scream
+		"####" J 5 A_Pain
+		"####" KLMNOP 5
+		"####" Q -1
+		Stop
+	}
+}
+
+ACTOR WolfBossGiftmacherTemplate : WolfBoss
+{
+	Health 850
+	Speed 3
+	States
+	{
+	Spawn:
+		UNKN A 0
+	Spawn.Stand:
+		"####" A 5 A_Look
+		Loop
+	Chase:
+		"####" AAAAA 1 A_Chase
+		"####" A 1
+		"####" BBBB 1 A_Chase
+		"####" CCCCC 1 A_Chase
+		"####" CC 1
+		"####" DDDD 1 A_Chase
+		Loop
+	Missile:
+		"####" E 15 A_FaceTarget
+		"####" F 5 BRIGHT A_CustomMissile ("WolfRocket", 30, 13, 0)
+		Goto Chase
+	Death:
+		"####" A 70 A_Scream
+		"####" GH 5
+		"####" I 5 A_GiveToTarget("Points", 5000)
+		"####" J 1 A_BossDeath
+	Dead:
+		"####" J -1
+		Stop
+	Death.Cam:
+		"####" J 10 A_FaceTarget
+		"####" J 60 A_SpawnItemEx("DeathCam", -64.0, 0, 32.0, 0, 0, 0, 180.0, 0, 0, 999)
+		"####" A 60
+		"####" A 70 A_Scream
+		"####" GHI 5
+		"####" J -1
+		Stop
+	}
+}
+
+ACTOR WolfBossFatFaceTemplate : WolfBoss
+{
+	Health 850
+	Speed 4
+	States
+	{
+	Spawn:
+		UNKN A 0
+	Spawn.Stand:
+		"####" A 5 A_Look
+		Loop
+	Chase:
+		"####" AAAAA 1 A_Chase
+		"####" A 1
+		"####" BBBB 1 A_Chase
+		"####" CCCCC 1 A_Chase
+		"####" CC 1
+		"####" DDDD 1 A_Chase
+		Loop
+	Missile:
+		"####" E 15 A_FaceTarget
+		"####" F 5 A_FaceTarget
+		"####" G 5 BRIGHT A_CustomMissile ("WolfRocket", 30, 13, 0)
+		"####" E 0 A_FaceTarget
+		"####" HGH 5 BRIGHT A_WolfAttack(0, "boss/attack", 1.0, 64, 64, 2, 4, 160.0)
+		Goto Chase
+	Death:
+		"####" A 70 A_Scream
+		"####" JK 5
+		"####" L 1 A_GiveToTarget("Points", 5000)
+		"####" L 4 A_BossDeath
+	Dead:
+		"####" M -1
+		Stop
+	Death.Cam:
+		"####" M 10 A_FaceTarget
+		"####" M 60 A_SpawnItemEx("DeathCam", -64.0, 0, 32.0, 0, 0, 0, 180.0, 0, 0, 999)
+		"####" A 60
+		"####" A 70 A_Scream
+		"####" JK 5
+		"####" L 5
+		"####" M -1
+		Stop
+	}
+}
+
+
+Actor WolfBossBarnacleWilhelmTemplate : WolfBossFatFaceTemplate //Same as FatFace, but with different death sound time delay and a gold key drop
+{
+	Health 950
+	States
+	{
+	Death:
+		"####" A 35 A_Scream
+		"####" J 5 ACS_NamedExecuteAlways ("A_Drop", 0, 2, 0, user_lost)
+		"####" K 5 A_GiveToTarget("Points", 5000)
+		"####" L 5 A_BossDeath
+	Dead:
+		"####" M -1
+		Stop
+	}
+}
+
+Actor WolfBossUberMutantTemplate : WolfBoss
+{
+	Health 1050
+	Speed 5
+	States
+	{
+	Spawn:
+		UNKN A 0
+	Spawn.Stand:
+		"####" A 5 A_Look
+		Loop
+	Chase:
+		"####" AAAAA 1 A_Chase
+		"####" A 1
+		"####" BBBB 1 A_Chase
+		"####" CCCCC 1 A_Chase
+		"####" CC 1
+		"####" DDDD 1 A_Chase
+		Loop
+	Missile:
+		"####" E 15 A_FaceTarget
+		"####" F 6 BRIGHT A_WolfAttack(0, "boss/attack", 1.0, 64, 64, 2, 4, 160.0)
+		"####" E 0 A_FaceTarget
+		"####" G 6 BRIGHT A_WolfAttack(0, "boss/attack", 1.0, 64, 64, 2, 4, 160.0)
+		"####" E 0 A_FaceTarget
+		"####" H 6 BRIGHT A_WolfAttack(0, "boss/attack", 1.0, 64, 64, 2, 4, 160.0)
+		"####" E 0 A_FaceTarget
+		"####" G 6 BRIGHT A_WolfAttack(0, "boss/attack", 1.0, 64, 64, 2, 4, 160.0)
+		"####" E 0 A_FaceTarget
+		"####" F 6 BRIGHT A_WolfAttack(0, "boss/attack", 1.0, 64, 64, 2, 4, 160.0)
+		"####" E 0 A_FaceTarget
+		Goto Chase
+	Death:
+		"####" A 36 A_Scream
+		"####" I 4 ACS_NamedExecuteAlways ("A_Drop", 0, 2, 0, user_lost)
+		"####" I 3 A_GiveToTarget("Points", 5000)
+		"####" J 8
+		"####" K 7
+		"####" L 8 A_BossDeath
+	Dead:
+		"####" M -1
+		Stop
+	}
+}
+
+ACTOR WolfBossDeathKnightTemplate : WolfBoss
+{
+	Health 1250
+	Speed 4
+	States
+	{
+	Spawn:
+		UNKN A 0
+	Spawn.Stand:
+		"####" A 5 A_Look
+		Loop
+	Chase:
+		"####" AAAAA 1 A_Chase
+		"####" A 1
+		"####" BBBB 1 A_Chase
+		"####" CCCCC 1 A_Chase
+		"####" CC 1
+		"####" DDDD 1 A_Chase
+		Loop
+	Missile:
+		"####" F 15 A_FaceTarget
+		"####" G 5 BRIGHT A_CustomMissile ("WolfRocketSoD", 48, 15, 0)
+		"####" I 5 BRIGHT A_WolfAttack(0, "boss/attack", 1.0, 64, 64, 2, 4, 160.0)
+		"####" I 0 A_FaceTarget
+		"####" H 5 BRIGHT A_CustomMissile ("WolfRocketSoD", 48, -15, 0)
+		"####" I 5 BRIGHT A_WolfAttack(0, "boss/attack", 1.0, 64, 64, 2, 4, 160.0)
+		Goto Chase
+	Death:
+		"####" A 53 A_Scream
+		"####" K 5 ACS_NamedExecuteAlways ("A_Drop", 0, 2, 0, user_lost)
+		"####" L 5 A_GiveToTarget("Points", 5000)
+		"####" MNO 5
+		"####" P 5 A_BossDeath
+	Dead:
+		"####" Q -1
+		Stop
+	}
+}
+
+Actor WolfBossAngelofDeathTemplate : WolfBoss
+{
+	Health 1450
+	Speed 4
+	Painchance 0
+	States
+	{
+	Spawn:
+		UNKN A 0
+	Spawn.Stand:
+		"####" A 5 A_Look
+		Loop
+	Chase:
+		"####" AAAAA 1 A_Chase
+		"####" A 1
+		"####" BBBB 1 A_Chase
+		"####" CCCCC 1 A_Chase
+		"####" CC 1
+		"####" DDDD 1 A_Chase
+		Loop
+	Missile:
+		"####" G 5 A_FaceTarget
+		"####" H 10 A_FaceTarget
+		"####" G 5 BRIGHT A_CustomMissile ("GreenBall", 25, 13, 0)
+		"####" G 0 A_Jump(127, "Chase")
+		"####" G 5 A_FaceTarget
+		"####" H 10 A_FaceTarget
+		"####" G 5 BRIGHT A_CustomMissile ("GreenBall", 25, 13, 0)
+		"####" G 0 A_Jump(127, "Chase")
+		"####" G 5 A_FaceTarget
+		"####" H 10 A_FaceTarget
+		"####" G 5 BRIGHT A_CustomMissile ("GreenBall", 25, 13, 0)
+	Tired:
+		"####" I 20
+		"####" J 20 A_Pain
+		"####" I 20
+		"####" J 20 A_Pain
+		"####" I 20
+		"####" J 20 A_Pain
+		"####" I 20
+		"####" I 0 A_Pain
+		Goto Chase
+	Death:
+		"####" A 1 A_GiveToTarget("Points", 5000)
+		"####" A 52 A_Scream
+		"####" K 5
+		"####" L 5 A_PlaySound("slurpie")
+		"####" MNOP 5
+		"####" Q 5 A_BossDeath
+	Dead:
+		"####" R -1
+		Stop
+	}
+}
+
+//Others
+
+ACTOR WolfPacManGhostTemplate : WolfEnemy
+{
+	Radius 32
+	Speed 5
+	Painchance 0
+	+FLOAT
+	+LOWGRAVITY
+	+SPAWNFLOAT
+	+INVULNERABLE
+	+JUSTHIT
+	+LOOKALLAROUND
+	+NOBLOOD
+	- COUNTKILL
+	- CANPUSHWALLS
+	- SOLID
+	SeeSound "ghost/sight"
+	ActiveSound "ghost/active"
+	Obituary "$DTH_PACMAN"
+	Meleedamage 1
+	States
+	{
+	Spawn:
+		UNKN A 0
+	Spawn.Stand:
+		"####" AAAAABBBBB 1 A_Look
+		Loop
+	Chase:
+		"####" AAAAABBBBB 1 A_Chase
+		Loop
+	Melee:
+		"####" A 0 A_FaceTarget
+		"####" AAAAABBBBB 1 A_MeleeAttack
+		Goto Chase
+	Dead:
+		"####" A -1
+		Loop
+	}
+}
+
+Actor WolfSpectreTemplate : WolfEnemy
+{
+	Health 100000
+	Speed 3
+	Painchance 256
+	RenderStyle Translucent
+	Alpha 0.85
+	MONSTER
+	+FLOAT
+	+LOWGRAVITY
+	+SPAWNFLOAT
+	+NOBLOOD
+	+LOOKALLAROUND
+	+AMBUSH
+	- COUNTKILL
+	MeleeDamage 1
+	States
+	{
+	Spawn:
+		UNKN A 0
+	Spawn.Stand:
+		"####" AAAABBBBCCCCDDDD 1 A_Look
+		Loop
+	Chase:
+		"####" AAAAABBBBBCCCCCDDDDD 1 A_Chase
+		Loop
+	Melee:
+		"####" A 0 A_FaceTarget
+		"####" ABCD 2 A_MeleeAttack
+		Goto Chase
+	Pain:
+	Death:
+		"####" A 0 A_UnSetSolid
+		"####" A 0 A_UnSetShootable
+		"####" E 5
+		"####" FG 5 A_GiveToTarget("Points", 200)
+		"####" H 160
+		"####" A 0 A_SetSolid
+		"####" A 0 A_SetShootable
+		"####" A 0 A_Pain
+		Goto Chase
+	Dead:
+		"####" H -1
+		Stop
+	}
+}

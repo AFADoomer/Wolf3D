@@ -1,0 +1,616 @@
+////////////////////////////////////////////////////////////////////////////////
+// Wolf3D TC - Intermission Scripts
+////////////////////////////////////////////////////////////////////////////////
+// 
+// This file contains the following scripts:
+//
+//   W_DeathCam				Places enemy in Death.Cam state (boss death action defined in MAPINFO)
+//   W_DoLevelEnd			Standard level exit script
+//   W_Intermission			Call appropriate stats screen based on game and level number
+//   W_IntermissionLevel		Handles dynamic elements of normal level intermission screen
+//   W_IntermissionLevelCountEnd	Handle jump to final values if total counts re interrupted
+//   W_IntermissionLevelDrawBJ		BJ animation for normal level intermission screen
+//   W_IntermissionLevelDrawBkg		Handles static elements of normal level intermission screen
+//   W_IntermissionStage		Handles static elements of secret floor/SoD stage completion intermission screen
+//   W_NextMap				Handles exiting to next or secretnext based on global secretmap variable
+//   W_PlayerDeathCam			Handles player-side game loop-triggered deathcam actions
+//
+////////////////////////////////////////////////////////////////////////////////
+
+str SoDPages[15] = {"SODEND1", "SODEND2", "SODEND3", "SODEND4", "SODEND5", "SODEND6", "SODEND6", "SODEND7", "SODEND8", "SODEND9", "SODEND10", "SODEND11", "SODEND12", "SODEND13", "SODEND13"};
+
+int	bonus=0,
+	deathcam = 0,
+	percent100amt = 10000,
+	tmins = 0, tsecs = 0, pmins, psecs,
+	width, height;
+
+int	initial=1, pagecount = 0, maxpage = 2, kills = 0, secrets = 0, treasures = 0;
+
+int	episode;
+
+bool	bonusadded = false;
+
+bool	secretmap = false,
+	nohud = false,
+	new = true,
+	drawing = false;
+
+//Deathcam initation
+Script "W_DeathCam" (void)
+{
+	deathcam = 1;
+
+	//Set all non-boss actors that inherit from the base WolfEnemy actor to invisible and frozen
+	For(int t=0; t<1000; t++)
+		SetActorState(t, "Freeze", true);
+
+	Delay(35);
+
+	For(t=0; t<1000; t++)
+		SetActorState(t, "Invisible", true);
+
+	//Set Activator to Death Cam replay state
+	SetActorState (0, "Death.Cam", true);
+	Delay(2 * 35);
+}
+
+//Exit Script
+Script "W_DoLevelEnd" (int Type)
+{
+	totalstats[0] += GetLevelInfo(LEVELINFO_KILLED_MONSTERS);
+	totalstats[1] += GetLevelInfo(LEVELINFO_TOTAL_MONSTERS);
+	totalstats[2] += GetLevelInfo(LEVELINFO_FOUND_ITEMS);
+	totalstats[3] += GetLevelInfo(LEVELINFO_TOTAL_ITEMS);
+	totalstats[4] += GetLevelInfo(LEVELINFO_FOUND_SECRETS);
+	totalstats[5] += GetLevelInfo(LEVELINFO_TOTAL_SECRETS);
+	totalstats[6] += Timer();
+
+	stats[0] = GetLevelInfo(LEVELINFO_KILLED_MONSTERS);
+	stats[1] = GetLevelInfo(LEVELINFO_TOTAL_MONSTERS);
+	stats[2] = GetLevelInfo(LEVELINFO_FOUND_ITEMS);
+	stats[3] = GetLevelInfo(LEVELINFO_TOTAL_ITEMS);
+	stats[4] = GetLevelInfo(LEVELINFO_FOUND_SECRETS);
+	stats[5] = GetLevelInfo(LEVELINFO_TOTAL_SECRETS);
+	stats[6] = Timer();
+	stats[7] = GetLevelInfo(LEVELINFO_PAR_TIME);
+	stats[8] = Level;
+
+	ACS_NamedExecuteAlways("Freeze", 0, 1);
+
+	Switch (Type)
+	{
+		Case 3: //SoD Map 18 to Map 21 Transition
+			ACS_NamedExecuteAlways("Freeze", 0, 1);
+			Thing_Stop(0);
+			ACS_NamedExecuteAlways("W_StorePosition", 0, GetActorX(0), GetActorY(0), PlayerNumber());
+			delay(35 * 2);
+			Teleport_NewMap (GetLevelInfo(LEVELINFO_LEVELNUM) + 3, 0, 1);
+		break;
+		Case 10: //Secret Map
+			secretmap = 1;
+		Default:
+			FadeToBlack(1.5, 0.5, 0.0, 0);
+
+			intermission = 3;
+
+			delay(15);
+
+			ACS_NamedExecute("W_Intermission", 0);
+			NamedScriptWait("W_Intermission");
+
+			delay(35);
+		break;
+	}
+}
+
+Script "W_Intermission" (void) //Set Up Stats //402
+{
+	FadeToBlack(0.0, 0.0, 0.5, 0);
+
+	Switch (GAME_SOD)
+	{
+		Case 1:
+			Switch (Level)
+			{
+				Case 21:
+					ACS_NamedExecuteAlways("W_DoFinale", 0, 2);
+				break;
+				Case 18:
+					ACS_NamedExecuteAlways("W_NextMap", 0, 0);
+				break;
+				Case 20:
+				Case 19:
+				Case 16:
+				Case 10:
+				Case 5:
+					ACS_NamedExecuteAlways("W_IntermissionStage", 0);
+				break;
+				Default:
+					ACS_NamedExecuteAlways("W_IntermissionLevel", 0);
+				break;
+			}
+		break;
+		Case 0:
+			Switch (Level)
+			{
+				Case 10:
+					ACS_NamedExecuteAlways("W_IntermissionStage", 0);
+				break;
+				Case 9:
+					Switch (Episode)
+					{
+						Case 1:
+						Case 5:
+							ACS_NamedExecuteAlways("W_DoFinale", 0, 1);
+						break;
+						Default:
+							ACS_NamedExecuteAlways("W_DoFinale", 0);
+						break;
+					}
+				break;
+				Default:
+					ACS_NamedExecuteAlways("W_IntermissionLevel", 0);
+
+				break;
+			}
+		break;
+	}
+}
+
+//Intermission Stuff
+int j, k, l;
+Script "W_IntermissionLevel" (int maxout) //506
+{
+	ACS_NamedExecuteAlways("W_CheckInput", 0);
+
+	if (maxout)
+	{
+		stats[1] = 500;
+		stats[3] = 500;
+		stats[5] = 500;
+		stats[7] = 500;
+	}
+
+	SetHudSize(320, 200, 1);
+
+	If (GetScreenWidth() * 100 / GetScreenHeight() != 125)
+	{
+		SetFont("WSMASK");
+		HudMessage (s:"A"; 0, 349, -1, 160.0, 100.0, 0);
+	}
+
+	If (GetCvar("screenblocks") >= 11)
+		SetHudSize(320, 200, 1);
+	Else
+		SetHudSize(320, 205, 0);
+
+	SetMusic("ENDLEVEL", 0, 0);
+
+	SETFONT("STATBKG");
+		HudMessageBold (s:"A"; 0, 600, -1, 0.1, 0.1, 0);
+
+	delay(35);
+
+	SetHudSize (320, 200, 1);
+
+	ACS_NamedExecute("W_IntermissionLevelDrawBJ", 0);
+
+	pmins = stats[7]%3600/60;
+	psecs = stats[7]%60;
+	tmins = (stats[6]/35)%3600/60;
+	tsecs = (stats[6]/35)%60;
+
+	SETFONT("STATFNT");
+		HudMessageBold (l:"FLOOR"; 0, 501, -1, 114.1, 16.1, 0);
+		HudMessageBold (d:level; 0, 513, -1, 209.1, 16.1, 0);
+		HudMessageBold (l:"COMPLETED"; 0, 502, -1, 114.1, 32.1, 0);
+
+		HudMessageBold (l:"BONUS"; 0, 503, -1, 189.2, 56.1, 0);
+		HudMessageBold (d:0; 0, 519, -1, 211.1, 56.1, 0);
+
+		HudMessageBold (l:"TIME"; 0, 504, -1, 189.2, 81.1, 0);
+		HudMessageBold (s:"PAR"; 0, 505, -1, 191.2, 97.1, 0);
+
+		HudMessageBold (l:"KILL"; 0, 506, -1, 230.2, 113.1, 0);
+		HudMessageBold (l:"SECRET"; 0, 507, -1, 230.2, 129.1, 0);
+		HudMessageBold (l:"TREASURE"; 0, 508, -1, 230.2, 145.1, 0);
+
+		HudMessageBold (s:"%"; 0, 509, -1, 299.1, 113.1, 0);
+		HudMessageBold (s:"%"; 0, 510, -1, 299.1, 129.1, 0);
+		HudMessageBold (s:"%"; 0, 511, -1, 299.1, 145.1, 0);
+
+	delay(10);
+
+	if (stats[7] == 0)
+		HudMessageBold (s:"??:??"; 0, 514, -1, 209.1, 96.1, 0);
+	else
+	{
+		if (pmins < 10)
+		{
+			if (psecs < 10 )
+				HudMessageBold (s:"0", d:pmins, s:":0", d:psecs; 0, 514, -1, 209.1, 96.1, 0);
+			else
+				HudMessageBold (s:"0", d:pmins, s:":", d:psecs; 0, 514, -1, 209.1, 96.1, 0);
+		}
+		else
+		{
+			if (psecs < 10 )
+				HudMessageBold (d:pmins, s:":0", d:psecs; 0, 514, -1, 209.1, 96.1, 0);
+			else
+			HudMessageBold (d:pmins, s:":", d:psecs; 0, 514, -1, 209.1, 96.1, 0);
+		}
+	}
+
+	if (tmins > 99) //99 minutes max, per original code
+		HudMessageBold (s:"99:00"; 0, 515, -1, 209.1, 80.1, 0);
+	else
+	{
+		if (tmins < 10)
+		{
+			if (tsecs < 10 )
+				HudMessageBold (s:"0", d:tmins, s:":0", d:tsecs; 0, 515, -1, 209.1, 80.1, 0);
+			else
+				HudMessageBold (s:"0", d:tmins, s:":", d:tsecs; 0, 515, -1, 209.1, 80.1, 0);
+		}
+		else
+		{
+			if (tsecs < 10 )
+				HudMessageBold (d:tmins, s:":0", d:tsecs; 0, 515, -1, 209.1, 80.1, 0);
+			else
+				HudMessageBold (d:tmins, s:":", d:tsecs; 0, 515, -1, 209.1, 80.1, 0);
+		}
+	}
+
+	if (stats[7] > (stats[6]/35))
+	{
+		AmbientSound("stats/bonus100", 100);
+		bonus += (stats[7] - (stats[6]/35)) * 500;
+	}
+
+	if (stats[1] > 0)
+	{	
+		if (j==0)
+		{		
+			for (j=0; j <= ((stats[0]*100)/stats[1]); j++)
+			{
+				HudMessageBold (d:j; 0, 516, -1, 293.2, 113.1, 0);
+				If((j%3))
+					delay (1);
+				else
+					AmbientSound("stats/bonuscount", 127);
+				if (j==100)
+				{
+					AmbientSound("stats/bonus100", 127);
+					bonus += percent100amt;
+				}
+			}
+		}
+	}
+	else
+		HudMessageBold (s:"100"; 0, 516, -1, 293.2, 113.1, 0);					
+	AmbientSound("stats/total", 127);
+
+	if (stats[5] > 0)
+	{
+		if (k==0)
+		{
+			for (k=0; k <= ((stats[4]*100)/stats[5]); k++)
+			{
+				HudMessageBold (d:k; 0, 517, -1, 293.2, 129.1, 0);
+				If((k%3))
+					delay (1);
+				else
+					AmbientSound("stats/bonuscount", 127);	
+				if (k==100)
+				{
+					AmbientSound("stats/bonus100", 127);
+					bonus += percent100amt;
+				}
+			}
+		}
+	}
+	else
+		HudMessageBold (s:"100"; 0, 517, -1, 293.2, 129.1, 0);					
+	AmbientSound("stats/total", 127);
+
+	if (stats[3] > 0)
+	{
+		if (l==0)
+		{
+			for (l=0; l <= ((stats[2]*100)/stats[3]); l++)
+			{
+				HudMessageBold (d:l; 0, 518, -1, 293.2, 145.1, 0);
+				If((l%3))
+					delay (1);
+				else
+					AmbientSound("stats/bonuscount", 127);	
+				if (l==100)
+					{
+					AmbientSound("stats/bonus100", 127);
+					bonus += percent100amt;
+				}
+			}
+		}
+	}
+	else
+		HudMessageBold (s:"100"; 0, 518, -1, 293.2, 145.1, 0);
+	AmbientSound("stats/total", 127);
+
+	HudMessageBold (d:bonus; 0, 519, -1, 211.1, 56.1, 0);
+
+	If (!bonusadded)
+		ACS_NamedExecute ("W_AddPoints", 0, bonus);
+
+	bonusadded = true;
+
+	intermission = 1;
+}
+
+Script "W_IntermissionLevelCountEnd" (void) //Halted Count... //404
+{
+	If (stats[1])
+		j=(stats[0]*100)/stats[1];
+	If (stats[5])
+		k=(stats[4]*100)/stats[5];
+	If (stats[3])
+		l=(stats[2]*100)/stats[3];
+
+	SetHudSize (320, 200, 1);
+	SETFONT("STATFNT");
+	HudMessageBold (d:j; 0, 516, -1, 293.2, 113.1, 0);
+	HudMessageBold (d:k; 0, 517, -1, 293.2, 129.1, 0);
+	HudMessageBold (d:l; 0, 518, -1, 293.2, 145.1, 0);
+
+	bonus = 0;
+
+	if (stats[7] > (stats[6]/35))
+		bonus += (stats[7] - (stats[6]/35)) * 500;
+
+	if (j==100)
+		bonus += percent100amt;
+
+	if (k==100)
+		bonus += percent100amt;
+
+	if (l==100)
+		bonus += percent100amt;
+
+	if (!bonusadded)
+	{
+		HudMessageBold (d:bonus; 0, 519, -1, 211.1, 56.1, 0);
+		ACS_NamedExecute ("W_AddPoints", 0, bonus);
+	}
+
+	intermission = 1;
+	delay(35);
+}
+
+Script "W_IntermissionLevelDrawBJ" (void) //Breathing BJ //403
+{
+	SetHudSize (320, 200, 1);
+	SETFONT("BREATHE0");
+	HudMessageBold (s:"A"; 0, 512, -1, 0.1, 16.1, 0);
+	delay(17);
+	SETFONT("BREATHE1");
+	HudMessageBold (s:"A"; 0, 512, -1, 0.1, 16.1, 0);
+	delay(18);
+	restart;
+}
+
+Script "W_IntermissionLevelDrawBkg" (void) //Set up Background for Stats //31
+{
+	ACS_NamedExecuteAlways("W_CheckInput", 0);
+
+	SetMusic("URAHERO", 0, 0);
+
+	totalstats[0] += GetLevelInfo(LEVELINFO_KILLED_MONSTERS);
+	totalstats[1] += GetLevelInfo(LEVELINFO_TOTAL_MONSTERS);
+	totalstats[2] += GetLevelInfo(LEVELINFO_FOUND_ITEMS);
+	totalstats[3] += GetLevelInfo(LEVELINFO_TOTAL_ITEMS);
+	totalstats[4] += GetLevelInfo(LEVELINFO_FOUND_SECRETS);
+	totalstats[5] += GetLevelInfo(LEVELINFO_TOTAL_SECRETS);
+	totalstats[6] += Timer();
+
+	stats[0] = GetLevelInfo(LEVELINFO_KILLED_MONSTERS);
+	stats[1] = GetLevelInfo(LEVELINFO_TOTAL_MONSTERS);
+	stats[2] = GetLevelInfo(LEVELINFO_FOUND_ITEMS);
+	stats[3] = GetLevelInfo(LEVELINFO_TOTAL_ITEMS);
+	stats[4] = GetLevelInfo(LEVELINFO_FOUND_SECRETS);
+	stats[5] = GetLevelInfo(LEVELINFO_TOTAL_SECRETS);
+	stats[6] = Timer();
+	stats[7] = GetLevelInfo(LEVELINFO_PAR_TIME);
+	stats[8] = GetLevelInfo(LEVELINFO_LEVELNUM); //Current Level
+	
+	tmins = (totalstats[6]/35)%3600/60;
+	tsecs = (totalstats[6]/35)%60;
+
+	if (totalstats[1] > 0)
+		kills = (totalstats[0]*100)/totalstats[1];
+	else
+		kills = 0;
+
+	if (totalstats[5] > 0)
+		secrets = (totalstats[4]*100)/totalstats[5];
+	else
+		secrets = 0;
+
+	if (totalstats[3] > 0)
+		treasures = (totalstats[2]*100)/totalstats[3];
+	else
+		treasures = 0;
+
+	SETFONT("STATBKG");
+		SetHudSize(320, 200, 1);
+		HudMessageBold (s:"A"; HUDMSG_LAYER_UNDERHUD, 600, -1, 0.1, 0.1, 0);
+
+	If (GetScreenWidth() * 100 / GetScreenHeight() != 125)
+	{
+		SetFont("WSMASK");
+		HudMessage (s:"A"; HUDMSG_LAYER_OVERHUD, 349, -1, 160.0, 100.0, 0);
+	}
+
+	SETFONT("STATFNT");
+		HudMessageBold (l:"WIN"; 0, 503, -1, 220.0, 18.1, 0); 
+		HudMessageBold (l:"TOTALTIME"; 0, 504, -1, 120.1, 35.1, 0); 
+		HudMessageBold (l:"AVERAGES"; 0, 505, -1, 160.0, 86.1, 0); 
+		if (tmins < 10)
+		{
+			if (tsecs < 10 )
+				HudMessageBold (s:"0", d:tmins, s:":0", d:tsecs; 0, 516, -1, 120.1, 52.1, 0);
+			else
+				HudMessageBold (s:"0", d:tmins, s:":", d:tsecs; 0, 516, -1, 120.1, 52.1, 0);
+		}
+		else
+		{
+			if (tsecs < 10 )
+				HudMessageBold (d:tmins, s:":0", d:tsecs; 0, 516, -1, 120.1, 52.1, 0);
+			else
+				HudMessageBold (d:tmins, s:":", d:tsecs; 0, 516, -1, 120.1, 52.1, 0);
+		}
+		HudMessageBold (l:"KILLTOTAL"; 0, 506, -1, 137.2, 103.1, 0);
+		HudMessageBold (l:"SECRETTOTAL"; 0, 507, -1, 137.2, 120.1, 0);
+		HudMessageBold (l:"TREASURETOTAL"; 0, 508, -1, 137.2, 137.1, 0);
+		HudMessageBold (d:kills; 0, 517, -1, 222.2, 103.1, 0);
+		HudMessageBold (d:secrets; 0, 518, -1, 222.2, 120.1, 0);
+		HudMessageBold (d:treasures; 0, 519, -1, 222.2, 137.1, 0);
+		HudMessageBold (s:"%"; 0, 509, -1, 222.1, 103.1, 0);
+		HudMessageBold (s:"%"; 0, 510, -1, 222.1, 120.1, 0);
+		HudMessageBold (s:"%"; 0, 511, -1, 222.1, 137.1, 0);
+	SETFONT("BJFINAL");
+		HudMessageBold (s:"A"; 0, 512, -1, 6.1, 4.1, 0);
+}
+
+Script "W_IntermissionStage" (void) //507
+{
+	ACS_NamedExecuteAlways("W_CheckInput", 0);
+
+	SetHudSize(320, 200, 1);
+	SetFont("WSMASK");
+		HudMessage (s:"A"; 0, 349, -1, 160.0, 100.0, 0);
+
+	If (GetCvar("screenblocks") >= 11)
+		SetHudSize(320, 200, 1);
+	Else
+		SetHudSize(320, 210, 0);
+
+	SetMusic("ENDLEVEL", 0, 0);
+
+	SETFONT("STATBKG");
+		HudMessageBold (s:"A"; 0, 600, -1, 0.1, 0.1, 0);
+
+	delay(35);
+
+	SetHudSize (320, 200, 1);
+
+	ACS_NamedExecute("W_IntermissionLevelDrawBJ", 0);
+
+	SETFONT("STATFNT");
+		If (GAME_SOD)
+		{
+			Switch (Level)
+			{
+				Case 5:
+					HudMessageBold (l:"BOSSTRANS"; 0, 501, -1, 209.0, 34.1, 0);
+					HudMessageBold (l:"BOSSDEFEATED"; 0, 502, -1, 209.0, 66.1, 0);
+				break;
+				Case 10:
+					HudMessageBold (l:"BOSSBARNACLE"; 0, 501, -1, 209.0, 34.1, 0);
+					HudMessageBold (l:"BOSSDEFEATED"; 0, 502, -1, 209.0, 66.1, 0);
+				break;
+				Case 16:
+					HudMessageBold (l:"BOSSUBER"; 0, 501, -1, 209.0, 34.1, 0);
+					HudMessageBold (l:"BOSSDEFEATED"; 0, 502, -1, 209.0, 50.1, 0);
+				break;
+				Case 18:
+					HudMessageBold (l:"BOSSDK"; 0, 501, -1, 209.0, 34.1, 0);
+					HudMessageBold (l:"BOSSDEFEATED"; 0, 502, -1, 209.0, 50.1, 0);
+				break;
+				Case 19:
+					HudMessageBold (l:"SECRETTUNNEL"; 0, 501, -1, 209.0, 34.1, 0);
+					HudMessageBold (l:"SECRETAREA"; 0, 502, -1, 209.0, 50.1, 0);
+				break;
+				Case 20:
+					HudMessageBold (l:"SECRETCASTLE"; 0, 501, -1, 209.0, 34.1, 0);
+					HudMessageBold (l:"SECRETAREA"; 0, 502, -1, 209.0, 50.1, 0);
+				break;
+			}
+		}
+		else
+		{
+			HudMessageBold (l:"SECRETFLOOR"; 0, 501, -1, 209.0, 34.1, 0);
+		}
+		HudMessageBold (l:"SECRETBONUS"; 0, 503, -1, 161.0, 135.0, 0);
+		
+	bonus += 15000;
+		
+	AmbientSound("stats/bonus100", 127);
+	ACS_NamedExecute ("W_AddPoints", 0, bonus);
+
+	intermission = 1;
+}
+
+Script "W_NextMap" (void) //11
+{
+	if (intermission)
+	{
+		FadeToBlack(0.01, 0.5, 0.0, 0);
+
+		delay(15);
+
+		if (secretmap)
+			Exit_Secret(0);
+		else
+			Exit_Normal(0);
+	}
+}
+
+//Deathcam
+Script "W_PlayerDeathCam" (int xpos, int ypos, int angle)
+{
+	FadeToBlack (0.33, 0.5, 0.5, 0);
+
+	delay(18);
+
+	SetPlayerProperty(1, 1, PROP_NOTARGET);
+	SetPlayerProperty (1, 1, PROP_TOTALLYFROZEN);
+
+	SETFONT("STATBKG");
+	HudMessageBold (s:"A"; 0, 600, -1, 0.1, 0.1, 0);
+	SETFONT("STATFNT");
+	HudMessageBold (l:"DEATHCAM"; 0, 599, -1, 160.0, 100.0, 0);
+
+	delay(70);
+
+	ChangeCamera(999, 1, 0);
+
+	FadeToBlack (0.33, 0.5, 0.5, 0);
+
+	delay(18);
+
+	SetHudSize(160, 100, 0);
+
+	SETFONT("DEATHCAM");
+	HudMessageBold (s:"A"; 0, 600, -1, 80.0, 2.1, 0);
+	HudMessageBold (s:""; 0, 599, -1, 0, 0, 0);
+
+	delay(35);
+	HudMessageBold (s:""; 0, 600, -1, 0, 0, 0);
+	delay(12);
+	HudMessageBold (s:"A"; 0, 600, -1, 80.0, 2.1, 0);
+	delay(35);
+	HudMessageBold (s:""; 0, 600, -1, 0, 0, 0);
+	delay(12);
+	HudMessageBold (s:"A"; 0, 600, -1, 80.0, 2.1, 0);
+	delay(35);
+	HudMessageBold (s:""; 0, 600, -1, 0, 0, 0);
+	delay(12);
+	HudMessageBold (s:"A"; 0, 600, -1, 80.0, 2.1, 0);
+	delay(35);
+	HudMessageBold (s:""; 0, 600, -1, 0, 0, 0);
+	delay(12);
+	HudMessageBold (s:"A"; 0, 600, -1, 80.0, 2.1, 0);
+	delay(35);
+
+	ACS_NamedExecute("W_DoFinale", 0);
+}

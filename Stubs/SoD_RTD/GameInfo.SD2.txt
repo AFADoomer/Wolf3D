@@ -1,0 +1,4 @@
+IWAD = "Wolf3D_Common.pk7"
+LOAD = "Wolf3D_Resources.pk3", "SoD.pk7"
+STARTUPTITLE = "Spear of Destiny TC: Return to Danger"
+STARTUPCOLORS = "FF FF FF", "00 00 CC"

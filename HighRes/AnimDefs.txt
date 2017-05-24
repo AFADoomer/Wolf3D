@@ -1,0 +1,3 @@
+texture WFLMA0
+pic WFLMA0 tics 5
+pic WFLMB0 tics 5

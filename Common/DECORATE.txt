@@ -1,0 +1,7 @@
+#include "actors/wolf3d/items.txt"
+#include "actors/wolf3d/projectiles.txt"
+#include "actors/wolf3d/weapons.txt"
+#include "actors/wolf3d/players.txt"
+#include "actors/wolf3d/enemies.txt"
+#include "actors/wolf3d/pushwalls.txt"
+#include "actors/wolf3d/doom.txt"

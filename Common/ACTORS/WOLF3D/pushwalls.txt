@@ -1,0 +1,26 @@
+//Wolfenstein 3D Pushwalls
+
+ACTOR PushwallMarker : CustomInventory 22100
+{
+	+COUNTSECRET
+	+AUTOACTIVATE
+	+INVENTORY.NOSCREENFLASH
+	+NOTONAUTOMAP
+	Inventory.Amount 1
+	Inventory.MaxAmount 0
+	Height 64
+	Radius 12
+	Mass 10000
+	States
+	{
+		Spawn:
+			TNT1 A 1 
+			TNT1 A 1 ACS_NamedExecuteAlways("A_MarkPushwall", 0, 1)
+		Static:
+			"####" # -1
+			Stop
+		Pickup:
+			"####" # 1 ACS_NamedExecuteAlways("A_MarkPushwall", 0, 1)
+			Stop
+	}
+}

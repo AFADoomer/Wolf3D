@@ -1,0 +1,912 @@
+//Episode 1
+
+ACTOR HansGrosse 20214 //20010
+{
+	-SOLID
+	+NOSECTOR
+	RenderStyle None
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 0, "EasySpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 1, "NormalSpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 2, "MediumSpawn") 
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 3, "HardSpawn")
+		Stop
+	EasySpawn:
+		TNT1 A 1 A_SpawnItemEx("HansGrosseEasy")
+		Stop
+	NormalSpawn:
+		TNT1 A 1 A_SpawnItemEx("HansGrosseNormal")
+		Stop
+	MediumSpawn:
+		TNT1 A 1 A_SpawnItemEx("HansGrosseMedium")
+		Stop
+	HardSpawn:
+		TNT1 A 1 A_SpawnItemEx("HansGrosseHard")
+		Stop
+	}
+}
+
+ACTOR HansGrosseEasy : WolfBossGrosseTemplate
+{
+	SeeSound "hans/sight"
+	DeathSound "hans/death"
+	Obituary "$DTH_HANS"
+	States
+	{
+	Spawn:
+		WBOS A 0
+		Goto Spawn.Stand
+	Missile:
+		"####" E 15 A_FaceTarget
+		"####" F 5 A_FaceTarget
+		"####" GFGFGE 5 BRIGHT A_WolfAttack(0, "boss/attack", 0.666, 64, 64, 2, 4, 160.0)
+		"####" A 0 A_JumpIfCloser(64, "Attack")
+		Goto Walk
+	}
+}
+
+ACTOR HansGrosseNormal : HansGrosseEasy {Health 950}
+ACTOR HansGrosseMedium : HansGrosseEasy {Health 1050}
+ACTOR HansGrosseHard : HansGrosseEasy {Health 1200}
+
+//Episode 2
+
+Actor DrSchabbs 20196 //20011
+{
+	-SOLID
+	+NOSECTOR
+	RenderStyle None
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 0, "EasySpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 1, "NormalSpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 2, "MediumSpawn") 
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 3, "HardSpawn")
+		Stop
+	EasySpawn:
+		TNT1 A 1 A_SpawnItemEx("DrSchabbsEasy")
+		Stop
+	NormalSpawn:
+		TNT1 A 1 A_SpawnItemEx("DrSchabbsNormal")
+		Stop
+	MediumSpawn:
+		TNT1 A 1 A_SpawnItemEx("DrSchabbsMedium")
+		Stop
+	HardSpawn:
+		TNT1 A 1 A_SpawnItemEx("DrSchabbsHard")
+		Stop
+	}
+}
+
+ACTOR DrSchabbsEasy : WolfBossSchabbsTemplate 
+{
+	SeeSound "schabbs/sight"
+	DeathSound "schabbs/death"
+	Obituary "$DTH_SCHABBS"
+	States
+	{
+	Spawn:
+		WBO3 A 0
+		Goto Spawn.Stand
+	}
+}
+
+ACTOR DrSchabbsNormal : DrSchabbsEasy {Health 950}
+ACTOR DrSchabbsMedium : DrSchabbsEasy {Health 1550}
+ACTOR DrSchabbsHard : DrSchabbsEasy {Health 2400}
+
+//Episode 3
+
+Actor Hitler 20178 //20012
+{
+	-SOLID
+	+NOSECTOR
+	RenderStyle None
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 0, "EasySpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 1, "NormalSpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 2, "MediumSpawn") 
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 3, "HardSpawn")
+		Stop
+	EasySpawn:
+		TNT1 A 1 A_SpawnItemEx("HitlerEasy")
+		Stop
+	NormalSpawn:
+		TNT1 A 1 A_SpawnItemEx("HitlerNormal")
+		Stop
+	MediumSpawn:
+		TNT1 A 1 A_SpawnItemEx("HitlerMedium")
+		Stop
+	HardSpawn:
+		TNT1 A 1 A_SpawnItemEx("HitlerHard")
+		Stop
+	}
+}
+
+ACTOR HitlerEasy : WolfBossHitlerMechTemplate
+{
+	SeeSound "hitler1/sight"
+	AttackSound "boss/attack"
+	PainSound "hitler1/death"
+	DeathSound "hitler2/sight"
+	Obituary "$DTH_HITLER"
+	States
+	{
+	Spawn:
+		WHR1 A 1
+		Goto Spawn.Stand
+	Death:
+		"####" H 5 A_Scream
+		"####" I 5 
+		"####" J 5 A_GiveToTarget("Points", 5000)
+		"####" K 0 ACS_NamedExecuteAlways ("A_Drop", 0, 3, angle, user_lost)
+		"####" K 1 A_BossDeath
+		"####" K -1
+		Stop
+	}
+}
+
+ACTOR HitlerNormal : HitlerEasy {Health 475}
+ACTOR HitlerMedium : HitlerEasy {Health 525}
+ACTOR HitlerHard : HitlerEasy {Health 600}
+
+Actor Hitler2 //20024
+{
+	-SOLID
+	+NOSECTOR
+	RenderStyle None
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 0, "EasySpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 1, "NormalSpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 2, "MediumSpawn") 
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 3, "HardSpawn")
+		Stop
+	EasySpawn:
+		TNT1 A 1 A_SpawnItemEx("Hitler2Easy")
+		Stop
+	NormalSpawn:
+		TNT1 A 1 A_SpawnItemEx("Hitler2Normal")
+		Stop
+	MediumSpawn:
+		TNT1 A 1 A_SpawnItemEx("Hitler2Medium")
+		Stop
+	HardSpawn:
+		TNT1 A 1 A_SpawnItemEx("Hitler2Hard")
+		Stop
+	}
+}
+
+ACTOR Hitler2Easy : WolfBossHitlerTemplate
+{
+	DeathSound "hitler2/death"
+	PainSound "slurpie"
+	Obituary "$DTH_HITLER"
+	States
+	{
+	Spawn:
+		WHR2 A 0
+		Goto Spawn.Stand
+	}
+}
+
+ACTOR Hitler2Normal : Hitler2Easy {Health 475}
+ACTOR Hitler2Medium : Hitler2Easy {Health 525}
+ACTOR Hitler2Hard : Hitler2Easy {Health 600}
+
+//Episode 4
+
+Actor Giftmacher 20215 //20013
+{
+	-SOLID
+	+NOSECTOR
+	RenderStyle None
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 0, "EasySpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 1, "NormalSpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 2, "MediumSpawn") 
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 3, "HardSpawn")
+		Stop
+	EasySpawn:
+		TNT1 A 1 A_SpawnItemEx("GiftmacherEasy")
+		Stop
+	NormalSpawn:
+		TNT1 A 1 A_SpawnItemEx("GiftmacherNormal")
+		Stop
+	MediumSpawn:
+		TNT1 A 1 A_SpawnItemEx("GiftmacherMedium")
+		Stop
+	HardSpawn:
+		TNT1 A 1 A_SpawnItemEx("GiftmacherHard")
+		Stop
+	}
+}
+
+ACTOR GiftmacherEasy : WolfBossGiftmacherTemplate
+{
+	SeeSound "gift/sight"
+	DeathSound "gift/death"
+	Obituary "$DTH_GIFTMACHER"
+	States
+	{
+	Spawn:
+		WBO8 A 0
+		Goto Spawn.Stand
+	}
+}
+
+ACTOR GiftmacherNormal : GiftmacherEasy {Health 950}
+ACTOR GiftmacherMedium : GiftmacherEasy {Health 1050}
+ACTOR GiftmacherHard : GiftmacherEasy {Health 1200}
+
+//Episode 5
+
+Actor GretelGrosse 20197 //20014
+{
+	-SOLID
+	+NOSECTOR
+	RenderStyle None
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 0, "EasySpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 1, "NormalSpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 2, "MediumSpawn") 
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 3, "HardSpawn")
+		Stop
+	EasySpawn:
+		TNT1 A 1 A_SpawnItemEx("GretelGrosseEasy")
+		Stop
+	NormalSpawn:
+		TNT1 A 1 A_SpawnItemEx("GretelGrosseNormal")
+		Stop
+	MediumSpawn:
+		TNT1 A 1 A_SpawnItemEx("GretelGrosseMedium")
+		Stop
+	HardSpawn:
+		TNT1 A 1 A_SpawnItemEx("GretelGrosseHard")
+		Stop
+	}
+}
+
+ACTOR GretelGrosseEasy : WolfBossGrosseTemplate
+{
+	SeeSound "gretel/sight"
+	DeathSound "gretel/death"
+	Health 850
+	Speed 3
+	States
+	{
+	Spawn:
+		WBO4 A 0
+		Goto Spawn.Stand
+	}
+}
+
+ACTOR GretelGrosseNormal : GretelGrosseEasy {Health 950}
+ACTOR GretelGrosseMedium : GretelGrosseEasy {Health 1550}
+ACTOR GretelGrosseHard : GretelGrosseEasy {Health 2400}
+
+//Episode 6
+
+Actor FatFace 20179 //20015 
+{
+	-SOLID
+	+NOSECTOR
+	RenderStyle None
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 0, "EasySpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 1, "NormalSpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 2, "MediumSpawn") 
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 3, "HardSpawn")
+		Stop
+	EasySpawn:
+		TNT1 A 1 A_SpawnItemEx("FatFaceEasy")
+		Stop
+	NormalSpawn:
+		TNT1 A 1 A_SpawnItemEx("FatFaceNormal")
+		Stop
+	MediumSpawn:
+		TNT1 A 1 A_SpawnItemEx("FatFaceMedium")
+		Stop
+	HardSpawn:
+		TNT1 A 1 A_SpawnItemEx("FatFaceHard")
+		Stop
+	}
+}
+
+ACTOR FatFaceEasy : WolfBossFatFaceTemplate 
+{
+	SeeSound "fatface/sight"
+	DeathSound "fatface/death"
+	Obituary "$DTH_FATFACE"
+	Damage 4
+	States
+	{
+	Spawn:
+		WBO5 A 0
+		Goto Spawn.Stand
+	}
+}
+
+ACTOR FatFaceNormal : FatFaceEasy {Health 950}
+ACTOR FatFaceMedium : FatFaceEasy {Health 1050}
+ACTOR FatFaceHard : FatFaceEasy {Health 1200}
+
+//SoD Bosses
+Actor TransGrosse 21125 //20115
+{
+	-SOLID
+	+NOSECTOR
+	RenderStyle None
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 0, "EasySpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 1, "NormalSpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 2, "MediumSpawn") 
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 3, "HardSpawn")
+		Stop
+	EasySpawn:
+		TNT1 A 1 A_SpawnItemEx("TransGrosseEasy")
+		Stop
+	NormalSpawn:
+		TNT1 A 1 A_SpawnItemEx("TransGrosseNormal")
+		Stop
+	MediumSpawn:
+		TNT1 A 1 A_SpawnItemEx("TransGrosseMedium")
+		Stop
+	HardSpawn:
+		TNT1 A 1 A_SpawnItemEx("TransGrosseHard")
+		Stop
+	}
+}
+
+Actor TransGrosseEasy : WolfBossGrosseTemplate
+{
+	SeeSound "trans/sight"
+	DeathSound "trans/death"
+	Obituary "$DTH_TRANS"
+	States
+	{
+	Spawn:
+		WBO2 A 0 
+		Goto Spawn.Stand
+	Death:
+		"####" A 0 ACS_NamedExecuteAlways ("A_Drop", 0, 2, 0, user_lost)
+		"####" A 53 A_Scream
+		"####" H 7 A_GiveToTarget("Points", 5000)
+		"####" I 8
+		"####" J 7 A_BossDeath
+		"####" K -1 
+		Stop
+	}
+}
+
+ACTOR TransGrosseNormal : TransGrosseEasy {Health 950}
+ACTOR TransGrosseMedium : TransGrosseEasy {Health 1050}
+ACTOR TransGrosseHard : TransGrosseEasy {Health 1200}
+
+ACTOR UberMutant 21142 //20117
+{
+	-SOLID
+	+NOSECTOR
+	RenderStyle None
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 0, "EasySpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 1, "NormalSpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 2, "MediumSpawn") 
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 3, "HardSpawn")
+		Stop
+	EasySpawn:
+		TNT1 A 1 A_SpawnItemEx("UberMutantEasy")
+		Stop
+	NormalSpawn:
+		TNT1 A 1 A_SpawnItemEx("UberMutantNormal")
+		Stop
+	MediumSpawn:
+		TNT1 A 1 A_SpawnItemEx("UberMutantMedium")
+		Stop
+	HardSpawn:
+		TNT1 A 1 A_SpawnItemEx("UberMutantHard")
+		Stop
+	}
+}
+
+Actor UberMutantEasy : WolfBossUberMutantTemplate
+{
+	SeeSound "uber/sight"
+	AttackSound "shots/single"
+	DeathSound "uber/death"
+	Obituary "$DTH_UBER"
+	BloodColor "FF 00 FF"
+	States
+	{
+	Spawn:
+		WBO6 A 0
+		Goto Spawn.Stand
+	}
+}
+
+ACTOR UberMutantNormal : UberMutantEasy {Health 1150}
+ACTOR UberMutantMedium : UberMutantEasy {Health 1250}
+ACTOR UberMutantHard : UberMutantEasy {Health 1400}
+
+Actor DeathKnight 21161 //20118
+{
+	-SOLID
+	+NOSECTOR
+	RenderStyle None
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 0, "EasySpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 1, "NormalSpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 2, "MediumSpawn") 
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 3, "HardSpawn")
+		Stop
+	EasySpawn:
+		TNT1 A 1 A_SpawnItemEx("DeathKnightEasy")
+		Stop
+	NormalSpawn:
+		TNT1 A 1 A_SpawnItemEx("DeathKnightNormal")
+		Stop
+	MediumSpawn:
+		TNT1 A 1 A_SpawnItemEx("DeathKnightMedium")
+		Stop
+	HardSpawn:
+		TNT1 A 1 A_SpawnItemEx("DeathKnightHard")
+		Stop
+	}
+}
+
+Actor DeathKnightEasy : WolfBossDeathKnightTemplate 
+{
+	SeeSound "dk/sight"
+	DeathSound "dk/death"
+	Obituary "$DTH_KNIGHT"
+	States
+	{
+	Spawn:
+		WBO7 A 0
+		Goto Spawn.Stand
+	}
+}
+
+ACTOR DeathKnightNormal : DeathKnightEasy {Health 1350}
+ACTOR DeathKnightMedium : DeathKnightEasy {Health 1450}
+ACTOR DeathKnightHard : DeathKnightEasy {Health 1600}
+
+Actor WolfSpectre : WolfSpectreTemplate 21106 //20107
+{
+	SeeSound "spectre/sight"
+	PainSound "spectre/sight"
+	Obituary "$DTH_SPECTRE"
+	States
+	{
+	Spawn:
+		WSPE A 0
+		Goto Spawn.Stand
+	}
+}
+
+Actor AngelofDeath 21107 //20119
+{
+	-SOLID
+	+NOSECTOR
+	RenderStyle None
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 0, "EasySpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 1, "NormalSpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 2, "MediumSpawn") 
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 3, "HardSpawn")
+		Stop
+	EasySpawn:
+		TNT1 A 1 A_SpawnItemEx("AngelofDeathEasy")
+		Stop
+	NormalSpawn:
+		TNT1 A 1 A_SpawnItemEx("AngelofDeathNormal")
+		Stop
+	MediumSpawn:
+		TNT1 A 1 A_SpawnItemEx("AngelofDeathMedium")
+		Stop
+	HardSpawn:
+		TNT1 A 1 A_SpawnItemEx("AngelofDeathHard")
+		Stop
+	}
+}
+
+Actor AngelofDeathEasy : WolfBossAngelofDeathTemplate
+{
+	SeeSound "aod/sight"
+	DeathSound "aod/death"
+	PainSound "aod/breathe"
+	Obituary "$DTH_ANGEL"
+	States
+	{
+	Spawn:
+		WB10 A 0
+		Goto Spawn.Stand
+	}
+}
+
+ACTOR AngelofDeathNormal : AngelofDeathEasy {Health 1350}
+ACTOR AngelofDeathMedium : AngelofDeathEasy {Health 1450}
+ACTOR AngelofDeathHard : AngelofDeathEasy {Health 1600}
+
+Actor BarnacleWilhelm 21143 //20116
+{
+	-SOLID
+	+NOSECTOR
+	RenderStyle None
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 0, "EasySpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 1, "NormalSpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 2, "MediumSpawn") 
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 3, "HardSpawn")
+		Stop
+	EasySpawn:
+		TNT1 A 1 A_SpawnItemEx("BarnacleWilhelmEasy")
+		Stop
+	NormalSpawn:
+		TNT1 A 1 A_SpawnItemEx("BarnacleWilhelmNormal")
+		Stop
+	MediumSpawn:
+		TNT1 A 1 A_SpawnItemEx("BarnacleWilhelmMedium")
+		Stop
+	HardSpawn:
+		TNT1 A 1 A_SpawnItemEx("BarnacleWilhelmHard")
+		Stop
+	}
+}
+
+Actor BarnacleWilhelmEasy : WolfBossBarnacleWilhelmTemplate 
+{
+	SeeSound "wilhelm/sight"
+	AttackSound "shots/single"
+	DeathSound "wilhelm/death"
+	Obituary "$DTH_WILHELM"
+	States
+	{
+	Spawn:
+		WBO9 A 0
+		Goto Spawn.Stand
+	}
+}
+
+ACTOR BarnacleWilhelmNormal : BarnacleWilhelmEasy {Health 1050}
+ACTOR BarnacleWilhelmMedium : BarnacleWilhelmEasy {Health 1150}
+ACTOR BarnacleWilhelmHard : BarnacleWilhelmEasy {Health 1300}
+
+//Lost Episodes Bosses
+Actor SubmarineWilly 22125
+{
+	-SOLID
+	+NOSECTOR
+	RenderStyle None
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 0, "EasySpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 1, "NormalSpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 2, "MediumSpawn") 
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 3, "HardSpawn")
+		Stop
+	EasySpawn:
+		TNT1 A 1 A_SpawnItemEx("SubmarineWillyEasy")
+		Stop
+	NormalSpawn:
+		TNT1 A 1 A_SpawnItemEx("SubmarineWillyNormal")
+		Stop
+	MediumSpawn:
+		TNT1 A 1 A_SpawnItemEx("SubmarineWillyMedium")
+		Stop
+	HardSpawn:
+		TNT1 A 1 A_SpawnItemEx("SubmarineWillyHard")
+		Stop
+	}
+}
+
+Actor SubmarineWillyEasy : WolfBossGrosseTemplate
+{
+	SeeSound "willy/sight"
+	DeathSound "willy/death"
+	Obituary "$DTH_TRANS"
+	States
+	{
+	Spawn:
+		LBO2 A 0
+		"####" A 0 A_SetUserVar("user_lost", 1)
+		Goto Spawn.Stand
+	Death:
+		"####" A 0 ACS_NamedExecuteAlways ("A_Drop", 0, 2, 0, user_lost)
+		"####" A 53 A_Scream
+		"####" H 7 A_GiveToTarget("Points", 5000)
+		"####" I 8
+		"####" J 7 A_BossDeath
+		"####" K -1 
+		Stop
+	}
+}
+
+ACTOR SubmarineWillyNormal : SubmarineWillyEasy {Health 950}
+ACTOR SubmarineWillyMedium : SubmarineWillyEasy {Health 1050}
+ACTOR SubmarineWillyHard : SubmarineWillyEasy {Health 1200}
+
+ACTOR TheAxe 22142
+{
+	-SOLID
+	+NOSECTOR
+	RenderStyle None
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 0, "EasySpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 1, "NormalSpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 2, "MediumSpawn") 
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 3, "HardSpawn")
+		Stop
+	EasySpawn:
+		TNT1 A 1 A_SpawnItemEx("TheAxeEasy")
+		Stop
+	NormalSpawn:
+		TNT1 A 1 A_SpawnItemEx("TheAxeNormal")
+		Stop
+	MediumSpawn:
+		TNT1 A 1 A_SpawnItemEx("TheAxeMedium")
+		Stop
+	HardSpawn:
+		TNT1 A 1 A_SpawnItemEx("TheAxeHard")
+		Stop
+	}
+}
+
+Actor TheAxeEasy : WolfBossUberMutantTemplate
+{
+	SeeSound "theaxe/sight"
+	AttackSound "shots/single2"
+	DeathSound "theaxe/death"
+	Obituary "$DTH_UBER"
+	BloodColor "FF 00 FF"
+	States
+	{
+	Spawn:
+		LBO6 A 0
+		"####" A 0 A_SetUserVar("user_lost", 1)
+		Goto Spawn.Stand
+	Death:
+		"####" A 36 A_Scream
+		"####" I 4 ACS_NamedExecuteAlways ("A_Drop", 0, 2, 0, user_lost)
+		Goto Super::Death+2
+	}
+}
+
+ACTOR TheAxeNormal : TheAxeEasy {Health 1150}
+ACTOR TheAxeMedium : TheAxeEasy {Health 1250}
+ACTOR TheAxeHard : TheAxeEasy {Health 1400}
+
+Actor RobotDroid 22161
+{
+	-SOLID
+	+NOSECTOR
+	RenderStyle None
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 0, "EasySpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 1, "NormalSpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 2, "MediumSpawn") 
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 3, "HardSpawn")
+		Stop
+	EasySpawn:
+		TNT1 A 1 A_SpawnItemEx("RobotDroidEasy")
+		Stop
+	NormalSpawn:
+		TNT1 A 1 A_SpawnItemEx("RobotDroidNormal")
+		Stop
+	MediumSpawn:
+		TNT1 A 1 A_SpawnItemEx("RobotDroidMedium")
+		Stop
+	HardSpawn:
+		TNT1 A 1 A_SpawnItemEx("RobotDroidHard")
+		Stop
+	}
+}
+
+Actor RobotDroidEasy : WolfBossDeathKnightTemplate 
+{
+	SeeSound "robot/sight"
+	AttackSound "shots/single2"
+	DeathSound "robot/death"
+	Obituary "$DTH_KNIGHT"
+	States
+	{
+	Spawn:
+		LBO7 A 0
+		"####" A 0 A_SetUserVar("user_lost", 1)
+		Goto Spawn.Stand
+	Missile:
+		"####" F 15 A_FaceTarget
+		"####" G 5 BRIGHT A_CustomMissile ("WolfRocketLost", 48, 15, 0)
+		"####" I 5 BRIGHT A_WolfAttack(0, "boss/attack", 1.0, 64, 64, 2, 4, 160.0)
+		"####" I 0 A_FaceTarget
+		"####" H 5 BRIGHT A_CustomMissile ("WolfRocketLost", 48, -15, 0)
+		"####" I 5 BRIGHT A_WolfAttack(0, "boss/attack", 1.0, 64, 64, 2, 4, 160.0)
+		Goto Chase
+	Death:
+		"####" A 53 A_Scream
+		"####" K 5 ACS_NamedExecuteAlways ("A_Drop", 0, 2, 0, user_lost)
+		Goto Super::Death+2
+	}
+}
+
+ACTOR RobotDroidNormal : RobotDroidEasy {Health 1350}
+ACTOR RobotDroidMedium : RobotDroidEasy {Health 1450}
+ACTOR RobotDroidHard : RobotDroidEasy {Health 1600}
+
+Actor WolfGhost : WolfSpectreTemplate 22106
+{
+	SeeSound "spectre/sight"
+	PainSound "spectre/sight"
+	Obituary "$DTH_SPECTRE"
+	States
+	{
+	Spawn:
+		LSPE A 0
+		"####" A 0 A_SetUserVar("user_lost", 1)
+		Goto Spawn.Stand
+	}
+}
+
+Actor RadioactiveMist : WolfSpectreTemplate 23106
+{
+	SeeSound "spectre/sight"
+	PainSound "spectre/sight"
+	Obituary "$DTH_SPECTRE"
+	States
+	{
+	Spawn:
+		LSP2 A 0
+		"####" A 0 A_SetUserVar("user_lost", 1)
+		Goto Spawn.Stand
+	}
+}
+
+Actor DevilIncarnate 22107
+{
+	-SOLID
+	+NOSECTOR
+	RenderStyle None
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 0, "EasySpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 1, "NormalSpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 2, "MediumSpawn") 
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 3, "HardSpawn")
+		Stop
+	EasySpawn:
+		TNT1 A 1 A_SpawnItemEx("DevilIncarnateEasy")
+		Stop
+	NormalSpawn:
+		TNT1 A 1 A_SpawnItemEx("DevilIncarnateNormal")
+		Stop
+	MediumSpawn:
+		TNT1 A 1 A_SpawnItemEx("DevilIncarnateMedium")
+		Stop
+	HardSpawn:
+		TNT1 A 1 A_SpawnItemEx("DevilIncarnateHard")
+		Stop
+	}
+}
+
+Actor DevilIncarnateEasy : WolfBossAngelofDeathTemplate
+{
+	SeeSound "devil/sight"
+	DeathSound "devil/death"
+	PainSound ""
+	Obituary "$DTH_ANGEL"
+	States
+	{
+	Spawn:
+		LB10 A 0
+		"####" A 0 A_SetUserVar("user_lost", 1)
+		Goto Spawn.Stand
+	Missile:
+		"####" G 5 A_FaceTarget
+		"####" H 10 A_FaceTarget
+		"####" G 5 BRIGHT A_CustomMissile ("DIBall", 25, 13, 0)
+		"####" G 0 A_Jump(127, "Chase")
+		"####" G 5 A_FaceTarget
+		"####" H 10 A_FaceTarget
+		"####" G 5 BRIGHT A_CustomMissile ("DIBall", 25, 13, 0)
+		"####" G 0 A_Jump(127, "Chase")
+		"####" G 5 A_FaceTarget
+		"####" H 10 A_FaceTarget
+		"####" G 5 BRIGHT A_CustomMissile ("DIBall", 25, 13, 0)
+	}
+}
+
+ACTOR DevilIncarnateNormal : DevilIncarnateEasy {Health 1350}
+ACTOR DevilIncarnateMedium : DevilIncarnateEasy {Health 1450}
+ACTOR DevilIncarnateHard : DevilIncarnateEasy {Health 1600}
+
+Actor ProfessorQuarkblitz 22143
+{
+	-SOLID
+	+NOSECTOR
+	RenderStyle None
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 0, "EasySpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 1, "NormalSpawn")
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 2, "MediumSpawn") 
+		TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("A_GetSkill") == 3, "HardSpawn")
+		Stop
+	EasySpawn:
+		TNT1 A 1 A_SpawnItemEx("ProfessorQuarkblitzEasy")
+		Stop
+	NormalSpawn:
+		TNT1 A 1 A_SpawnItemEx("ProfessorQuarkblitzNormal")
+		Stop
+	MediumSpawn:
+		TNT1 A 1 A_SpawnItemEx("ProfessorQuarkblitzMedium")
+		Stop
+	HardSpawn:
+		TNT1 A 1 A_SpawnItemEx("ProfessorQuarkblitzHard")
+		Stop
+	}
+}
+
+Actor ProfessorQuarkblitzEasy : WolfBossBarnacleWilhelmTemplate 
+{
+	SeeSound "quarkblitz/sight"
+	AttackSound "shots/single2"
+	DeathSound "quarkblitz/death"
+	Obituary "$DTH_WILHELM"
+	States
+	{
+	Spawn:
+		LBO9 A 0
+		"####" A 0 A_SetUserVar("user_lost", 1)
+		Goto Spawn.Stand
+	}
+}
+
+ACTOR ProfessorQuarkblitzNormal : ProfessorQuarkblitzEasy {Health 1050}
+ACTOR ProfessorQuarkblitzMedium : ProfessorQuarkblitzEasy {Health 1150}
+ACTOR ProfessorQuarkblitzHard : ProfessorQuarkblitzEasy {Health 1300}

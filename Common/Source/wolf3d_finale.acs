@@ -1,0 +1,390 @@
+////////////////////////////////////////////////////////////////////////////////
+// Wolf3D TC - Finale Scripts
+////////////////////////////////////////////////////////////////////////////////
+// 
+// This file contains the following scripts:
+//
+//   W_DoFinale			Start the appropriate finale sequence
+//   W_DoHighScores		Display High Score Screen, change music
+//   W_FinaleNavSetup		Set up navigation for finales
+//   W_FinaleSlideshow		Draw finale screens
+//   W_FinaleSlideshowNext	Go to next finale screen
+//   W_FinaleSlideshowPrev	Go to previous finale screen
+//   W_FinaleSoD		Draw initial SoD finale screens (BJ fall)
+//   W_VictorySetup		Set up victory BJ runner, mapspots and camera
+//
+////////////////////////////////////////////////////////////////////////////////
+
+Script "W_DoFinale" (int type) //4
+{
+	If (!(GameType() == GAME_NET_DEATHMATCH))
+	{
+		if (type == 1)
+		{
+			SetActorProperty(1001 + PlayerNumber(), APROP_RenderStyle, 0);
+			Thing_Activate (2);
+			ChangeCamera(2,1,0);
+			Delay(35);
+			SetActorProperty(1, APROP_RenderStyle, 1);
+			Thing_Activate (1);
+			Delay(200);
+			ACS_NamedExecuteAlways("W_CheckInput", 0);
+			ACS_NamedExecuteAlways("Freeze", 0, 1);
+			ACS_NamedExecute("W_IntermissionLevelDrawBkg", 0);
+		}
+		else if (type == 2)
+		{
+			ACS_NamedExecuteAlways("Freeze", 0, 1);
+			ACS_NamedExecute("W_FinaleSoD", 0);
+		}
+		else
+		{
+			ACS_NamedExecuteAlways("W_CheckInput", 0);
+			ACS_NamedExecuteAlways("Freeze", 0, 1);
+			ACS_NamedExecute("W_IntermissionLevelDrawBkg", 0);
+		}
+		intermission = 2;
+
+		if (type !=2)
+		{
+			NamedScriptWait("W_IntermissionLevelDrawBkg");
+			delay(35);
+		}
+	}
+}
+
+Script "W_DoHighScores" (void) //508
+{
+	If (PlayerCount() == 1)
+	{
+		If (GAME_SOD)
+			SetMusic("XAward");
+		Else
+			SetMusic("HITLWLTZ");
+
+		PopulateHighScores();
+		DrawHighScores();
+	}
+}
+
+Script "W_FinaleNavSetup" (void) //32
+{
+	if (pagecount > maxpage)
+		pagecount = maxpage;
+	if (pagecount < 1)
+		pagecount = 1;
+
+	if (initial)
+	{
+		checkhighscores = 1;
+
+		If (GAME_SOD)
+			pollingkeys = 1;
+		Else
+			pollingkeys = 2;	
+
+		FadeToBlack(0.33, 0.5, 0.5, 0);
+
+		delay(20);
+
+		if (!GAME_SOD)
+		{
+			episode = GetLevelInfo(LEVELINFO_LEVELNUM)/10 + 1;
+			pagecount = 1;
+			maxpage = 2;
+			setmusic ("ENDLEVEL");
+		}
+		else
+		{
+			pagecount = 4;
+			maxpage = 14;
+		}
+
+		nohud = true;
+		initial = 0;
+	}
+
+	ACS_NamedExecute("W_FinaleSlideshow", 0, pagecount, maxpage);
+}
+
+Script "W_FinaleSlideshow" (int intPage, int intMaxPage) //510
+{
+	str Screen = "1";
+	str Page = "A";
+	str Title = "";
+	str TextUpper = "";
+	str TextLower = "";
+
+	drawing = true;
+
+	HudMessageBold(s:"";0,9,0,0,0,0);
+	HudMessageBold(s:"";0,8,0,0,0,0);
+	HudMessageBold(s:"";0,7,0,0,0,0);
+	HudMessageBold(s:"";0,6,0,0,0,0);
+
+	If (intPage == 0)
+	{
+		HudMessageBold(s:"";0,10,0,0,0,0);
+		HudMessageBold(s:"";0,5,0,0,0,0);
+		ACS_NamedTerminate("W_FinaleSlideshow", 0);
+	}
+
+	SetHudSize (320, 200, 1);
+	SetFont("WOLFFNTS");
+
+	If (GAME_SOD)
+	{
+		Switch (intPage)
+		{
+			Case 4:
+				SetFont(SoDPages[intPage]);
+				HudMessageBold(s:"A";0,10,0,0.1,0.1,0);
+				delay(35);
+			break;
+			Case 5:
+				FadeToBlack(0.5, 0.5, 0.5, 1);
+				delay(35);
+				SetFont(SoDPages[intPage]);
+				HudMessageBold(s:"A";0,10,0,0.1,0.1,0);
+				SetFont("WOLFFNTS");
+				HudMessageBold(l:"SODEND1"; 0, 9, cr_white, 160.4, 180.1, 0);
+				delay(35);
+			break;
+			Case 6:
+				SetFont(SoDPages[intPage]);
+				HudMessageBold(s:"A";0,10,0,0.1,0.1,0);
+				SetFont("WOLFFNTS");
+				HudMessageBold(l:"SODEND2"; 0, 9, cr_white, 160.4, 180.1, 0);
+				delay(35);
+			break;
+			Case 7:
+				HudMessageBold(s:"";0,9,0,0.1,0.1,0);
+			Case 8:
+			Case 9:
+			Case 10:
+			Case 11:
+			Case 12:
+			Case 13:
+				FadeToBlack(0.5, 0.5, 0.5, 1);
+				delay(35);
+				SetFont(SoDPages[intPage]);
+				HudMessageBold(s:"A";0,10,0,0.1,0.1,0);
+				delay(35);
+			break;
+			Case 14:
+				While (TRUE) delay(35);
+			break;
+		}
+	}
+	Else
+	{
+		episode = GetLevelInfo(LEVELINFO_LEVELNUM)/10 + 1;
+
+		SetFont("END");
+		HudMessageBold(s:"A";0,10,0,0.1,0.1,0);
+
+		SetFont("WOLFFNTS");
+		If (intPage && intMaxPage)
+			HudMessageBold(s:"pg ",d:intPage,s:" of ", d:intMaxPage; HUDMSG_COLORSTRING, 5, "WolfDarkGold", 213.1, 182.1, 0);
+
+		If (intPage == 1)
+			Page = "A";
+		Else
+			Page = "B";
+
+		Screen = StrParam(s:"END_", d:episode, s:Page);
+
+		Title = StrParam(s:Screen, s:"_TITLE");
+
+		If (intPage == 1)
+		{
+			TextUpper = StrParam(s:Screen, s:"_UPPER");
+			TextLower = StrParam(s:Screen, s:"_LOWER");
+
+			SetHUDClipRect (0, 0, 320, 200, 155);
+			HudMessageBold (l:Title; HUDMSG_COLORSTRING, 8, "WolfEndTitleGreen", 144.1, 15.1, 0);
+			HudMessageBold (l:TextUpper; HUDMSG_COLORSTRING, 7, "TrueBlack", 144.1, 35.1, 0);
+
+			SetHUDClipRect (0, 0, 320, 200, 275);
+			HudMessageBold (l:TextLower; HUDMSG_COLORSTRING, 6, "TrueBlack", 16.1, 105.1, 0);
+
+			SetFont("END_PIC");
+			HudMessageBold(s:"A";0,9,0,16.1,16.1,0);
+		}
+		Else
+		{
+			SetHUDClipRect(0, 0, 320, 200, 275);
+			HudMessageBold (l:Title; HUDMSG_COLORSTRING, 8, "WolfEndTitleGreen", 16.1, 15.1, 0);
+			HudMessageBold (l:Screen; HUDMSG_COLORSTRING, 7, "TrueBlack", 16.1, 35.1, 0);
+			HudMessageBold (s:"";0,6,0,0,0,0);
+			HudMessageBold (s:"";0,9,0,0,0,0);
+		}
+	}
+
+	drawing = false;
+}
+
+Script "W_FinaleSlideshowPrev" (void) //Previous
+{
+	if (intermission==1)
+		ACS_NamedExecuteAlways("W_NextMap", 0, 0);
+	else if (intermission==3)
+		ACS_NamedExecuteAlways("W_IntermissionLevelCountEnd", 0);
+	else
+	{
+		If (!Drawing)
+		{
+			ACS_NamedExecute ("W_FinaleNavSetup", 0);
+			pagecount--;
+			Delay(5);
+		}
+	}
+}
+
+Script "W_FinaleSlideshowNext" (void) //Next
+{
+	if (intermission==1)
+		ACS_NamedExecuteAlways("W_NextMap", 0, 0);
+	else if (intermission==3)
+		ACS_NamedExecuteAlways("W_IntermissionLevelCountEnd", 0);
+	else
+	{
+		If (!Drawing)
+		{
+			ACS_NamedExecute ("W_FinaleNavSetup", 0);
+			pagecount++;
+			Delay(5);
+		}
+	}
+}
+
+Script "W_FinaleSoD" (void) //33
+{
+	FreezeAll(1);
+
+	drawing = true;
+
+	SetHudSize(320, 200, 1);
+
+	SetFont("WSMASK");
+	HudMessageBold (s:"A"; HUDMSG_LAYER_OVERHUD, 349, -1, 160.0, 100.0, 0);
+
+	SetFont("STATBKG");
+	SetMusic("");
+	HudMessageBold (s:"a"; 3, 300, -1, 160.0, 100.0, 2.0, 3.0, 0.0);
+	SetHudSize (320, 200, 1);
+	delay(175);
+	setmusic ("XTHEEND");
+	SetFont(SoDPages[0]);
+	HudMessageBold (s:"A"; 0, 1, 0, 0.1, 0.1, 0);
+	delay(35*4);
+	SetFont(SoDPages[1]);
+	HudMessageBold (s:"A"; 0, 1, 0, 0.1, 0.1, 0);
+	delay(35);
+	SetFont(SoDPages[2]);
+	HudMessageBold (s:"A"; 0, 1, 0, 0.1, 0.1, 0);
+	delay(35);
+	SetFont(SoDPages[3]);
+	HudMessageBold (s:"A"; 0, 1, 0, 0.1, 0.1, 0);
+	delay(35*5);
+	ACS_NamedExecute("W_IntermissionLevelDrawBkg", 0);
+	delay(5);
+	HudMessageBold (s:""; 0, 1, 0, 0.1, 0.1, 0);
+	drawing = false;
+}
+
+/*
+#define VictoryThingCount 5
+
+int VictoryThings[VictoryThingCount][8] = {
+	{"InterpolationPoint", 	3, 	32, 	0, 	0, 	2, 	0, 	4}, 
+	{"InterpolationPoint", 	4, 	64, 	0, 	0, 	10, 	0, 	5}, 
+	{"InterpolationPoint", 	5, 	128, 	128, 	0, 	6, 	0, 	6}, 
+	{"InterpolationPoint", 	6, 	224, 	128, 	0, 	0, 	0, 	0}, 
+	{"InterpolationPoint", 	7, 	-32, 	0, 	0, 	4, 	0, 	3}, 
+	{"PatrolPoint", 	9, 	224, 	0, 	0, 	0, 	0, 	0},
+	{"MovingCamera", 	2, 	-96, 	0, 	0, 	7, 	0, 	3} 
+};
+*/
+
+Script "W_VictorySetup" (int StartX, int StartY, int BitAngle)
+{
+	If (StartX == 0 && StartY == 0)
+	{
+		StartX = GetActorX(0);
+		StartY = GetActorY(0);
+		BitAngle = GetActorAngle(0) >> 8;
+	}
+	Else
+	{
+		StartX = StartX * 1.0;
+		StartY = StartY * 1.0;
+	}
+
+	int Angle = BitAngle << 8;
+
+	int OffsetX;
+	int OffsetY;
+
+/*
+	OffsetX = cos(Angle) * -96;
+	OffsetY = sin(Angle) * -96;
+
+	SpawnForced ("MovingCamera", StartX + OffsetX, StartY + OffsetY, 32.0, 2, BitAngle);
+	SetThingSpecial (2, 0, 7, 0, 3);
+
+	For (int t = 0; t < VictoryThingCount; t++)
+	{
+		OffsetX = cos(Angle) * VictoryThings[t][2];
+		OffsetY = sin(Angle) * VictoryThings[t][2];
+
+		SpawnForced (VictoryThings[t][0], StartX + OffsetX, StartY + OffsetY, 32.0, VictoryThings[t][1], BitAngle + VictoryThings[t][3]);
+		SetThingSpecial (VictoryThings[t][1], VictoryThings[t][4], VictoryThings[t][5], VictoryThings[t][6], VictoryThings[t][7]);
+	}
+
+*/
+	OffsetX = cos(Angle) * 32;
+	OffsetY = sin(Angle) * 32;
+
+	SpawnForced ("InterpolationPoint", StartX + OffsetX, StartY + OffsetY, 32.0, 3, BitAngle);
+	SetThingSpecial (3, 0, 0, 2, 0, 4);
+
+	OffsetX = cos(Angle) * 64;
+	OffsetY = sin(Angle) * 64;
+
+	SpawnForced ("InterpolationPoint", StartX + OffsetX, StartY + OffsetY, 32.0, 4, BitAngle);
+	SetThingSpecial (4, 0, 0, 10, 0, 5);
+
+	OffsetX = cos(Angle) * 128;
+	OffsetY = sin(Angle) * 128;
+
+	SpawnForced ("InterpolationPoint", StartX + OffsetX, StartY + OffsetY, 32.0, 5, BitAngle + 128);
+	SetThingSpecial (5, 0, 0, 6, 0, 6);
+
+	OffsetX = cos(Angle) * 224;
+	OffsetY = sin(Angle) * 224;
+
+	SpawnForced ("InterpolationPoint", StartX + OffsetX, StartY + OffsetY, 32.0, 6, BitAngle + 128);
+	SetThingSpecial (6, 0, 0, 0, 0, 0);
+
+	OffsetX = cos(Angle) * -32;
+	OffsetY = sin(Angle) * -32;
+
+	SpawnForced ("InterpolationPoint", StartX + OffsetX, StartY + OffsetY, 32.0, 7, BitAngle);
+	SetThingSpecial (7, 0, 0, 4, 0, 3);
+
+	OffsetX = cos(Angle) * 224;
+	OffsetY = sin(Angle) * 224;
+
+	SpawnForced ("PatrolPoint", StartX + OffsetX, StartY + OffsetY, 32.0, 9, BitAngle);
+
+	OffsetX = cos(Angle) * -96;
+	OffsetY = sin(Angle) * -96;
+
+	SpawnForced ("MovingCamera", StartX + OffsetX, StartY + OffsetY, 32.0, 2, BitAngle);
+	SetThingSpecial (2, 0, 7, 0, 3);
+
+	SpawnForced ("BJ", StartX, StartY, 32, 1, BitAngle);
+	Thing_Deactivate(1);
+	SetThingSpecial (1, 229, 0, 9, 1);
+}

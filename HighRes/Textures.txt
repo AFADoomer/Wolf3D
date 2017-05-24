@@ -1,0 +1,350 @@
+//Items
+Sprite POL1A0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR037, 0, 0}
+Sprite BARLA0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR038, 0, 0}
+Sprite LIT1A0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR040, 0, 0}
+Sprite LIT3A0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR041, 0, 0}
+Sprite HLTHC0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR042, 0, 0}
+Sprite COLWA0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR043, 0, 0}
+Sprite PLT1A0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR044, 0, 0}
+Sprite PLT2A0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR046, 0, 0}
+Sprite VASEA0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR047, 0, 0}
+Sprite TAB2A0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR039, 0, 0}
+Sprite LIT5A0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR049, 0, 0}
+Sprite KNIGA0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR051, 0, 0}
+Sprite CAG1A0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR052, 0, 0}
+Sprite POB1A0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR048, 0, 0}
+Sprite KEYSA0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR053, 0, 0}
+Sprite KEYSB0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR054, 0, 0}
+Sprite BASKA0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR050, 0, 0}
+Sprite HLTHD0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR057, 0, 0}
+Sprite HLTHE0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR058, 0, 0}
+Sprite WCLIA0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR059, 0, 0}
+Sprite MGUNP0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR060, 0, 0}
+Sprite CGUNP0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR061, 0, 0}
+Sprite TREAA0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR062, 0, 0}
+Sprite TREAC0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR063, 0, 0}
+Sprite TREAD0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR064, 0, 0}
+Sprite TREAB0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR065, 0, 0}
+Sprite LIFEA0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR066, 0, 0}
+Sprite BAR2A0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR067, 0, 0}
+Sprite WEL1A0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR068, 0, 0}
+Sprite FLAGA0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR045, 0, 0}
+
+Sprite BPAKA0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR055, 0, 0}
+Sprite WAMMA0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic MSPR056, 0, 0}
+Sprite FLAMP0, 128, 128 {XScale 0.5 YScale 0.5 Offset 64, 128 Graphic MSPR069, 0, 0}
+Sprite WGASA0, 128, 128 {XScale 0.5 YScale 0.5 Offset 64, 128 Graphic MSPR070, 0, 0}
+Sprite WROCP0, 128, 128 {XScale 0.5 YScale 0.5 Offset 64, 128 Graphic MSPR071, 0, 0}
+Sprite WROKA0, 128, 128 {XScale 0.5 YScale 0.5 Offset 64, 128 Graphic MSPR072, 0, 0}
+
+//Weapons
+Sprite KNIFA0, 256, 256 {Offset -145, -84 XScale 1.3 YScale 1.3 Graphic MSPR101, 0, 0}
+Sprite KNIFB0, 256, 256 {Offset -145, -84 XScale 1.3 YScale 1.3 Graphic MSPR102, 0, 0}
+Sprite KNIFC0, 256, 256 {Offset -145, -84 XScale 1.3 YScale 1.3 Graphic MSPR103, 0, 0}
+Sprite KNIFD0, 256, 256 {Offset -145, -84 XScale 1.3 YScale 1.3 Graphic MSPR104, 0, 0}
+Sprite KNIFE0, 256, 256 {Offset -145, -84 XScale 1.3 YScale 1.3 Graphic MSPR103, 0, 0}
+Sprite LUGRA0, 256, 256 {Offset -145, -84 XScale 1.3 YScale 1.3 Graphic MSPR105, 0, 0}
+Sprite LUGRB0, 256, 256 {Offset -145, -84 XScale 1.3 YScale 1.3 Graphic MSPR106, 0, 0}
+Sprite LUGRC0, 256, 256 {Offset -145, -84 XScale 1.3 YScale 1.3 Graphic MSPR107, 0, 0}
+Sprite LUGRD0, 256, 256 {Offset -145, -84 XScale 1.3 YScale 1.3 Graphic MSPR108, 0, 0}
+Sprite LUGRE0, 256, 256 {Offset -145, -84 XScale 1.3 YScale 1.3 Graphic MSPR106, 0, 0}
+Sprite MGUNB0, 256, 256 {Offset -145, -84 XScale 1.3 YScale 1.3 Graphic MSPR110, 0, 0}
+Sprite MGUNC0, 256, 256 {Offset -145, -84 XScale 1.3 YScale 1.3 Graphic MSPR111, 0, 0}
+Sprite MGUND0, 256, 256 {Offset -145, -84 XScale 1.3 YScale 1.3 Graphic MSPR112, 0, 0}
+Sprite MGUNE0, 256, 256 {Offset -145, -84 XScale 1.3 YScale 1.3 Graphic MSPR110, 0, 0}
+Sprite MGUNW0, 256, 256 {Offset -145, -84 XScale 1.3 YScale 1.3 Graphic MSPR109, 0, 0}
+Sprite CGUNA0, 256, 256 {Offset -145, -84 XScale 1.3 YScale 1.3 Graphic MSPR113, 0, 0}
+Sprite CGUNB0, 256, 256 {Offset -145, -84 XScale 1.3 YScale 1.3 Graphic MSPR114, 0, 0}
+Sprite CGUNC0, 256, 256 {Offset -145, -84 XScale 1.3 YScale 1.3 Graphic MSPR115, 0, 0}
+Sprite CGUND0, 256, 256 {Offset -145, -84 XScale 1.3 YScale 1.3 Graphic MSPR116, 0, 0}
+Sprite CGUNE0, 256, 256 {Offset -145, -84 XScale 1.3 YScale 1.3 Graphic MSPR114, 0, 0}
+Sprite WFLMA0, 256, 256 {Offset -145, -73 XScale 1.3 YScale 1.3 Graphic MSPR117, 0, 0}
+Sprite WFLMB0, 256, 256 {Offset -145, -73 XScale 1.3 YScale 1.3 Graphic MSPR118, 0, 0}
+Sprite WFLMC0, 256, 256 {Offset -145, -73 XScale 1.3 YScale 1.3 Graphic MSPR119, 0, 0}
+Sprite WFLMD0, 256, 256 {Offset -145, -73 XScale 1.3 YScale 1.3 Graphic MSPR120, 0, 0}
+Sprite WROCA0, 256, 256 {Offset -145, -73 XScale 1.3 YScale 1.3 Graphic MSPR121, 0, 0}
+Sprite WROCB0, 256, 256 {Offset -145, -73 XScale 1.3 YScale 1.3 Graphic MSPR122, 0, 0}
+Sprite WROCC0, 256, 256 {Offset -145, -73 XScale 1.3 YScale 1.3 Graphic MSPR123, 0, 0}
+Sprite WROCD0, 256, 256 {Offset -145, -73 XScale 1.3 YScale 1.3 Graphic MSPR124, 0, 0}
+
+Sprite DGUNA0, 512, 256
+{
+	Offset 0, 46
+	XScale 1.3 YScale 1.3
+	Graphic MSPR113, 0, 170 {Rotate 90}
+	Graphic MSPR113, 290, 170 {Rotate 270}
+
+}
+Sprite DGUNB0, 512, 256
+{
+	Offset 0, 46
+	XScale 1.3 YScale 1.3
+	Graphic MSPR114, 0, 165 {Rotate 90}
+	Graphic MSPR114, 290, 165 {Rotate 270}
+}
+Sprite DGUNC0, 512, 256
+{
+	Offset 0, 46
+	XScale 1.3 YScale 1.3
+	Graphic MSPR115, 0, 160 {Rotate 90}
+	Graphic MSPR116, 290, 160 {Rotate 270}
+}
+Sprite DGUND0, 512, 256
+{
+	Offset 0, 46
+	XScale 1.3 YScale 1.3
+	Graphic MSPR116, 0, 160 {Rotate 90}
+	Graphic MSPR115, 290, 160 {Rotate 270}
+}
+Sprite DGUNE0, 512, 256
+{
+	Offset 0, 46
+	XScale 1.3 YScale 1.3
+	Graphic MSPR114, 0, 165 {Rotate 90}
+	Graphic MSPR114, 290, 165 {Rotate 270}
+}
+
+//Wall Textures
+Texture Optional WLF0001A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL001, 0, 0}
+Texture Optional WLF0001B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL001, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF0002A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL001, 0, 0}
+Texture Optional WLF0002B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL001, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF0003A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL003, 0, 0}
+Texture Optional WLF0003B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL003, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF0004A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL004, 0, 0}
+Texture Optional WLF0004B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL004, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF0005A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL010, 0, 0}
+Texture Optional WLF0005B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL010, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF0006A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL002, 0, 0}
+Texture Optional WLF0006B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL002, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF0007A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL010, 0, 0}
+Texture Optional WLF0007B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL010, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF0008A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL009, 0, 0}
+Texture Optional WLF0008B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL009, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF0009A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL009, 0, 0}
+Texture Optional WLF0009B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL009, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF000AA, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL006, 0, 0}
+Texture Optional WLF000AB, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL006, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF000BA, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL007, 0, 0}
+Texture Optional WLF000BB, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL007, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF000CA, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL005, 0, 0}
+Texture Optional WLF000CB, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL005, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF000DA, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL019, 0, 0}
+Texture Optional WLF000DB, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL019, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF000EA, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL020, 0, 0}
+Texture Optional WLF000EB, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL020, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF000FA, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL019, 0, 0}
+Texture Optional WLF000FB, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL019, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF0010A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL017, 0, 0}
+Texture Optional WLF0010B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL018, 0, 0}
+Texture Optional WLF0011A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL011, 0, 0}
+Texture Optional WLF0011B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL011, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF0012A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL011, 0, 0}
+Texture Optional WLF0012B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL011, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF0013A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL013, 0, 0}
+Texture Optional WLF0013B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL013, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF0014A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL012, 0, 0}
+Texture Optional WLF0014B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL012, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF0015A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL015, 0, 0}
+Texture Optional WLF0015B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL016, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF0016A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL015, 0, 0}
+Texture Optional WLF0016B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL016, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF0017A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL008, 0, 0}
+Texture Optional WLF0017B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL008, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF0018A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL021, 0, 0}
+Texture Optional WLF0018B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL021, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF0019A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL014, 0, 0}
+Texture Optional WLF0019B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL014, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF001AA, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL022, 0, 0}
+Texture Optional WLF001AB, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL022, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF001BA, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL001, 0, 0}
+Texture Optional WLF001BB, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL001, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF001CA, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL001, 0, 0}
+Texture Optional WLF001CB, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL001, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF001DA, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL027, 0, 0}
+Texture Optional WLF001DB, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL027, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF001EA, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL028, 0, 0}
+Texture Optional WLF001EB, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL028, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF001FA, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL028, 0, 0}
+Texture Optional WLF001FB, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL028, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF0020A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL028, 0, 0}
+Texture Optional WLF0020B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL028, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF0022A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL024, 0, 0}
+Texture Optional WLF0022B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL024, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF0023A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL031, 0, 0}
+Texture Optional WLF0023B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL031, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF0024A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL024, 0, 0}
+Texture Optional WLF0024B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL024, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF0025A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL031, 0, 0}
+Texture Optional WLF0025B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL031, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF0027A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL031, 0, 0}
+Texture Optional WLF0027B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL031, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF0028A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL023, 0, 0}
+Texture Optional WLF0028B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL023, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF0029A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL009, 0, 0}
+Texture Optional WLF0029B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL009, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF002AA, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL030, 0, 0}
+Texture Optional WLF002AB, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL030, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF002BA, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL031, 0, 0}
+Texture Optional WLF002BB, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL031, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF002CA, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL029, 0, 0}
+Texture Optional WLF002CB, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL029, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF002DA, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL029, 0, 0}
+Texture Optional WLF002DB, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL029, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF002EA, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL030, 0, 0}
+Texture Optional WLF002EB, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL030, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF002FA, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL030, 0, 0}
+Texture Optional WLF002FB, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL030, 0, 0  {Blend "Black", 0.2}}
+Texture Optional WLF0031A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL031, 0, 0}
+Texture Optional WLF0031B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL031, 0, 0  {Blend "Black", 0.2}}
+
+//Doors
+Texture Optional WLF0DORA, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL032, 0, 0 {FlipX}}
+Texture Optional WLF0DORB, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL032, 0, 0}
+Texture Optional WLF0ELEA, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL035, 0, 0 {FlipX}}
+Texture Optional WLF0ELEB, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL035, 0, 0}
+Texture Optional WLF0JMBA, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL036, 0, 0}
+Texture Optional WLF0JMBB, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL036, 0, 0}
+Texture Optional WLF0LK1A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL033, 0, 0 {FlipX}}
+Texture Optional WLF0LK1B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL033, 0, 0}
+
+Texture Optional WLF1DORA, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL032, 0, 0 {FlipX}}
+Texture Optional WLF1DORB, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL032, 0, 0}
+Texture Optional WLF1ELEA, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL035, 0, 0 {FlipX}}
+Texture Optional WLF1ELEB, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL035, 0, 0}
+Texture Optional WLF1JMBA, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL036, 0, 0}
+Texture Optional WLF1JMBB, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL036, 0, 0}
+Texture Optional WLF1LK1A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL033, 0, 0 {FlipX}}
+Texture Optional WLF1LK1B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL033, 0, 0}
+
+//Alternate Locked Doors
+Texture Optional WLF0LK2A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL034, 0, 0 {FlipX}}
+Texture Optional WLF0LK2B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL034, 0, 0}
+
+Texture Optional WLF1LK2A, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL034, 0, 0 {FlipX}}
+Texture Optional WLF1LK2B, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL034, 0, 0}
+
+//Flipped Walls
+Texture Optional WLF0DORC, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL032, 0, 0}
+Texture Optional WLF0DORD, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL032, 0, 0 {FlipX}}
+Texture Optional WLF0ELEC, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL035, 0, 0}
+Texture Optional WLF0ELED, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL035, 0, 0 {FlipX}}
+Texture Optional WLF0JMBC, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL036, 0, 0 {FlipX}}
+Texture Optional WLF0JMBD, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL036, 0, 0 {FlipX}}
+Texture Optional WLF0LK1C, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL033, 0, 0}
+Texture Optional WLF0LK1D, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL033, 0, 0 {FlipX}}
+Texture Optional WLF0LK2C, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL034, 0, 0}
+Texture Optional WLF0LK2D, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL034, 0, 0 {FlipX}}
+
+Texture Optional WLF1DORC, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL032, 0, 0}
+Texture Optional WLF1DORD, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL032, 0, 0 {FlipX}}
+Texture Optional WLF1ELEC, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL035, 0, 0}
+Texture Optional WLF1ELED, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL035, 0, 0 {FlipX}}
+Texture Optional WLF1JMBC, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL036, 0, 0 {FlipX}}
+Texture Optional WLF1JMBD, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL036, 0, 0 {FlipX}}
+Texture Optional WLF1LK1C, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL033, 0, 0}
+Texture Optional WLF1LK1D, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL033, 0, 0 {FlipX}}
+Texture Optional WLF1LK2C, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL034, 0, 0}
+Texture Optional WLF1LK2D, 128, 128 {WorldPanning XScale 2.0 YScale 2.0 Graphic MWALL034, 0, 0 {FlipX}}
+
+//Enemies
+//Hans
+Sprite Optional WBOSA0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR38, 0, 0}
+Sprite Optional WBOSB0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR39, 0, 0}
+Sprite Optional WBOSC0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR38, 0, 0 {FlipX}}
+Sprite Optional WBOSD0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR39, 0, 0 {FlipX}}
+Sprite Optional WBOSE0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR35, 0, 0}
+Sprite Optional WBOSF0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR36, 0, 0}
+Sprite Optional WBOSG0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR37, 0, 0}
+Sprite Optional WBOSK0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR42, 0, 0}
+Sprite Optional WBOSH0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR40, 0, 0}
+Sprite Optional WBOSI0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR41, 0, 0}
+Sprite Optional WBOSJ0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR42, 0, 0}
+//Schabbs
+Sprite Optional WBO3A0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR91, 0, 0}
+Sprite Optional WBO3B0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR92, 0, 0}
+Sprite Optional WBO3C0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR91, 0, 0 {FlipX}}
+Sprite Optional WBO3D0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR92, 0, 0 {FlipX}}
+Sprite Optional WBO3E0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR89, 0, 0}
+Sprite Optional WBO3F0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR90, 0, 0}
+Sprite Optional WBO3H0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR93, 0, 0}
+Sprite Optional WBO3I0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR94, 0, 0}
+Sprite Optional WBO3J0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR95, 0, 0}
+Sprite Optional WBO3K0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR95, 0, 0}
+//Hitler Mech
+Sprite Optional WHR1A0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR69, 0, 0}
+Sprite Optional WHR1B0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR70, 0, 0}
+Sprite Optional WHR1C0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR69, 0, 0 {FlipX}}
+Sprite Optional WHR1D0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR70, 0, 0 {FlipX}}
+Sprite Optional WHR1E0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR62, 0, 0}
+Sprite Optional WHR1F0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR63, 0, 0}
+Sprite Optional WHR1G0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR64, 0, 0}
+Sprite Optional WHR1K0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR68, 0, 0}
+Sprite Optional WHR1H0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR65, 0, 0}
+Sprite Optional WHR1I0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR66, 0, 0}
+Sprite Optional WHR1J0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR67, 0, 0}
+//Hitler
+Sprite Optional WHR2A0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR46, 0, 0}
+Sprite Optional WHR2B0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR47, 0, 0}
+Sprite Optional WHR2C0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR48, 0, 0}
+Sprite Optional WHR2D0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR49, 0, 0}
+Sprite Optional WHR2G0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR43, 0, 0}
+Sprite Optional WHR2H0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR44, 0, 0}
+Sprite Optional WHR2I0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR45, 0, 0}
+Sprite Optional WHR2Q0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR52, 0, 0}
+Sprite Optional WHR2J0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR50, 0, 0}
+Sprite Optional WHR2K0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR50, 0, 0}
+Sprite Optional WHR2L0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR51, 0, 0}
+Sprite Optional WHR2M0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR51, 0, 0}
+Sprite Optional WHR2N0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR52, 0, 0}
+Sprite Optional WHR2O0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR52, 0, 0}
+Sprite Optional WHR2P0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR52, 0, 0}
+//Trans
+Sprite Optional WBO2A0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR110, 0, 0}
+Sprite Optional WBO2B0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR111, 0, 0}
+Sprite Optional WBO2C0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR110, 0, 0 {FlipX}}
+Sprite Optional WBO2D0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR111, 0, 0 {FlipX}}
+Sprite Optional WBO2E0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR107, 0, 0}
+Sprite Optional WBO2F0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR108, 0, 0}
+Sprite Optional WBO2G0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR109, 0, 0}
+Sprite Optional WBO2K0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR114, 0, 0}
+Sprite Optional WBO2H0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR112, 0, 0}
+Sprite Optional WBO2I0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR113, 0, 0}
+Sprite Optional WBO2J0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR114, 0, 0}
+//Ubermutant
+Sprite Optional WBO6A0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR57, 0, 0}
+Sprite Optional WBO6B0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR58, 0, 0}
+Sprite Optional WBO6C0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR57, 0, 0 {FlipX}}
+Sprite Optional WBO6D0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR58, 0, 0 {FlipX}}
+Sprite Optional WBO6E0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR53, 0, 0}
+Sprite Optional WBO6F0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR54, 0, 0}
+Sprite Optional WBO6G0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR55, 0, 0}
+Sprite Optional WBO6H0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR56, 0, 0}
+Sprite Optional WBO6I0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR59, 0, 0}
+Sprite Optional WBO6J0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR59, 0, 0}
+Sprite Optional WBO6K0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR60, 0, 0}
+Sprite Optional WBO6L0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR60, 0, 0}
+Sprite Optional WBO6M0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR61, 0, 0}
+//Death Knight
+Sprite Optional WBO7A0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR11, 0, 0}
+Sprite Optional WBO7B0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR12, 0, 0}
+Sprite Optional WBO7C0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR11, 0, 0 {FlipX}}
+Sprite Optional WBO7D0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR12, 0, 0 {FlipX}}
+Sprite Optional WBO7F0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR7, 0, 0}
+Sprite Optional WBO7G0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR8, 0, 0}
+Sprite Optional WBO7H0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR9, 0, 0}
+Sprite Optional WBO7I0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR10, 0, 0}
+Sprite Optional WBO7K0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR13, 0, 0}
+Sprite Optional WBO7L0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR13, 0, 0}
+Sprite Optional WBO7M0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR14, 0, 0}
+Sprite Optional WBO7N0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR14, 0, 0}
+Sprite Optional WBO7O0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR15, 0, 0}
+Sprite Optional WBO7P0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR15, 0, 0}
+Sprite Optional WBO7Q0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 128 Graphic SPR15, 0, 0}
+
+//Projectiles
+Sprite Optional BAL3A0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 64 Graphic SPR4, 0, 0}
+Sprite Optional BAL3B0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 64 Graphic SPR5, 0, 0}
+Sprite Optional BAL3C0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 64 Graphic SPR151, 0, 0}
+Sprite Optional BAL3D0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 64 Graphic SPR152, 0, 0}
+Sprite Optional BAL3E0, 128, 128 {XScale 2.0 YScale 2.0 Offset 64, 64 Graphic SPR152, 0, 0}

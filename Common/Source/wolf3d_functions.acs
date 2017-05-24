@@ -1,0 +1,1560 @@
+////////////////////////////////////////////////////////////////////////////////
+// Wolf3D TC - Functions
+////////////////////////////////////////////////////////////////////////////////
+// 
+// This file contains the following functions:
+//
+//   CheckChaingunFace	Check if chaingun was picked up and grin if so
+//   CheckIdleFace	Check if idle and stick out tongue or cross eyes (SoD only)
+//   FadeToBlack	Fade to black and back
+//   Freeze		Freeze player(s) and actors
+//   FreezeAll		Freeze all actors except current player
+//   ResetWeapons	Reset weapons to defaults
+//   WolfCoord		Convert Doom Coord to Wolf3D grid coord
+//   CheckShowTimer	Display game timer if g_timer CVAR is true
+//   DoWolfMovement	Handles Wolf3D-style momentum (or lack thereof)
+//   DoScoreCount	Adds current pending score to player score
+//   CheckCheatsEnabled	Handles 'goobers' cvar check	
+//   CheckWolfWeapon	Handles checks for weapons in player inventory
+//   CheckWolfWeapons	Handle inventorying weapons in player inventory
+//   CheckDebugMode	Checks/displays debug information
+//
+// This file contains the following script (can't be functions because of wait/delay commands):
+// 
+//   W_CheckInput	Begin monitoring for player inputs
+//   W_DoDeathCam	Check for/handle player-side deathcam activation
+//   SetMapMarker	Sets map marker icons for Wolf3D objects
+//
+////////////////////////////////////////////////////////////////////////////////
+
+int	posx = 0, posy = 0, posz = 0;
+int	debug = 0;
+
+Function void CheckChaingunFace (void)
+{
+	If (GetUserVariable(0, "user_HasChaingun") == 0)
+	{
+		If (CheckInventory("WolfChaingun") > 0)
+		{
+			SetUserVariable(0, "user_HasChaingun", 1);
+			SetMugshotState("Grin");
+		}
+	}
+}
+
+Function void CheckStrengthFace (void)
+{
+	If (GetUserVariable(0, "user_HasStrength") == 0)
+	{
+		If (CheckInventory("PowerStrength") > 0)
+		{
+			SetUserVariable(0, "user_HasStrength", 1);
+			SetMugshotState("Glare");
+		}
+	}
+}
+
+Function void CheckIdleFace (void)
+{
+	If (GAME_SOD > 0)
+	{
+		if (posx == getactorx(0) && posy == getactory(0) && posz == getactorz(0))
+			SetUserVariable(0, "user_funnyticount", GetUserVariable(0, "user_funnyticount") + 1);
+		else
+			SetUserVariable(0, "user_funnyticount", 0);
+
+		if (GetActorProperty(0, APROP_HEALTH) > 0)
+		{
+			If ((GetUserVariable(0, "user_funnyticount") > 30*35))
+			{
+				SetMugshotState("WolfIdle");
+				SetUserVariable(0, "user_funnyticount", 0);
+			}
+		}
+
+		posx = GetActorX(0);
+		posy = GetActorY(0);
+		posz = GetActorZ(0);
+	}
+}
+
+Function void FadeToBlack (int holdTime, int inTime, int outTime, int Range)
+{
+	SetHudSize(320, 200, 1);
+	If (Range)
+	{
+		SetFont("BLACK");
+		HudMessageBold (s:"a"; 3, 0, -1, 160.0, 100.0, holdTime, inTime, outTime);
+		SetFont("WSMASK");
+		HudMessageBold (s:"A"; 3, 0, -1, 160.0, 100.0, holdTime, inTime, outTime);
+	}
+	Else
+	{
+		SetFont("BLACK");
+		HudMessage (s:"a"; 3, 0, -1, 160.0, 100.0, holdTime, inTime, outTime);
+		SetFont("WSMASK");
+		HudMessage (s:"A"; 3, 0, -1, 160.0, 100.0, holdTime, inTime, outTime);
+	}
+}
+
+Function void Freeze(int Set)
+{
+	SetPlayerProperty(0, Set, PROP_NOTARGET);
+	SetPlayerProperty (0, Set, PROP_TOTALLYFROZEN);
+}
+
+Script "Freeze" (int OnOff)
+{
+	int t;
+
+	Freeze(OnOff);
+
+	If (OnOff)
+	{
+		//Set all actors that inherit from the base WolfEnemy actor to frozen
+		For(t = 0; t < 1000; t++)
+		{
+			If (CheckActorInventory(t, "Active") > 0 && GetActorProperty(t, APROP_Health) > 0)
+				SetActorState(t, "Freeze", true);
+		}
+	}
+	Else
+	{
+		For(t = 0; t < 1000; t++)
+		{
+			If (CheckActorInventory(t, "Active") > 0 && GetActorProperty(t, APROP_Health) > 0)
+				SetActorState(t, "UnFreeze", true);
+		}
+	}
+}
+
+Function void FreezeAll(int Duration)
+{
+	SetPlayerProperty(1, Duration, PROP_NOTARGET);
+	SetPlayerProperty (1, Duration, PROP_TOTALLYFROZEN);
+
+	For (int f=1; f <= Duration; f++)
+	{
+		GiveActorInventory(1001, "Freeze", 1);
+	}
+}
+
+Function void ResetWeapons (void)
+{
+	If (!GAME_LOST)
+	{
+		GiveInventory("WolfKnife", 1);
+		GiveInventory("WolfPistol", 1);
+		SetWeapon("WolfPistol");
+		If (GAME_SOD)
+			GiveInventory("SoD_Game_Marker", 1);
+	}
+	Else
+	{
+		GiveInventory("WolfKnifeLost", 1);
+		GiveInventory("WolfPistolLost", 1);
+		SetWeapon("WolfPistolLost");
+		GiveInventory("SoD_Game_Marker", 1);
+		GiveInventory("Lost_Game_Marker", 1);
+	}
+	
+	If (!PlayerIsBot(PlayerNumber()))
+	{
+		GiveInventory("Active", 1);
+	}
+}
+
+Function int WolfCoord(int intCoord)
+{
+	int intReturn = 0;
+	intCoord = intCoord / 1.0;
+	intCoord = (intCoord + 2048 - 32) / 64;
+	return intCoord;
+}
+
+Function int RoundCoord(int intCoord)
+{
+	int intModMajor = intCoord % 64.0;
+	If (intModMajor < 0)
+		intModMajor = intModMajor * -1;
+
+	int intMod = intCoord % 32.0;
+	If (intMod < 0)
+		intModMajor = intMod * -1;
+
+	If (intMod <= 16.0)
+		intCoord = intCoord - intMod;
+	Else If (intMod > 16.0)
+		intCoord = intCoord + (32.0 - intMod);
+
+	If (intModMajor < 32.0)
+		intCoord = intCoord + 32.0;
+
+	return intCoord;		
+}
+
+Function void SnapToGrid (int tid)
+{
+	int ActorX = RoundCoord(GetActorX(tid));
+	int ActorY = RoundCoord(GetActorY(tid));
+
+	SetActorPosition (tid, ActorX, ActorY, GetActorZ(tid), 0);
+}
+
+Function void CheckShowTimer (void)
+{
+	If (GetCvar("g_timer") > 0)
+	{
+		SetHudSize(0,0,1);
+		SetFont("WOLFFNTS");
+		HudMessage(d:Timer();HUDMSG_COLORSTRING,900,"Wolf Menu Light Gray",0,0,0);
+	}
+	Else
+		HudMessage(s:"";0,900,0,0,0,0);
+}
+
+Function void DoWolfMovement (void)
+{
+	If ((GetCvar("g_momentum") == 0) && (GetActorVelZ(0)==0))
+	{
+		SetActorVelocity(0, 0, 0, 0, 0, 1);
+		SetActorProperty(0, APROP_Speed, 8.0);
+	}
+	Else
+		SetActorProperty(0, APROP_Speed, 1.0);
+}
+
+Function void DoScoreCount (void)
+{
+	int CurrentPoints = CheckInventory("Points");
+
+	If (CurrentPoints)
+	{
+		ACS_NamedExecuteAlways("W_AddPoints", 0, CurrentPoints);
+		TakeInventory("Points", CurrentPoints);
+	}
+
+	If (GetActorProperty(0, APROP_Score) >= (LifeThreshold[PlayerNumber()]+intLifeAmount))
+	{
+		For(int q=1; q<=((LifeThreshold[PlayerNumber()]+intLifeAmount)/intLifeAmount) - (LifeThreshold[PlayerNumber()]/intLifeAmount); q++)
+		{
+			If ((CheckInventory("Life") < 10) && !(GameType() == GAME_NET_DEATHMATCH))
+			{
+				GiveInventory("Life", 1);
+				LifeCount[PlayerNumber()]++;
+			}
+			Else If (GameType() == GAME_NET_DEATHMATCH)
+				ACS_NamedExecuteAlways("A_GiveLife", 0);
+		}
+		LifeThreshold[PlayerNumber()] = LifeThreshold[PlayerNumber()]+intLifeAmount;
+		AmbientSound ("pickups/life", 127);
+	}
+
+	ScoreMod[PlayerNumber()] = GetActorProperty(0, APROP_Score) % 1000000;
+}
+
+int PopupTimer;
+
+Function int CheckCheatsEnabled (void)
+{
+	If (GameType() != GAME_TITLE_MAP) //&& Timer() > (((GetCVar("g_nointro") == 0) * 100) + 35))
+	{
+		If (GetCvar("goobers") > 0)
+		{
+			if (!Goobers)
+			{
+				Goobers = 1;
+				AmbientSound("goobers",255);
+				PrintMessage (	StrParam(l:"GOOBERS"),
+						"WOLFFNTL", 0,
+						BORDER_GRAY,
+						182, 37);
+			}
+		}
+		Else
+			Goobers = 0;
+	}
+	return Goobers;
+}
+
+#define WeaponCount 11
+
+str WeaponClasses[WeaponCount][2] = {
+	{"WolfChaingun", 8}, 
+	{"WolfChaingunLost", 8}, 
+	{"WolfChaingunSoD", 8}, 
+	{"WolfFlamethrower", 16}, 
+	{"WolfMachineGun", 4}, 
+	{"WolfMachineGunLost", 4}, 
+	{"WolfKnife", 1}, 
+	{"WolfKnifeLost", 1}, 
+	{"WolfPistol", 2}, 
+	{"WolfPistolLost", 2}, 
+	{"WolfRocketLauncher", 32}
+};
+
+Function void CheckWolfWeapons (void)
+{
+	Weapons[PlayerNumber()] = 0;
+
+	For (int w = 0; w < WeaponCount; w++)
+	{
+		If (CheckInventory(WeaponClasses[w][0]))
+		{
+			If (!(Weapons[PlayerNumber()] & WeaponClasses[w][1]))
+				Weapons[PlayerNumber()] += WeaponClasses[w][1];
+		}
+	}
+}
+
+Function int CheckWolfWeapon (int intPlayer, int intWeapon)
+{
+	int intReturn;
+
+	If (Weapons[intPlayer] & intWeapon) 
+		intReturn = 1;
+	Else
+		intReturn = 0;
+
+	return intReturn;
+}
+
+Function void CheckDebugMode (void)
+{
+	If (GetCvar("g_debug") > 0)
+	{
+		debug = 1;
+		sethudsize(GetScreenWidth(),GetScreenHeight(),1);
+		setfont("wolffnts");
+		HudMessage(s:"Player Number: ",d:PlayerNumber();HUDMSG_COLORSTRING,909,"Wolf Menu Light Gray",10.1,10.0,0);
+		HudMessage(s:"Player TID: ",d:ActivatorTID();HUDMSG_COLORSTRING,910,"Wolf Menu Light Gray",10.1,20.0,0);
+		HudMessage(s:"Game Timer: ",d:Timer();HUDMSG_COLORSTRING,900,"Wolf Menu Light Gray",10.1,30.0,0);
+/*
+		HudMessage(s:"Player 0: ",d:GetActorProperty(1001, APROP_SCORE),s:" Dead: ",d:Died[0];0,901,0,10.1,50.0,0);
+		HudMessage(s:"Player 1: ",d:GetActorProperty(1002, APROP_SCORE),s:" Dead: ",d:Died[1];0,902,0,10.1,60.0,0);
+		HudMessage(s:"Player 2: ",d:GetActorProperty(1003, APROP_SCORE),s:" Dead: ",d:Died[2];0,903,0,10.1,70.0,0);
+		HudMessage(s:"Player 3: ",d:GetActorProperty(1004, APROP_SCORE),s:" Dead: ",d:Died[3];0,904,0,10.1,80.0,0);
+		HudMessage(s:"Player 4: ",d:GetActorProperty(1005, APROP_SCORE),s:" Dead: ",d:Died[4];0,905,0,10.1,90.0,0);
+		HudMessage(s:"Player 5: ",d:GetActorProperty(1006, APROP_SCORE),s:" Dead: ",d:Died[5];0,906,0,10.1,100.0,0);
+		HudMessage(s:"Player 6: ",d:GetActorProperty(1007, APROP_SCORE),s:" Dead: ",d:Died[6];0,907,0,10.1,110.0,0);
+		HudMessage(s:"Player 7: ",d:GetActorProperty(1008, APROP_SCORE),s:" Dead: ",d:Died[7];0,908,0,10.1,120.0,0);
+*/
+		ACS_Execute(904, 0);
+	}
+	else
+	{
+		ACS_Terminate(904, 0);
+
+		If (debug)
+		{
+			for(int m=900; m<=910; m++)
+			{
+				HudMessage(s:"";0,m,0,0,0,0);
+			}
+			debug=0;
+		}
+	}
+}
+
+Script "W_CheckInput" (void)
+{
+	// ScreenType 1 - All movement buttons, fire, use advance to next screen
+	// ScreenType 2 - Left/Forward and Right/Back advance to previous and next screens, fire/use do nothing
+
+	pollingkeys = 1;
+
+	while (pollingkeys > 0)
+	{
+		int ScreenType = pollingkeys;
+
+		int buttons = GetPlayerInput(0, INPUT_BUTTONS);
+
+		if (buttons & (BT_USE | BT_ATTACK))
+		{
+			Switch (ScreenType)
+			{
+				Case 1:
+					ACS_NamedExecute("W_FinaleSlideshowNext", 0);
+				break;
+			}
+		}
+		else if (buttons & (BT_LEFT | BT_MOVELEFT | BT_FORWARD))
+		{
+			//Left or Forward
+			Switch (ScreenType)
+			{
+				Case 1:
+					ACS_NamedExecute("W_FinaleSlideshowNext", 0);
+				break;
+				Case 2:
+					ACS_NamedExecute("W_FinaleSlideshowPrev", 0);
+				break;
+			}
+		}
+		else if (buttons & (BT_RIGHT | BT_MOVERIGHT | BT_BACK))
+		{
+			//Right or Back
+			ACS_NamedExecute("W_FinaleSlideshowNext", 0);
+		}
+		delay(2);
+	}
+}
+
+Script "W_DoDeathCam" (void)
+{
+	Freeze(1);
+	ACS_NamedExecute("W_PlayerDeathCam", 0, GetActorX(0), GetActorY(0), GetActorAngle(0));
+	NamedScriptWait("W_PlayerDeathCam");
+	Freeze(0);
+	deathcam = 0;
+}
+
+Function int abs (int x)
+{
+	If (x < 0)
+		return -x;
+	return x;
+}
+
+Script "W_MovePlatform" (int TID, int Angle)
+{
+	int PlatTID;
+
+	Angle = (Angle % 360) * 1.0 / 360;
+
+	If (TID == 0)
+	{
+		PlatTID = UniqueTID();
+		Thing_ChangeTID(0, PlatTID);
+	}
+	Else
+		PlatTID = TID;
+
+	int Speed = GetActorProperty(PlatTID, APROP_Speed) / 1.0;
+
+	int PlatX = GetActorX(PlatTID);
+	int PlatY = GetActorY(PlatTID);
+
+	int DestX = PlatX + (cos(Angle) * Speed);
+	int DestY = PlatY + (sin(Angle) * Speed);
+
+	If (!SetActorPosition(PlatTID, DestX, DestY, GetActorZ(PlatTID), 0))
+	{
+		SetActorState(PlatTID, "Reverse");
+		SetResultValue(0);
+	}
+	Else
+		SetResultValue(1);
+}
+
+Script "W_DoPlatform" (int TID, int PlatWidth, int PlatHeight)
+{
+	int NotMoving = True;
+	int OnPlatform = True;
+
+	int PlatTID;
+
+	PlatTID = UniqueTID();
+	Thing_ChangeTID(0, PlatTID);
+
+	int PlatDepth = GetActorProperty(PlatTID, APROP_Height);
+
+	SetActivatorToTarget (PlatTID);
+
+	int offsetX = GetActorX(0) - GetActorX(PlatTID);
+	int offsetY = GetActorY(0) - GetActorY(PlatTID);
+	int offsetZ = GetActorZ(0) - GetActorZ(PlatTID);
+
+	int intActorRadius = GetActorProperty(0, APROP_Radius);
+
+	bool isMonster = (PlayerNumber() == -1);
+
+	If (isMonster)
+	{
+		int maxOffsetX = ((PlatWidth / 2) - intActorRadius) * 1.0;
+		int minOffsetX = -1 * maxOffsetX;
+
+		int maxOffsetY = ((PlatHeight / 2) - intActorRadius) * 1.0;
+		int minOffsetY = -1 * maxOffsetY;
+	}
+
+	While (OnPlatform)
+	{
+		While (NotMoving)
+		{
+			SetActorPosition(0, GetActorX(PlatTID) + offsetX, GetActorY(PlatTID) + offsetY, GetActorZ(PlatTID) + offsetZ, 0);
+
+			int ActorX = GetActorX(0);
+			int ActorY = GetActorY(0);
+			int ActorZ = GetActorZ(0);
+
+			delay(1);
+
+			If (isMonster || GetPlayerInput(-1, INPUT_BUTTONS) & (BT_FORWARD + BT_BACK + BT_MOVELEFT + BT_MOVERIGHT + BT_JUMP))
+				NotMoving = False;
+		}
+
+		If (!isMonster || (abs(offsetX * 2 / 1.0) > PlatWidth) || (abs(offsetY * 2 / 1.0) > PlatHeight)) // || (offsetZ != PlatDepth))
+			OnPlatform = False;
+		Else
+		{
+			offsetX = offsetX - (ActorX - GetActorX(0));
+			offsetY = offsetY - (ActorY - GetActorY(0));
+			offsetZ = offsetZ - (ActorZ - GetActorZ(0));
+
+			NotMoving = True;
+		}
+
+		If (isMonster)
+		{
+			If (offsetX >= maxOffsetX)
+				offsetX = maxOffsetX;
+			Else If (offsetX <= minOffsetX)
+				offsetX = minOffsetX;
+
+			If (offsetY >= maxOffsetY)
+				offsetY = maxOffsetY;
+			Else If (offsetY <= minOffsetY)
+				offsetY = minOffsetY;
+
+			If (offSetZ != PlatDepth) OnPlatform = False;
+		}
+	}
+
+	Thing_ChangeTID(PlatTID, 0);	
+}
+
+int PlatThingCoords[64][4];	//TID, offsetX, offsetY, offsetZ
+
+Function int SetPlatThing(int TID)
+{
+	For (int t = 0; t < 64; t++)
+	{
+		If (PlatThingCoords[t][0] == 0)
+		{
+			PlatThingCoords[t][0] = TID;
+			return t;
+		}
+	}
+	Log(s:"ERROR: Too many Things on moving platforms!");
+	return -1;
+}
+
+Function int ClearPlatThing(int TID)
+{
+	For (int t = 0; t < 64; t++)
+	{
+		If (PlatThingCoords[t][0] == TID)
+		{
+			PlatThingCoords[t][0] = 0;
+			return t;
+		}
+	}
+	return -1;
+}
+
+Function int FindPlatThing(int TID)
+{
+	For (int t = 0; t < 64; t++)
+	{
+		If (PlatThingCoords[t][0] == TID)
+			return t;
+	}
+	return -1;
+}
+
+Script "W_DoPlatform2" (int TID, int PlatWidth, int PlatHeight)
+{
+	int NotMoving = True;
+	int OnPlatform = True;
+
+	int PlatDepth = GetActorProperty(TID, APROP_Height);
+
+	SetActivatorToTarget (TID);
+
+	If (ActivatorTID() == 0)
+	{
+		Thing_ChangeTID(0, UniqueTID());
+	}
+
+	int PlatThing = FindPlatThing(ActivatorTID());
+
+	If (PlatThing == -1)
+	{
+		PlatThing = SetPlatThing(ActivatorTID());
+
+		PlatThingCoords[PlatThing][1] = GetActorX(0) - GetActorX(TID);
+		PlatThingCoords[PlatThing][2] = GetActorY(0) - GetActorY(TID);
+		PlatThingCoords[PlatThing][3] = GetActorZ(0) - GetActorZ(TID);
+
+		int intActorRadius = GetActorProperty(0, APROP_Radius);
+
+		int maxOffsetX = ((PlatWidth / 2) - (intActorRadius / 2.0)) * 1.0;
+		int minOffsetX = -1 * maxOffsetX;
+
+		int maxOffsetY = ((PlatHeight / 2) - (intActorRadius / 2.0)) * 1.0;
+		int minOffsetY = -1 * maxOffsetY;
+
+		While (OnPlatform)
+		{
+			While (NotMoving)
+			{
+/*
+				Log(s:"X Offset: ",d:PlatThingCoords[PlatThing][1]/1.0,s:", Y Offset: ",d:PlatThingCoords[PlatThing][2]/1.0,s:", Z Offset: ",d:PlatThingCoords[PlatThing][3]/1.0);
+				Log(s:"Width: ",d:PlatWidth,s:", Height: ",d:PlatHeight,s:", Depth: ",d:PlatDepth/1.0);
+*/
+				SetActorPosition(0, GetActorX(TID) + PlatThingCoords[PlatThing][1], GetActorY(TID) + PlatThingCoords[PlatThing][2], GetActorZ(TID) + PlatThingCoords[PlatThing][3], 0);
+
+				int ActorX = GetActorX(0);
+				int ActorY = GetActorY(0);
+				int ActorZ = GetActorZ(0);
+
+				delay(1);
+
+				If (PlayerNumber() == -1 || GetPlayerInput(-1, INPUT_BUTTONS) & (BT_FORWARD + BT_BACK + BT_MOVELEFT + BT_MOVERIGHT + BT_JUMP))
+					NotMoving = False;
+
+				PlatThingCoords[PlatThing][3] = PlatThingCoords[PlatThing][3] - (ActorZ - GetActorZ(0));
+
+				If (PlatThingCoords[PlatThing][3] != PlatDepth)
+					OnPlatform = False;
+			}
+
+			If ((abs(PlatThingCoords[PlatThing][1] * 2 / 1.0) > PlatWidth) || (abs(PlatThingCoords[PlatThing][2] * 2 / 1.0) > PlatHeight) || (PlatThingCoords[PlatThing][3] != PlatDepth))
+				OnPlatform = False;
+
+			PlatThingCoords[PlatThing][1] = PlatThingCoords[PlatThing][1] - (ActorX - GetActorX(0));
+			PlatThingCoords[PlatThing][2] = PlatThingCoords[PlatThing][2] - (ActorY - GetActorY(0));
+
+			NotMoving = True;
+
+			If (PlayerNumber() == -1)
+			{
+				If (PlatThingCoords[PlatThing][1] > maxOffsetX)
+					PlatThingCoords[PlatThing][1] = maxOffsetX;
+				Else If (PlatThingCoords[PlatThing][1] < minOffsetX)
+					PlatThingCoords[PlatThing][1] = minOffsetX;
+
+				If (PlatThingCoords[PlatThing][2] > maxOffsetY)
+					PlatThingCoords[PlatThing][2] = maxOffsetY;
+				Else If (PlatThingCoords[PlatThing][2] < minOffsetY)
+					PlatThingCoords[PlatThing][2] = minOffsetY;
+
+				If (abs(PlatThingCoords[PlatThing][1]) == maxOffsetX || abs(PlatThingCoords[PlatThing][2]) == maxOffsetY)
+				{
+					//HACK: Need to find a better way to make the monster treat the 
+					// edge boundaries as walls, and not keep trying to walk through
+					// them.  Setting angle doesn't work, and there's not a good way
+					// in ACS to make them forget their target and wander...
+					SetActorProperty(0, APROP_Frightened, !GetActorProperty(0, APROP_Frightened)); 
+				}
+			}
+		}
+
+		PlatThingCoords[PlatThing][0] = 0;
+	}
+}
+
+str WaterTex[17] = {	"BLOOD3", "FWATER4", "LAVA4", "NUKAGE3", "SLIME04", "SLIME08", "SLIME12", "SWATER4",
+			"FLATHUH4", "FLTFLWW3", "FLTLAVA4", "FLTSLUT3", "FLTWAWA3",
+			"F_HWATR3", "F_PWATR3", "F_VWATR3", "F_WATR03"};
+
+Function int OnWater (int TID)
+{
+	For (int Tex = 0; Tex < 17; Tex++)
+	{
+		If (CheckActorFloorTexture(TID, WaterTex[Tex]))
+			return 1;
+	}
+
+	return 0;
+}
+
+Script "W_DrivePlatform" (int TID, int maxHeight, int Flags)
+{
+	int NotMoving = True;
+	int OnPlatform = True;
+
+	int MoveAngle;
+	int groundHeight;
+	int oldMaxHeight;
+	int destZ;
+	int PlatTID;
+
+	int noWater = 0;
+	int noStrafe = 0;
+	int noTurn = 0;
+	int allowJump = 0;
+	int acceleration = 0;
+	int states = 0;
+
+	int maxTurn = 5;
+	maxTurn = maxTurn * 1.0 / 360; //Convert to fixed angle
+
+	int linearSpeed = 0;
+
+	bool Jumping = False;
+	bool Moving = True;
+
+	int JumpCount = 0;
+	int StateCount = 0;
+
+	If (TID == 0)
+	{
+		PlatTID = UniqueTID();
+		Thing_ChangeTID(0, PlatTID);
+	}
+	Else
+		PlatTID = TID;
+
+	If (Flags & 1) noWater = 1;
+	If (Flags & 2) noStrafe = 1;
+	If (Flags & 4) noTurn = 1;
+	If (Flags & 8) allowJump = 1;
+	If (Flags & 16) acceleration = 1;
+	If (Flags & 32) states = 1;
+
+	int Speed = GetActorProperty(PlatTID, APROP_Speed);
+
+	SetActivatorToTarget (PlatTID);
+
+	SetActorAngle(GetActorAngle(PlatTID), 0);
+
+	While (OnPlatform)
+	{
+		SetActorPosition(0, GetActorX(PlatTID), GetActorY(PlatTID), GetActorZ(PlatTID) + GetActorProperty(PlatTID, APROP_Height), 0);
+
+		If ((GetActorX(PlatTID) != GetActorX(0)) || (GetActorY(PlatTID) != GetActorY(0)))
+			OnPlatform = False;
+
+		If (!noTurn)
+		{
+
+			int AngleDiff = GetActorAngle(0) - GetActorAngle(PlatTID);
+
+			If (AngleDiff < -0.5) AngleDiff = 1.0 + AngleDiff;
+			If (AngleDiff > 0.5) AngleDiff = -(1.0 - AngleDiff);
+
+			If (states)
+			{
+				If (AngleDiff > 0)
+				{
+					SetActorState(PlatTID, "Spawn.Left");
+					StateCount = 0;
+				}
+				Else If (AngleDiff < 0)
+				{
+					SetActorState(PlatTID, "Spawn.Right");
+					StateCount = 0;
+				}
+				Else
+				{
+					If (StateCount >= 5) //Min time to keep the other state to avoid flicker
+						SetActorState(PlatTID, "Spawn");
+				}
+			}
+			SetActorAngle(PlatTID, GetActorAngle(0));
+		}
+
+		If (noWater && OnWater(PlatTID) == 1)
+			SetActorProperty(PlatTID, APROP_Speed, GetActorProperty(PlatTID, APROP_Speed) * 95 / 100);
+		Else If (acceleration)
+		{
+			If (!Moving)
+				linearSpeed = 0;
+		}
+		Else
+			SetActorProperty(PlatTID, APROP_Speed, Speed);
+
+		//Set velocity to zero to stop weapon from bobbing
+		SetActorVelocity(0, 0, 0, 0, 0, 1);
+
+		int PlatX = GetActorX(PlatTID);
+		int PlatY = GetActorY(PlatTID);
+		int PlatZ = GetActorZ(PlatTID);
+
+		Moving = False;
+
+		If (GetPlayerInput(-1, INPUT_FORWARDMOVE) || acceleration)
+		{
+			If (acceleration)
+			{
+				If (GetActorProperty(PlatTID, APROP_Speed) < Speed)
+				{
+					If (GetPlayerInput(-1, INPUT_FORWARDMOVE) > 0)
+						linearSpeed = linearSpeed + Speed / 15;
+				}
+
+				If (GetPlayerInput(-1, INPUT_FORWARDMOVE) < 0)
+				{
+					linearSpeed = linearSpeed - Speed / 10;
+				}
+
+				If (linearSpeed < 0) linearSpeed = 0;
+
+				SetActorProperty(PlatTID, APROP_Speed, linearSpeed);
+			}
+
+			MoveAngle = GetActorAngle(PlatTID) * 360 / 1.0;
+
+			If (!acceleration || linearSpeed == 0)
+			{
+				If (GetPlayerInput(-1, INPUT_FORWARDMOVE) < 0)
+				{
+					MoveAngle = (MoveAngle + 180) % 360;
+					If (acceleration) SetActorProperty(PlatTID, APROP_Speed, Speed / 10);
+				}
+			}
+
+			ACS_NamedExecuteAlways("W_MovePlatform", 0, PlatTID, MoveAngle);
+
+			If (GetActorPitch(0) != 0)
+			{
+				groundHeight = ((GetActorZ(PlatTID) - GetActorFloorZ(PlatTID)) / 1.0);
+
+				If (maxHeight == 0 || (groundHeight < maxHeight))
+					destZ = GetActorZ(PlatTID) - (GetActorPitch(0) * 1.0 / 5000);
+				Else
+					destZ = GetActorZ(PlatTID) - 1.0;
+
+				SetActorPosition(0, GetActorX(PlatTID), GetActorY(PlatTID), destZ + GetActorProperty(PlatTID, APROP_Height), 0);
+				SetActorPosition(PlatTID, GetActorX(PlatTID), GetActorY(PlatTID), destZ, 0);
+			}
+		}
+
+		If (GetPlayerInput(-1, INPUT_SIDEMOVE) && !noStrafe)
+		{
+			If (states && !Jumping)
+			{
+				If (StateCount >= 5)
+				{
+					SetActorState(PlatTID, "Spawn.Strafe");
+					StateCount = 0;
+				}
+			}
+
+			MoveAngle = GetActorAngle(PlatTID) * 360 / 1.0;
+
+			If (GetPlayerInput(-1, INPUT_SIDEMOVE) < 0)
+				MoveAngle = (MoveAngle + 90) % 360;
+			Else
+				MoveAngle = (MoveAngle - 90) % 360;
+
+			ACS_NamedExecuteAlways("W_MovePlatform", 0, PlatTID, MoveAngle);
+		}
+
+		If (GetPlayerInput(-1, INPUT_BUTTONS) & BT_JUMP)
+		{
+			If (allowJump && !Jumping && !(GetPlayerInput(-1, INPUT_OLDBUTTONS) & BT_JUMP))
+			{
+				oldMaxHeight = MaxHeight;
+				Jumping = True;
+				If (states)
+				{
+					If (StateCount >= 5)
+					{
+						SetActorState(PlatTID, "Spawn.Jump");
+						StateCount = 0;
+					}
+				}
+			}
+			Else If (!allowJump) Jumping = True; 
+		}
+
+		If (GetPlayerInput(-1, INPUT_UPMOVE) || Jumping)
+		{
+			If (Jumping && allowJump)
+			{
+				If (JumpCount < 35 * linearSpeed / 24.0)
+				{
+					maxHeight = oldMaxHeight + 28;
+					SetActorProperty(PlatTID, APROP_Gravity, 0);
+					JumpCount++;
+				}
+				Else
+				{
+					maxHeight = oldMaxHeight;
+					SetActorProperty(PlatTID, APROP_Gravity, 1.0);
+					Jumping = False;
+					JumpCount = 0;
+				}
+			}
+
+			groundHeight = ((GetActorZ(PlatTID) - GetActorFloorZ(PlatTID)) / 1.0);
+
+			If (GetPlayerInput(-1, INPUT_UPMOVE) > 0 || Jumping)
+			{
+				If (maxHeight == 0 || (groundHeight <= maxHeight))
+				{
+					If (allowJump) 
+						destZ = GetActorZ(PlatTID) + (linearSpeed / 6);
+					Else
+						destZ = GetActorZ(PlatTID) + 1.0;
+				}
+			}
+			Else If(!allowJump)
+				destZ = GetActorZ(PlatTID) - 1.0;
+
+			If (!allowJump || Jumping)
+			{
+				SetActorPosition(0, GetActorX(PlatTID), GetActorY(PlatTID), destZ + GetActorProperty(PlatTID, APROP_Height), 0);
+				SetActorPosition(PlatTID, GetActorX(PlatTID), GetActorY(PlatTID), destZ, 0);
+			}
+
+			If (!allowJump) Jumping = False;
+		}
+
+		If (GetPlayerInput(-1, INPUT_BUTTONS) & BT_USE)
+			OnPlatform = False;
+
+		delay(1);
+
+		If (PlatX != GetActorX(PlatTID) || PlatY != GetActorY(PlatTID))
+			Moving = True;
+
+		StateCount++;
+	}
+
+	SetActorProperty(PlatTID, APROP_Speed, Speed);
+
+	//Land it on the ground if you turn it off and it's in the air
+	For (int land = GetActorZ(PlatTID); land >= GetActorFloorZ(PlatTID) + GetActorProperty(PlatTID, APROP_Height); land = GetActorZ(PlatTID) - 0.05)
+	{
+		SetActorPosition(PlatTID, GetActorX(PlatTID), GetActorY(PlatTID), land, 0);
+	}
+	Delay(35*3);
+}
+
+#define EnemyClassCount 135
+#define ItemClassCount 108
+#define AmmoClassCount 10
+#define WeaponClassCount 12
+
+str EnemyClassIcons[EnemyClassCount][2] = {
+	{"AngelofDeathEasy", "Spawn.AoD"}, 
+	{"AngelofDeathHard", "Spawn.AoD"}, 
+	{"AngelofDeathMedium", "Spawn.AoD"}, 
+	{"AngelofDeathNormal", "Spawn.AoD"}, 
+	{"ArmedPrisoner", "Spawn.BJ"}, 
+	{"ArmedPrisonerLoaded", "Spawn.BJ"}, 
+	{"ArmedPrisonerLoadedClassic", "Spawn.BJ"}, 
+	{"BarnacleWilhelm", "Spawn.Barnacle"}, 
+	{"BarnacleWilhelmEasy", "Spawn.Barnacle"}, 
+	{"BarnacleWilhelmHard", "Spawn.Barnacle"}, 
+	{"BarnacleWilhelmMedium", "Spawn.Barnacle"}, 
+	{"BarnacleWilhelmNormal", "Spawn.Barnacle"}, 
+	{"BatEasy", "Spawn.Bat"}, 
+	{"BatHard", "Spawn.Bat"}, 
+	{"BatMedium", "Spawn.Bat"}, 
+	{"BatNormal", "Spawn.Bat"}, 
+	{"BlackNazi", "Spawn.Black"}, 
+	{"Blinky", "Spawn.Blinky"}, 
+	{"BlueNazi", "Spawn.Blue"}, 
+	{"BrownNazi", "Spawn.Brown"}, 
+	{"Clyde", "Spawn.Clyde"}, 
+	{"DeathKnight", "Spawn.DK"}, 
+	{"DeathKnightEasy", "Spawn.DK"}, 
+	{"DeathKnightHard", "Spawn.DK"}, 
+	{"DeathKnightMedium", "Spawn.DK"}, 
+	{"DeathKnightNormal", "Spawn.DK"}, 
+	{"DevilIncarnate", "Spawn.DI"}, 
+	{"DevilIncarnateEasy", "Spawn.DI"}, 
+	{"DevilIncarnateHard", "Spawn.DI"}, 
+	{"DevilIncarnateMedium", "Spawn.DI"}, 
+	{"DevilIncarnateNormal", "Spawn.DI"}, 
+	{"Doberman", "Spawn.Dob"}, 
+	{"Dog", "Spawn.Dog"}, 
+	{"DrSchabbs", "Spawn.Schabbs"}, 
+	{"DrSchabbsEasy", "Spawn.Schabbs"}, 
+	{"DrSchabbsHard", "Spawn.Schabbs"}, 
+	{"DrSchabbsMedium", "Spawn.Schabbs"}, 
+	{"DrSchabbsNormal", "Spawn.Schabbs"}, 
+	{"FatFace", "Spawn.Fat"}, 
+	{"FatFaceEasy", "Spawn.Fat"}, 
+	{"FatFaceHard", "Spawn.Fat"}, 
+	{"FatFaceMedium", "Spawn.Fat"}, 
+	{"FatFaceNormal", "Spawn.Fat"}, 
+	{"Giftmacher", "Spawn.Gift"}, 
+	{"GiftmacherEasy", "Spawn.Gift"}, 
+	{"GiftmacherHard", "Spawn.Gift"}, 
+	{"GiftmacherMedium", "Spawn.Gift"}, 
+	{"GiftmacherNormal", "Spawn.Gift"}, 
+	{"GreenNazi", "Spawn.Green"}, 
+	{"GretelGrosse", "Spawn.Gretel"}, 
+	{"GretelGrosseEasy", "Spawn.Gretel"}, 
+	{"GretelGrosseHard", "Spawn.Gretel"}, 
+	{"GretelGrosseMedium", "Spawn.Gretel"}, 
+	{"GretelGrosseNormal", "Spawn.Gretel"}, 
+	{"HansGrosse", "Spawn.Hans"}, 
+	{"HansGrosseEasy", "Spawn.Hans"}, 
+	{"HansGrosseHard", "Spawn.Hans"}, 
+	{"HansGrosseMedium", "Spawn.Hans"}, 
+	{"HansGrosseNormal", "Spawn.Hans"}, 
+	{"Hitler", "Spawn.H1"}, 
+	{"Hitler2", "Spawn.H2"}, 
+	{"Hitler2Easy", "Spawn.H2"}, 
+	{"Hitler2Hard", "Spawn.H2"}, 
+	{"Hitler2Medium", "Spawn.H2"}, 
+	{"Hitler2Normal", "Spawn.H2"}, 
+	{"HitlerEasy", "Spawn.H1"}, 
+	{"HitlerGhost", "Spawn.HG"}, 
+	{"HitlerGhostEasy", "Spawn.HG"}, 
+	{"HitlerGhostHard", "Spawn.HG"}, 
+	{"HitlerGhostMedium", "Spawn.HG"}, 
+	{"HitlerGhostNormal", "Spawn.HG"}, 
+	{"HitlerHard", "Spawn.H1"}, 
+	{"HitlerMedium", "Spawn.H1"}, 
+	{"HitlerNormal", "Spawn.H1"}, 
+	{"Inky", "Spawn.Inky"}, 
+	{"LostBat", "Spawn.Bat"}, 
+	{"MBat", "Spawn.Bat"}, 
+	{"MBatEasy", "Spawn.Bat"}, 
+	{"MBatHard", "Spawn.Bat"}, 
+	{"MBatMedium", "Spawn.Bat"}, 
+	{"MBatNormal", "Spawn.Bat"}, 
+	{"MBlackNazi", "Spawn.Black"}, 
+	{"MBlueNazi", "Spawn.Blue"}, 
+	{"MBrownNazi", "Spawn.Brown"}, 
+	{"MGreenNazi", "Spawn.Green"}, 
+	{"MMutant", "Spawn.Mutant"}, 
+	{"MMutantEasy", "Spawn.Mutant"}, 
+	{"MMutantHard", "Spawn.Mutant"}, 
+	{"MMutantMedium", "Spawn.Mutant"}, 
+	{"MMutantNormal", "Spawn.Mutant"}, 
+	{"MovingRandomNaziSpawner", "Spawn.Random"}, 
+	{"Mutant", "Spawn.Mutant"}, 
+	{"MutantEasy", "Spawn.Mutant"}, 
+	{"MutantHard", "Spawn.Mutant"}, 
+	{"MutantMedium", "Spawn.Mutant"}, 
+	{"MutantNormal", "Spawn.Mutant"}, 
+	{"MWhiteNazi", "Spawn.White"}, 
+	{"MWhiteNazi2", "Spawn.White2"}, 
+	{"Pinky", "Spawn.Pinky"}, 
+	{"Prisoner", "Spawn.BJ"}, 
+	{"ProfessorQuarkblitz", "Spawn.Quark"}, 
+	{"ProfessorQuarkblitzEasy", "Spawn.Quark"}, 
+	{"ProfessorQuarkblitzHard", "Spawn.Quark"}, 
+	{"ProfessorQuarkblitzMedium", "Spawn.Quark"}, 
+	{"ProfessorQuarkblitzNormal", "Spawn.Quark"}, 
+	{"RadioactiveMist", "Spawn.Mist"}, 
+	{"RobotDroid", "Spawn.Robot"}, 
+	{"RobotDroidEasy", "Spawn.Robot"}, 
+	{"RobotDroidHard", "Spawn.Robot"}, 
+	{"RobotDroidMedium", "Spawn.Robot"}, 
+	{"RobotDroidNormal", "Spawn.Robot"}, 
+	{"SubmarineWilly", "Spawn.Willy"}, 
+	{"SubmarineWillyEasy", "Spawn.Willy"}, 
+	{"SubmarineWillyHard", "Spawn.Willy"}, 
+	{"SubmarineWillyMedium", "Spawn.Willy"}, 
+	{"SubmarineWillyNormal", "Spawn.Willy"}, 
+	{"TheAxe", "Spawn.Axe"}, 
+	{"TheAxeEasy", "Spawn.Axe"}, 
+	{"TheAxeHard", "Spawn.Axe"}, 
+	{"TheAxeMedium", "Spawn.Axe"}, 
+	{"TheAxeNormal", "Spawn.Axe"}, 
+	{"TransGrosse", "Spawn.Trans"}, 
+	{"TransGrosseEasy", "Spawn.Trans"}, 
+	{"TransGrosseHard", "Spawn.Trans"}, 
+	{"TransGrosseMedium", "Spawn.Trans"}, 
+	{"TransGrosseNormal", "Spawn.Trans"}, 
+	{"UberMutant", "Spawn.Uber"}, 
+	{"UberMutantEasy", "Spawn.Uber"}, 
+	{"UberMutantHard", "Spawn.Uber"}, 
+	{"UberMutantMedium", "Spawn.Uber"}, 
+	{"UberMutantNormal", "Spawn.Uber"}, 
+	{"WhiteNazi", "Spawn.White"}, 
+	{"WhiteNazi2", "Spawn.White2"}, 
+	{"WolfGhost", "Spawn.Ghost"}, 
+	{"WolfSpectre", "Spawn.Spectre"}/*,
+	{"WolfPlayer", "Spawn.BJ"},
+	{"SoDPlayer", "Spawn.BJ"},
+	{"LostPlayer", "Spawn.BJ"}*/
+};
+
+str ItemClassIcons[ItemClassCount][2] = {
+	{"AardwolfSign", "Spawn.AARDA"}, 
+	{"AngelofDeathStatue", "Spawn.ADTHA"}, 
+	{"Basket", "Spawn.BASKA"}, 
+	{"Bed", "Spawn.BED1A"}, 
+	{"BJWasHereLost", "Spawn.BJWHA"}, 
+	{"BloodyCage", "Spawn.HEL4A"}, 
+	{"BloodyWell", "Spawn.HEL5A"}, 
+	{"BlueKey", "Spawn.KEYSB"}, 
+	{"BlueKeyLost", "Spawn.KEYSD"}, 
+	{"BombLost", "Spawn.TREAF"}, 
+	{"Bones", "Spawn.POB1A"}, 
+	{"Bones1Lost", "Spawn.POB6A"}, 
+	{"Bones2Lost", "Spawn.POB7A"}, 
+	{"BoneswithBlood", "Spawn.HLTHB"}, 
+	{"BoneswithBloodLost", "Spawn.HLTHG"}, 
+	{"BrokenCageLost", "Spawn.CAG4A"}, 
+	{"BrownColumn", "Spawn.COL2A"}, 
+	{"BrownPlantLost", "Spawn.PLT4A"}, 
+	{"BubblesLost", "Spawn.BUBLA"}, 
+	{"BullHeadonStick", "Spawn.HEL1A"}, 
+	{"Cage", "Spawn.CAG2A"}, 
+	{"CageofSkulls", "Spawn.HEL2A"}, 
+	{"CagewithBloodLost", "Spawn.CAG6A"}, 
+	{"CagewithSkullsLost", "Spawn.CAG5A"}, 
+	{"Chalice", "Spawn.TREAC"}, 
+	{"Chandalier", "Spawn.LIT3A"}, 
+	{"ChandalierLost", "Spawn.LIT4A"}, 
+	{"Chest", "Spawn.TREAD"}, 
+	{"Cross", "Spawn.TREAA"}, 
+	{"Crown", "Spawn.TREAB"}, 
+	{"CrushedBody", "Spawn.POB4A"}, 
+	{"CrushedBones1", "Spawn.POB2A"}, 
+	{"CrushedBones2", "Spawn.POB3A"}, 
+	{"DeadGuard", "Spawn.WBRNN"}, 
+	{"DeadGuardLost", "Spawn.WGRNN"}, 
+	{"DeadRatLost", "Spawn.DRATA"}, 
+	{"DemonStatueLost", "Spawn.DEVSA"}, 
+	{"DogFood", "Spawn.HLTHC"}, 
+	{"DogFoodLost", "Spawn.HLTHH"}, 
+	{"DryWell", "Spawn.WEL2A"}, 
+	{"DryWellLost", "Spawn.WEL4A"}, 
+	{"ElectrofieldLost", "Spawn.GZMOA"}, 
+	{"EmptyCage", "Spawn.CAG1A"}, 
+	{"EmptyCageLost", "Spawn.CAG3A"}, 
+	{"FirstAidKit", "Spawn.HLTHE"}, 
+	{"FirstAidKitLost", "Spawn.HLTHJ"}, 
+	{"FloorLamp", "Spawn.LIT1A"}, 
+	{"FloorLampLost", "Spawn.LIT2A"}, 
+	{"GreenCeilingLight", "Spawn.LIT5A"}, 
+	{"GreenCeilingLightLost", "Spawn.LIT6A"}, 
+	{"HangingSkeleton", "Spawn.HNG1A"}, 
+	{"HangingSkeletonLost", "Spawn.HNG2A"}, 
+	{"HangingUtensils", "Spawn.POT2A"}, 
+	{"HangingVines", "Spawn.VINEA"}, 
+	{"HLabTableLost", "Spawn.TAB5A"}, 
+	{"KitchenUtensils", "Spawn.POT1A"}, 
+	{"LifePickup", "Spawn.LIFEA"}, 
+	{"LifePickupLost", "Spawn.LIFEB"}, 
+	{"LightBulbLost", "Spawn.LIT8A"}, 
+	{"NaziFlag", "Spawn.FLAGA"}, 
+	{"NaziUniform", "Spawn.UNIFA"}, 
+	{"OilDrum", "Spawn.BARLA"}, 
+	{"OilDrumLost", "Spawn.BAR3A"}, 
+	{"PileofSkullsLost", "Spawn.POSKA"}, 
+	{"PipeLost", "Spawn.PiPEA"}, 
+	{"Plant", "Spawn.PLT1A"}, 
+	{"PlantinVase", "Spawn.PLT2A"}, 
+	{"PlantLost", "Spawn.PLT3A"}, 
+	{"PlateofFood", "Spawn.HLTHD"}, 
+	{"PlateofFoodLost", "Spawn.HLTHI"}, 
+	{"PoolofBlood", "Spawn.HLTHA"}, 
+	{"PoolofBloodLost", "Spawn.HLTHF"}, 
+	{"PoolofWater", "Spawn.POL1A"}, 
+	{"PoolofWaterLost", "Spawn.POL2A"}, 
+	{"RadioactiveBarrelLost", "Spawn.BAR5A"}, 
+	{"RadioLost", "Spawn.TREAE"}, 
+	{"RedCeilingLight", "Spawn.LITRA"}, 
+	{"RedCeilingLightLost", "Spawn.LIT7A"}, 
+	{"ShellLost", "Spawn.TREAG"}, 
+	{"Sink", "Spawn.SINKA"}, 
+	{"Skeleton", "Spawn.BONEA"}, 
+	{"SkeletonLost", "Spawn.BONEB"}, 
+	{"SkullsonStick", "Spawn.HEL3A"}, 
+	{"SlimeLost", "Spawn.GGOOA"}, 
+	{"SpearofDestiny", "Spawn.SOFDA"}, 
+	{"SpearofDestinyLevelEnd", "Spawn.SOFDA"}, 
+	{"SpearofDestinyLost", "Spawn.SOFDB"}, 
+	{"SpearRack", "Spawn.SPEAA"}, 
+	{"StoneColumn", "Spawn.COLWA"}, 
+	{"StoneColumnLost", "Spawn.PILWA"}, 
+	{"Stove", "Spawn.STOVA"}, 
+	{"SuitofArmor", "Spawn.KNIGA"}, 
+	{"SuitofArmorLost", "Spawn.KNIGB"}, 
+	{"Table", "Spawn.TAB2A"}, 
+	{"TableandChairs", "Spawn.TAB1A"}, 
+	{"TableandChairsLost", "Spawn.TAB3A"}, 
+	{"TableLost", "Spawn.TAB4A"}, 
+	{"TimerLost", "Spawn.TREAH"}, 
+	{"Truck", "Spawn.WTRKA"}, 
+	{"Vase", "Spawn.VASEA"}, 
+	{"VaseLost", "Spawn.VAS2A"}, 
+	{"WellwithWater", "Spawn.WEL1A"}, 
+	{"WellwithWaterLost", "Spawn.WEL3A"}, 
+	{"WolfAmmoBelt", "Spawn.BPAKA"}, 
+	{"WoodBarrel", "Spawn.BAR2A"}, 
+	{"WoodBarrelLost", "Spawn.BAR4A"}, 
+	{"YellowKey", "Spawn.KEYSA"}, 
+	{"YellowKeyLost", "Spawn.KEYSC"}
+};
+
+str AmmoClassIcons[AmmoClassCount][2] = {
+	{"WolfClip", "Spawn.WCLIA"}, 
+	{"WolfClipBox", "Spawn.WAMMA"}, 
+	{"WolfClipBoxLost", "Spawn.WAMMB"}, 
+	{"WolfClipDrop", "Spawn.WCLIA"}, 
+	{"WolfClipDropLost", "Spawn.WCLIB"}, 
+	{"WolfClipLost", "Spawn.WCLIB"}, 
+	{"WolfGas", "Spawn.WGASA"}, 
+	{"WolfGasCan", "Spawn.WGASA"}, 
+	{"WolfRocketCrate", "Spawn.WROKA"}, 
+	{"WolfRocketPickup", "Spawn.WRKTA"}
+};
+
+str WeaponClassIcons[WeaponClassCount][2] = {
+	{"WolfChaingun", "Spawn.CGUNP"}, 
+	{"WolfChaingunLost", "Spawn.CGUNU"}, 
+	{"WolfChaingunSoD", "Spawn.CGUNP"}, 
+	{"WolfDualChaingun", "Spawn.CGUNP"}, 
+	{"WolfFlamethrower", "Spawn.FLAMP"}, 
+	{"WolfMachineGun", "Spawn.MGUNP"}, 
+	{"WolfMachineGunLost", "Spawn.MGUNU"}, 
+	{"WolfKnife", "Spawn.WKNIF"}, 
+	{"WolfKnifeLost", "Spawn.WKNIF"}, 
+	{"WolfPistol", "Spawn.WLUGR"}, 
+	{"WolfPistolLost", "Spawn.WLUGR"}, 
+	{"WolfRocketLauncher", "Spawn.WROCP"}, 
+};
+
+Script "SetMapMarker" (int ActorType)
+{
+	If (GetCVar("g_mapmarkers") > 0)
+	{
+
+		If (GetCVar("am_cheat") > 1) Terminate;
+
+		If (ActorType == 0)
+		{
+			If (GetCVar("am_cheat") != 0) Terminate;
+		}
+
+		int markerTID = UniqueTID();
+		str state = "Spawn";
+		int markerScale = GetCVar("g_mapmarkerscale");
+		int e;
+
+		If (markerScale == 0) markerScale = 1;
+
+		Spawn("WolfMapMarker", GetActorX(0), GetActorY(0), GetActorZ(0), markerTID, 0);
+
+		If (ActorType == 1)
+		{
+			For (e = 0; e < ItemClassCount; e++)
+			{
+				If (CheckActorClass(0, ItemClassIcons[e][0]))
+				{
+					state = strParam(s:ItemClassIcons[e][1]);
+					e = ItemClassCount;
+				}
+			}
+		}
+		Else If (ActorType == 2)
+		{
+			For (e = 0; e < AmmoClassCount; e++)
+			{
+				If (CheckActorClass(0, AmmoClassIcons[e][0]))
+				{
+					state = strParam(s:AmmoClassIcons[e][1]);
+					e = AmmoClassCount;
+				}
+			}
+		}
+		Else If (ActorType == 3)
+		{
+			For (e = 0; e < WeaponClassCount; e++)
+			{
+				If (CheckActorClass(0, WeaponClassIcons[e][0]))
+				{
+					state = strParam(s:WeaponClassIcons[e][1]);
+					e = WeaponClassCount;
+				}
+			}
+		}
+		Else
+		{
+			For (e = 0; e < EnemyClassCount; e++)
+			{
+				If (CheckActorClass(0, EnemyClassIcons[e][0]))
+				{
+					state = strParam(s:EnemyClassIcons[e][1]);
+					e = EnemyClassCount;
+				}
+			}
+		}
+
+		SetActorState(markerTID, state, true);	
+
+		While (GetActorProperty(0, APROP_Health) > 0 && GetCVar("g_mapmarkers") > 0)
+		{
+			markerScale = GetCVar("g_mapmarkerscale");
+			If (markerScale == 0) markerScale = 2;
+
+			SetActorPosition(markerTID, GetActorX(0), GetActorY(0), GetActorZ(0), 0);
+			SetActorProperty(markerTID, APROP_ScaleX, markerScale * 0.1 / 2);
+			SetActorProperty(markerTID, APROP_ScaleY, markerScale * 0.125 / 2);
+
+			Delay(1);
+		}
+
+		Thing_Remove(markerTID);
+	}
+}
+
+Function int CheckHighScore (void)
+{
+	PopulateHighScores();
+
+	int CurrentScore = GetActorProperty(0, APROP_Score);
+	int intReturn = 0;
+
+	For (int s = 0; s <= 6; s++)
+	{
+		If (CurrentScore > highscores[s][2])
+			intReturn += 1;
+	}
+
+	return intReturn;
+}
+
+Function void SwapScores (int index1, int index2)
+{
+	str TempName;
+	str TempLevel;
+	int TempScore;
+
+	TempName = highscores[index1][0];
+	TempLevel = highscores[index1][1];
+	TempScore = highscores[index1][2];
+
+	highscores[index1][0] = highscores[index2][0];
+	highscores[index1][1] = highscores[index2][1];
+	highscores[index1][2] = highscores[index2][2];
+
+	highscores[index2][0] = TempName;
+	highscores[index2][1] = TempLevel;
+	highscores[index2][2] = TempScore;
+}
+
+Function str GetLevelString (void)
+{
+	str LevelString;
+
+	If (GAME_SOD)
+	 	LevelString = StrParam(d:GetLevelInfo(LEVELINFO_LEVELNUM) % 100);
+	Else
+		LevelString = StrParam(s:"E",d:GetLevelInfo(LEVELINFO_LEVELNUM)/10 + 1,s:"/L",d:GetLevelInfo(LEVELINFO_LEVELNUM) % 10);
+
+	return LevelString;
+}
+
+Function void PopulateHighScores (void)
+{
+/*
+	str score_cvar = "wolf3d_score_data";
+
+	If (GAME_SOD)
+		score_cvar = "sod_score_data";
+
+	SplitScoreString(GetCVarString(score_cvar), ';');
+*/
+	For (int s = 0; s <= 6; s++)
+	{
+		If (GAME_SOD)
+		{
+			highscores[s][0] = GetCVarString(StrParam(s:"sod_highscore",d:1 + s,s:"_name"));
+			highscores[s][1] = GetCVarString(StrParam(s:"sod_highscore",d:1 + s,s:"_level"));
+			highscores[s][2] = GetCVar(StrParam(s:"sod_highscore",d:1 + s));
+		}
+		Else
+		{
+			highscores[s][0] = GetCVarString(StrParam(s:"wolf3d_highscore",d:1 + s,s:"_name"));
+			highscores[s][1] = GetCVarString(StrParam(s:"wolf3d_highscore",d:1 + s,s:"_level"));
+			highscores[s][2] = GetCVar(StrParam(s:"wolf3d_highscore",d:1 + s));
+		}
+	}
+
+	highscores[7][0] = GetCVarString("name");
+	highscores[7][1] = GetLevelString();
+	highscores[7][2] = GetActorProperty(0, APROP_Score);
+}
+
+Function void SortHighScores (void)
+{
+	PopulateHighScores();
+
+	int Swapped = true;
+
+	While (Swapped == true)
+	{
+		Swapped = false;
+		For (int s = 1; s <= 7; s++)
+		{
+			If (highscores[s][2] > highscores[s-1][2])
+			{
+				SwapScores(s, s-1);
+				Swapped = true;
+			}
+		}
+	}
+}
+
+Function void WriteHighScores (void)
+{
+/*
+	str score_cvar = "wolf3d_score_data";
+
+	If (GAME_SOD)
+		score_cvar = "sod_score_data";
+
+	JoinScoreString(score_cvar, ";");
+*/
+	For (int s = 0; s <= 6; s++)
+	{
+		If (GAME_SOD)
+		{
+			SetCVarString(StrParam(s:"sod_highscore",d:1 + s,s:"_name"), highscores[s][0]);
+			SetCVarString(StrParam(s:"sod_highscore",d:1 + s,s:"_level"), highscores[s][1]);
+			SetCVar(StrParam(s:"sod_highscore",d:1 + s), highscores[s][2]);
+		}
+		Else
+		{
+			SetCVarString(StrParam(s:"wolf3d_highscore",d:1 + s,s:"_name"), highscores[s][0]);
+			SetCVarString(StrParam(s:"wolf3d_highscore",d:1 + s,s:"_level"), highscores[s][1]);
+			SetCVar(StrParam(s:"wolf3d_highscore",d:1 + s), highscores[s][2]);
+		}
+	}
+}
+
+Function void DrawHighScores (void)
+{
+	SetHudSize (320, 200, 1);
+
+	int NameX = 17.1;
+	int LevelX = 185.4;
+	int ScoreX = 290.2;
+	int LineY = 81.1;
+	int LineHeight = 16.0;
+
+	If (GAME_SOD)
+	{
+		SetFont("SSCORES");
+		HudMessageBold(s:"A";0,25,0,0.1,0.1,0);
+		SetFont("WOLFFNTL");
+	}
+	Else
+	{
+		SetFont("SCORES");
+		HudMessageBold(s:"A";0,25,0,0.1,0.1,0);
+		SetFont("WOLFFNTS");
+	}
+
+	For (int s = 0; s <= 6; s++)
+	{
+		int ThisLineY = LineY + (LineHeight * s);
+		HudMessageBold (s:highscores[s][0]; HUDMSG_COLORSTRING, 1 + (s * 3), "TrueWhite", NameX, ThisLineY, 0);
+		If ((GAME_SOD || GAME_ALL) && highscores[s][1] == "21")
+		{
+			SetFont("SODICON");
+			HudMessageBold (s:"A"; HUDMSG_COLORSTRING, 2 + (s * 3), "TrueWhite", LevelX, ThisLineY - 3.0, 0);
+			SetFont("WOLFFNTL");
+		}
+		Else
+			HudMessageBold (s:highscores[s][1]; HUDMSG_COLORSTRING, 2 + (s * 3), "TrueWhite", LevelX, ThisLineY, 0);
+		HudMessageBold (d:highscores[s][2]; HUDMSG_COLORSTRING, 3 + (s * 3), "TrueWhite", ScoreX, ThisLineY, 0);
+	}
+}
+
+/*
+global str 50:SplitData[];
+
+Function void SplitScoreString (str InputData, str separator)
+{
+	StrCpy(a:SplitData, InputData);
+
+	int CurrentLetter = 0;
+	int CurrentLength = 0;
+	int Index = 0;
+
+	For (int t = 0; t <= StrLen(InputData); t++)
+	{
+		If (SplitData[t] == separator)
+		{
+			highscores[Index / 3][Index % 3] = strMid(InputData, CurrentLetter, CurrentLength);
+			Index++;
+			CurrentLength = 0;
+			CurrentLetter = t + 1;
+		}
+		Else
+			CurrentLength++;
+	}
+}
+
+Function void JoinScoreString (str score_cvar, str separator)
+{
+	str data = "";
+
+	For (int s = 0; s <= 6; s++)
+		data = StrParam(s:data, s:highscores[s][0], c:separator, s:highscores[s][1], c:separator, d:highscores[s][2], c:separator);
+}
+*/
+
+int Pixels[16000];
+
+Script "FadeTo" (int color)
+{
+	str fadecolor;
+
+	Switch (color)
+	{
+		Case 1:
+			fadecolor = "RED";
+		break;
+		Case 2:
+			fadecolor = "GRN";
+		break;
+		Case 0:
+		default:
+			fadecolor = "NONE";
+		break;
+	}
+
+/*
+	int xr = 0;
+	int yr = 0;
+*/
+	If (fadecolor != "NONE")
+	{
+		SetHudSize(320, 200, 0);
+/*
+		str Texture = StrParam(s:"FADE", s:fadecolor);
+		SetFont(Texture);
+
+		For (int pix = 0; pix < 16000; pix++)
+		{
+			xr = Random(0, 160);
+			yr = Random(0, 100);
+
+			If (Pixels[yr * 160 + xr] == 0)
+			{
+				HudMessage (s:"A"; HUDMSG_LAYER_UNDERHUD, yr * 160 + xr, CR_UNTRANSLATED, xr * 2.0 + 0.1, yr * 2.0 + 0.1, 0);
+
+				If (pix % 600 == 0) Delay(1);
+
+				Pixels[yr * 160 + xr] = 1;
+			}
+			Else
+				pix--;
+		}
+*/
+		For (int g = 1; g <= 8; g++)
+		{
+			str Texture = StrParam(s:"FADE", s:fadecolor, d:g);
+
+			SetFont(Texture);
+			HudMessage (s:"A"; HUDMSG_LAYER_UNDERHUD, 99, CR_UNTRANSLATED, 0.1, 0.1, 0);
+
+			Delay(5);
+		}
+	}
+	Else
+	{
+		HudMessage (s:""; HUDMSG_LAYER_UNDERHUD, 99, CR_UNTRANSLATED, 0.1, 0.1, 0);
+//		For (int g = 0; g <= 64000; g = g + 2)
+//			HudMessage (s:""; HUDMSG_LAYER_UNDERHUD, g, CR_UNTRANSLATED, 0, 0, 0);
+	}
+
+}

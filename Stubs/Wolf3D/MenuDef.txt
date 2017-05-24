@@ -1,0 +1,108 @@
+DEFAULTLISTMENU
+{
+	Font "WOLFFNTL", "WolfMenuGray", "WolfMenuLightGray"
+	Selector "M_SEL1", -26, -2
+	Linespacing 13
+}
+
+LISTMENU "MainMenu"
+{
+	StaticPatch 0, 0, "M_MENU"
+
+	Position 100, 61
+	StaticPatch 70, 57, "M_BORTL"
+	StaticPatch 72, 57, "M_BORTR"
+	StaticPatch 70, 92, "M_BORBL"
+	StaticPatch 72, 92, "M_BORBR"
+	TextItem "New Game", "n", "PlayerclassMenu"
+	TextItem "Sound", "s", "SoundOptions"
+	TextItem "Control", "c", "OptionsMenu" //CustomizeControls"
+	TextItem "Load Game", "l", "LoadGameMenu"
+	TextItem "Save Game", "s", "SaveGameMenu"
+	TextItem "Change View", "w", "VideoModeMenu"
+	ifOption(ReadThis)
+	{
+		TextItem "Read This!", "r", "ReadThisMenu"
+	}
+	TextItem "End Game", "e", "EndGameMenu"
+	//No idea if this will ever be able to work right...
+	Font "BigFont", "WolfMenuYellow", "WolfMenuYellowBright"
+	TextItem "Back to Game", "b", "CloseMenu"
+	Font "BigFont", "WolfMenuGray", "WolfMenuLightGray"
+//	TextItem "Back to Demo", "b", "CloseMenu"
+	TextItem "Quit", "q", "QuitMenu"
+}
+
+ListMenu "EpisodeMenu"
+{
+	NetgameMessage "$NETGAME"
+
+	StaticPatch 0, 0, "MENUBACK"
+
+	Font "BigFont", "WolfMenuYellowBright"
+	StaticTextCentered 160, 4, "Which episode to play?"
+	Font "BigFont", "WolfMenuGray", "WolfMenuLightGray"
+
+	StaticPatch 7, 20, "M_BORTL"
+	StaticPatch 140, 20, "M_BORTR"
+	StaticPatch 7, 82, "M_BORBL"
+	StaticPatch 140, 82, "M_BORBR"
+
+	StaticPatch 0, 0, "M_EPIS"
+
+	Selector "M_SEL1", -88, -2
+
+	Position 98, 24
+	Linespacing 26
+	// items will be filled in by MAPINFO
+}
+
+ListMenu "SkillMenu"
+{
+	StaticPatch 0, 0, "MENUBACK"
+
+	Font "BigFont", "WolfMenuYellowBright"
+
+/*
+	//For exact to original...  but with no skill images.
+	StaticTextCentered 160, 70, "How tough are you?"
+
+	StaticPatch 46, 91, "M_BORTLS"
+	StaticPatch 96, 91, "M_BORTRS"
+	StaticPatch 46, 108, "M_BORBLS"
+	StaticPatch 96, 108, "M_BORBRS"
+*/
+
+	//To accomodate skill levels...
+	StaticTextCentered 160, 34, "How tough are you?"
+
+	StaticPatch 46, 50, "M_BORTL"
+	StaticPatch 96, 50, "M_BORTR"
+	StaticPatch 46, 58, "M_BORBL"
+	StaticPatch 96, 58, "M_BORBR"
+
+	StaticPatch 82, 60, "M_BABY"
+	StaticPatch 126, 60, "M_EASY"
+	StaticPatch 170, 60, "M_NORMAL"
+	StaticPatch 214, 60, "M_HARD"
+
+	//Common to both...
+	Font "BigFont", "WolfMenuGray", "WolfMenuLightGray"
+
+	Position 75, 102
+}
+
+ListMenu "LoadGameMenu"
+{
+	NetgameMessage "$LOADNET"
+	StaticPatchCentered 480, -1, "M_LOADGM"
+	Position 80,54
+	Class "LoadMenu"	// uses its own implementation
+}
+
+ListMenu "SaveGameMenu"
+{
+	StaticPatchCentered 480, -1, "M_SAVEGM"
+	Position 80,54
+	Class "SaveMenu"	// uses its own implementation
+}

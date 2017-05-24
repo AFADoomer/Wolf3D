@@ -1,0 +1,52 @@
+ACTOR DoomWolfClip : WolfClip replaces Clip {Translation "112:127=96:111", "192:199=152:159"}
+ACTOR DoomWolfClip2 : WolfClip replaces Shell {Translation "112:127=96:111", "192:199=152:159"}
+ACTOR DoomWolfClipBox : WolfClipBox replaces ClipBox {}
+ACTOR DoomWolfGasCan2 : WolfGasCan replaces ShellBox {}
+ACTOR DoomWolfRocketPickup : WolfRocketPickup replaces RocketAmmo {}
+ACTOR DoomWolfRocketCrate : WolfRocketCrate replaces RocketBox {}
+ACTOR DoomWolfGas : WolfGasCan replaces Cell {}
+ACTOR DoomWolfGasCan : WolfGasCan replaces CellPack {}
+ACTOR DoomWolfMachineGun : WeaponGiver replaces Shotgun
+ACTOR DoomWolfChaingun : WeaponGiver replaces Chaingun
+ACTOR DoomWolfFlamethrower : WeaponGiver replaces PlasmaRifle
+ACTOR DoomWolfFlamethrower2 : WeaponGiver replaces SuperShotgun
+ACTOR DoomWolfRocketLauncher : WolfRocketLauncher replaces RocketLauncher
+ACTOR DoomYellowKey : CustomInventory replaces YellowCard
+ACTOR DoomBlueKey : CustomInventory replaces BlueCard
+ACTOR DoomDogFood : DogFood replaces HealthBonus {}
+ACTOR DoomPlateofFood : PlateofFood replaces StimPack {Translation "112:127=96:111", "192:199=152:159"}
+ACTOR DoomFirstAidKit : FirstAidKit replaces Medikit {}
+ACTOR DoomLifePickup2 : LifePickup replaces Chainsaw {}
+ACTOR DoomLifePickup : LifePickup replaces SoulSphere {}
+ACTOR DoomWolfAmmoBelt : WolfAmmoBelt replaces Backpack {}
+ACTOR DoomNaziUniform : NaziUniform replaces BlurSphere {}
+ACTOR DoomBulletProofVest : BulletProofVest replaces GreenArmor {}
+ACTOR DoomBulletProofVest2 : BulletProofVest replaces BlueArmor {}
+ACTOR DoomRandomTreasure : RandomTreasure replaces ArmorBonus {}
+ACTOR DoomWolfBerserk : WolfBerserk replaces Berserk {}
+ACTOR DoomGretelGrosse : GretelGrosseEasy replaces Arachnotron
+ACTOR DoomArmedPrisoner : ArmedPrisoner replaces Archvile
+ACTOR DoomHitler2 : Hitler2Easy replaces BaronofHell
+ACTOR DoomHitlerGhost : HitlerGhostEasy replaces Cacodemon
+ACTOR DoomWhiteNazi : WhiteNazi replaces ChaingunGuy
+ACTOR DoomHansGrosse : HansGrosseEasy replaces HellKnight
+ACTOR DoomDog : Dog replaces Demon
+ACTOR DoomMutant : MutantEasy replaces DoomImp
+ACTOR DoomDrSchabbs : DrSchabbsEasy replaces Revenant
+ACTOR DoomHitler : HitlerEasy replaces Cyberdemon
+ACTOR DoomGiftmacher : GiftmacherEasy replaces Fatso
+ACTOR DoomBlueNazi : BlueNazi replaces ShotgunGuy
+ACTOR DoomDog2 : DoomDog replaces Spectre {}
+ACTOR DoomFatFace : FatFaceEasy replaces SpiderMastermind
+ACTOR DoomBrownNazi : BrownNazi replaces ZombieMan
+ACTOR DoomArmedPrisoner2 : ArmedPrisoner replaces BFG9000
+ACTOR DoomRandomNazi replaces WolfensteinSS
+ACTOR DoomRandomNazi2 : DoomRandomNazi replaces LostSoul {}
+ACTOR DoomMovingRandomNaziSpawner : MovingRandomNaziSpawner replaces PainElemental
+ACTOR DoomSpearofDestiny : SpearofDestiny replaces Infrared {}
+ACTOR DoomTransGrosse : TransGrosseEasy replaces HellKnight {}
+ACTOR DoomUberMutant : UberMutantEasy replaces BaronOfHell {}
+ACTOR DoomDeathKnight : DeathKnightEasy replaces Fatso {}
+ACTOR DoomAngelofDeath : AngelofDeathEasy replaces CyberDemon {}
+ACTOR DoomBarnacleWilhelm : BarnacleWilhelmEasy replaces Revenant {}
+ACTOR DoomWolfSpectre : WolfSpectre replaces LostSoul {}

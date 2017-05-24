@@ -1,0 +1,28 @@
+////////////////////////////////////////////////////////////////////////////////
+// Wolf3D TC - Line Action Scripts
+////////////////////////////////////////////////////////////////////////////////
+// 
+// This file contains the following scripts:
+//
+//   1		Calls W_DoSlidingDoor
+//   2		Calls W_DoSecretDoor
+//   4		Calls W_DoFinale
+//   10		Calls W_DoLevelEnd
+//   15		Blank - Run on walkover of Secret Doors
+//   27		Calls W_DeathCam
+//   601	Blank - Run on walkover of Secret Doors
+//
+// These are used to call named scripts from Hexen-format map lines.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//Numbered scripts so that they can run from level lines
+Script 1 (int po, int dir, int lock) {ACS_NamedExecuteAlways("W_DoSlidingDoor", 0, po, dir, lock);}
+Script 2 (int po, int dir) {ACS_NamedExecuteAlways("W_DoSecretDoor", 0, po, dir);}
+script 10 (int Type) {ACS_NamedExecuteAlways("W_DoLevelEnd", 0, Type);}
+Script 15 (int WallID) {/*ACS_ExecuteAlways(601, 0, 800 + WallID, 0);*/} //Used by secret wall walkover lines...  Shouldn't do anything...
+Script 601 (void) {} //Only used by secret wall walkover lines, which shouldn't do anything anyway
+
+//Named scripts won't run from MAPINFO specialactions, so keeping the numbered script
+script 4 (int type) {ACS_NamedExecuteAlways("W_DoFinale", 0, type);}
+Script 27 (void) {ACS_NamedExecuteAlways("W_DeathCam", 0);}
