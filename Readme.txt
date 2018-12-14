@@ -10,7 +10,13 @@ How to Run:
 	The .bat file will automatically create a copy of your current ZDoom .ini file, or a new 
 	.ini file if it is unable to find your current one.  You can modify the path in the .bat 
 	files if your .ini is not found automatically.  The .cfg settings will be applied to this 
-	.ini file, so that the .cfg file will not overwrite your regular game settings.  
+	.ini file, so that the .cfg file will not overwrite your regular game settings.
+	
+MacOS: cd ~/Library/Application Support/gzdoom/Wolfenstein\ 3D\ TC
+ 	/Applications/GZDoom.app/Contents/MacOS/gzdoom +exec Wolf3D.cfg -file Wolf3D_Common.pk7 Wolf3D_HighRes.pk7 Wolf3D_Resources.pk3
+	Works for: GZDoom g3.6.0 - 2018-10-10 01:45:02 -0400 - Cocoa version Compiled on Oct 11 2018
+	MacBookPro14,3 running macOS High Sierra 10.13.3 (17D102) 64-bit Intel
+	
 
 Notes:	You can use any IWAD with this, however, games other than Doom or Doom 2 will give some 
 	strange effects (inability to walk through doorways, blood spurts, pieces of status bar 
